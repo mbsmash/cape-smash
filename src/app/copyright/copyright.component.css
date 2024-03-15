@@ -1,0 +1,16 @@
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.made-with-love-by-mb {
+    font-size: 6pt;
+}
+
+.cats-too {
+    font-size: 1pt;
+}
+

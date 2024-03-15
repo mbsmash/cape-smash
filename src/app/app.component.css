@@ -1,0 +1,13 @@
+/* FILEPATH: /Users/benasselmeier/Workspace/cape-smash/src/app/app.component.css */
+
+/* Styles for the whole app */
+@media screen and (max-width: 768px) {
+  /* Add your styles here */
+  .page-container {
+    background-color: blue;
+    margin: 16px;
+    display: column;
+    gap: 16px;
+    
+  }
+}

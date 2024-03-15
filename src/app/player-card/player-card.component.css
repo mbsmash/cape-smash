@@ -1,0 +1,76 @@
+.player-card {
+  background-color: #f3f3f3
+}
+
+.mat-card {
+  display: flex;
+  padding: 8px;
+  text-align: center;
+  justify-content: center;
+  /* Slightly increase the border-radius for rounded corners */
+  width: 75vw;
+  height: 15vh;
+  position: relative;
+  /* Add relative positioning for pseudo-elements */
+  background-size: cover;
+  background-position: center;
+}
+
+/* Desktop Styles */
+@media screen and (min-width: 768px) {
+  .mat-card {
+    padding: 0 0 16px 0;
+    text-align: center;
+    /* Slightly increase the border-radius for rounded corners */
+    width: 20vw;
+    height: 25vh;
+    position: relative;
+    /* Add relative positioning for pseudo-elements */
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .player-card__name {
+    font-size: 1.5em;
+    font-weight: 700;
+    margin-bottom: 0;
+    width: 100%;
+    padding: 0;
+    color: #fff;
+    background-color: rgb(61, 61, 61);
+    text-align: center;
+  }
+  
+  .player-card__header {
+    font-size: 3em;
+    font-weight: 700;
+    text-align: left;
+  }
+  
+  .player-card__characters {
+    object-fit: contain;
+  }
+  
+  .player-card__main-icon {
+    width: 80%;
+    height: 80%;
+  }
+
+  .player-card__solo-main-label {
+    font-size: 0.5em  ;
+  }
+  
+  .player-card__secondaries {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    font-size: 0.75em;
+  }
+  
+  .player-card__secondary-icon {
+    margin: 0 8px;
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+  }
+}

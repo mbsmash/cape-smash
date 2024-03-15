@@ -1,0 +1,9 @@
+<div class="stage-card" (click)="onClick()">
+  <mat-card [class.banned]="isBanned" [class.unbanned]="!isBanned" [style.backgroundImage]="'url(' + stageImageUrl + ')'">
+      <mat-card-title>
+        <p>{{stage.name}}</p>
+      </mat-card-title>
+    <mat-card-content>
+    </mat-card-content>
+  </mat-card>
+</div>

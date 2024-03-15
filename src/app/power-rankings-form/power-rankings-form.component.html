@@ -1,0 +1,29 @@
+<div class="pr-form-row" *ngFor="let player of [].constructor(numberOfPlayers); let i = index">
+    <h2>{{i+1}}</h2>
+    <form>
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput placeholder="Enter player's name" name="playerName{{i}}">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Main Character</mat-label>
+            <input matInput placeholder="Enter player's main character" name="mainCharacter{{i}}">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Secondaries</mat-label>
+            <input matInput placeholder="Enter player's secondaries" name="secondaries{{i}}">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Sponsor</mat-label>
+            <input matInput placeholder="Enter player's sponsor" name="sponsor{{i}}">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Socials</mat-label>
+            <input matInput placeholder="Enter player's socials" name="socials{{i}}">
+        </mat-form-field>
+    </form>
+</div>

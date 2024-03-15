@@ -1,0 +1,22 @@
+<div class="player-card">
+  <div class="player-card__header">
+    <span>{{this.rank}}</span>
+    <span *ngIf="isPlayerSoloMain()" class="player-card__solo-main-label">Solo Main:</span>
+  </div>
+  <mat-card [style.backgroundImage]="'url(' + mainCharacterImageUrl +')'">
+    <div class="player-card__characters">
+      <div
+        [ngClass]="{'player-card__solo-main': isPlayerSoloMain()}"
+        class="player-card__main">
+      </div>
+      <div class="player-card__secondaries">
+        <div *ngFor="let secondary of this.player.secondaryCharacters">
+          <img class="player-card__secondary-icon" src="{{getSecondaryCharacterImage(secondary.displayName)}}">
+        </div>
+      </div>
+    </div>
+  </mat-card>
+  <div class="player-card__name">
+    <span>{{this.player.displayName}}</span>
+  </div>
+</div>
