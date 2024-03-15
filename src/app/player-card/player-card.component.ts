@@ -16,6 +16,7 @@ export class PlayerCardComponent implements OnInit {
   @Input() playerId: number;
   @Input() rank: number;
   mainCharacterImageUrl: string = '';
+  secondaryCharacterImageUrls: string[] = [];
 
   player: Player = {
     id: 0,
@@ -39,21 +40,23 @@ export class PlayerCardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getMainCharacterImage().then(url => {
-      this.mainCharacterImageUrl = url;
-    });
-    this.player = this.getRandomPlayer();
-    this.isPlayerSoloMain();
-  }
+      this.player = this.getRandomPlayer();
+      this.isPlayerSoloMain();
+      this.getMainCharacterImage().then(url => {
+        this.mainCharacterImageUrl = url;
+        console.log(this.mainCharacterImageUrl)
+      });
+      this.getSecondaryCharacterImages(this.player.secondaryCharacters);
+    }
 
-  getRandomPlayer(): Player {
-    return this.playerService.getRandomPlayer();
+    getRandomPlayer(): Player {
+      return this.playerService.getRandomPlayer();
   }
 
   //todo make this the card background instead of an icon. Should make styling easier
   //TODO add firebase storage path to image path
   async getMainCharacterImage(): Promise<string> {
-    return await this.firebaseStorageService.getImageUrl(`assets/fighter-portraits/chara_1_` + this.player.mainCharacter.displayName + `_00.jpg`);
+    return await this.firebaseStorageService.getImageUrl(`/fighter-portraits/chara_1_` + this.player.mainCharacter.codename + `_00.jpg`);
 
   }
 
@@ -61,13 +64,12 @@ export class PlayerCardComponent implements OnInit {
     return this.fighterService.getFighterByDisplayName(displayName);
   }
 
-  getSecondaryCharacterImage(displayName: string): string {
-    for (let i = 0; i < this.player.secondaryCharacters.length; i++) {
-      if (this.player.secondaryCharacters[i].displayName === displayName) {
-        return "/assets/images/fighter-portraits/" + this.player.secondaryCharacters[i].path + "/chara_1_" + this.player.secondaryCharacters[i].codename + "_00.png";
-      }
+  async getSecondaryCharacterImages(secondaryCharacters: Fighter[]): Promise<string[]> {
+    let urls = [];
+    for (let i = 0; i < secondaryCharacters.length; i++) {
+      urls.push(await this.firebaseStorageService.getImageUrl(`/stock-icons/chara_2_` + secondaryCharacters[i].codename + `_00.png`));
     }
-    return "holla";
+    return ["holla"];
   }
 
   getSecondaryCharacterInfo(displayNames: string[]): Fighter[] {

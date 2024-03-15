@@ -47,7 +47,7 @@
     text-align: left;
   }
   
-  .player-card__characters {
+  /* .player-card__characters {
     object-fit: contain;
   }
   
@@ -72,5 +72,5 @@
     width: 60%;
     height: 60%;
     object-fit: contain;
-  }
+  } */
 }
