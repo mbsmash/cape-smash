@@ -1,5 +1,25 @@
-@media screen and (min-width: 768px) {
+.mat-card {
+  background-color: #f2f2f2;
+  padding: 10px;
+  text-align: center;
+  border-radius: 10px; /* Slightly increase the border-radius for rounded corners */
+  width: 75vw;
+  height: 15vh;
+  position: relative; /* Add relative positioning for pseudo-elements */
+  background-size: cover;
+  background-position: center;
+  color:#f2f2f2
+}
 
+.mat-card-title{
+  margin: auto;
+  font-size: 1em;
+  font-weight: bold;
+  color: #fff;
+  background-color: #000;
+}
+
+@media screen and (min-width: 768px) {
   .mat-card {
     background-color: #f2f2f2;
     padding: 10px;
@@ -14,15 +34,15 @@
       height: 90%;
     }
   }
+  .mat-card-title{
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #000;
+  }
 }
 
-.mat-card-title{
-  margin-top: 50% !important;
-  font-size: 1em;
-  font-weight: bold;
-  color: #fff;
-  background-color: #000;
-}
+
 
 .banned {
   filter: grayscale(100%);
