@@ -29,12 +29,10 @@ export class FirebaseStorageService {
         }
         
         getImageUrl(path: string): Promise<string> {
-          console.log("Firebase Storage Service: attempting to get image at ", path);
+          console.log("Firebase: retrieving from ", path);
             const imageRef = ref(this.storageRef, path);
-            console.log("imageRef: ", imageRef);
             return getDownloadURL(imageRef)
             .then((url) => {
-                console.log("url: ", url);
                 return url;
             })
             .catch((error) => {

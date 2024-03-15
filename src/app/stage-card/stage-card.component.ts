@@ -33,7 +33,6 @@ export class StageCardComponent implements OnInit {
   
   async getStageImage(): Promise<string> {
     const stage = this.stageListService.parseImagePath(this.stage.name);
-    console.log('getting stage image for ', this.stage.name, '..')
     return await this.firebaseStorageService.getImageUrl(`/stages/` + stage +  `.png`);
   }
 

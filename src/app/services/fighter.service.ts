@@ -108,7 +108,6 @@ export class FighterService {
     }
 
     getFighterByDisplayName(displayName: string): Fighter {
-        console.log(displayName)
         let fighter = this.fighters.find(fighter => fighter.displayName === displayName);
         if (!fighter) {
             throw new Error(`No fighter found with displayName: ${displayName}`);
