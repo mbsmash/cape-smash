@@ -1,5 +1,5 @@
 @media screen and (max-width: 768px) {
-  .page-container {
+  .menu-cards-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -9,12 +9,19 @@
 }
 
 @media screen and (min-width: 768px) {
-  .page-container {
+  .menu-cards-container {
     margin: 0 16px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     align-content: center;
-    height: 90vh;
+    height: 50vh;
+  }
+
+  .banner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
   }
 }

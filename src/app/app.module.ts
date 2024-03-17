@@ -16,7 +16,8 @@ import { NavComponent } from './nav/nav.component';
 import { PlayerCardComponent } from './player-card/player-card.component';
 import { PowerRankingsFormComponent } from './power-rankings-form/power-rankings-form.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { CopyrightComponent } from './copyright/copyright.component'; // Import MatFormFieldModule
+import { CopyrightComponent } from './copyright/copyright.component';
+import { BannerComponent } from './banner/banner.component'; // Import MatFormFieldModule
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { CopyrightComponent } from './copyright/copyright.component'; // Import 
     NavComponent,
     PlayerCardComponent,
     PowerRankingsFormComponent,
-    CopyrightComponent
+    CopyrightComponent,
+    BannerComponent
   ],
   imports: [
     BrowserModule,
