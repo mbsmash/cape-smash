@@ -45,3 +45,53 @@
         justify-content: center;
     }
 }
+
+@media screen and (max-width: 768px) {
+    .mat-card {
+        display: flex;
+        flex-direction: column;
+        background-color: #f2f2f2;
+        margin: 8px auto;
+        padding: 10px;
+        border-radius: 10px;
+        /* Slightly increase the border-radius for rounded corners */
+        width: 75vw;
+        height: auto;
+        position: relative;
+        /* Add relative positioning for pseudo-elements */
+        background-size: cover;
+        background-position: center;
+        color: #000000;
+    }
+
+    .mat-card-header {
+        border-radius: 10px;
+        display: flex;
+        font-weight: bolder;
+        justify-content: start;
+        align-items: center;
+        margin-bottom: 0;
+        background-color: red;
+        color: #ffffff;
+        height: 35%;
+    }
+
+    .banner-card__content {
+        display: flex;
+        font-size: 0.75em;
+    }
+
+    .banner-card__icon {
+        display: flex;
+        margin: 0 8px 0 0;
+        background-color: #f2f2f2;
+        width: auto;
+        height: 50px;
+        align-self: center;
+        font-size: 0.75em;
+    }
+
+    .banner-card__link {
+        justify-content: center;
+    }
+}
