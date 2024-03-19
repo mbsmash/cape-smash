@@ -10,11 +10,14 @@ export class BannerComponent implements OnInit {
 
   @Input() subject: string;
   @Input() info: string;
+  @Input() link: string;
+  @Input() linkText: string = 'Learn More';
   bannerIcon: string = '';
 
   constructor(private firebaseStorageService: FirebaseStorageService) {
     this.subject = '';
     this.info = '';
+    this.link = '';
   }
 
   ngOnInit(): void {

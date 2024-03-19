@@ -42,7 +42,7 @@
     }
 
     .banner-card__link {
-        justify-content: center;
+        text-align: center;
     }
 }
 
@@ -92,6 +92,6 @@
     }
 
     .banner-card__link {
-        justify-content: center;
+        text-align: center;
     }
 }
