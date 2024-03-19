@@ -1,0 +1,922 @@
+{
+    "players": [
+        {
+            "id": 1,
+            "displayName": "MB",
+            "rank": 0,
+            "mainCharacter": {
+                "id": 1,
+                "codename": "wario",
+                "displayName": "Wario",
+                "path": "Wario",
+                "alternates": []
+            },
+            "secondaryCharacters": [
+                {
+                    "id": 2,
+                    "codename": "gaogaen",
+                    "displayName": "Incineroar",
+                    "path": "Incineroar",
+                    "alternates": []
+                },
+                {
+                    "id": 3,
+                    "codename": "reflet",
+                    "displayName": "Robin",
+                    "path": "Robin",
+                    "alternates": []
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "displayName": "Isle",
+            "rank": 0,
+            "mainCharacter": {
+                "id": 1,
+                "codename": "donkey",
+                "displayName": "Donkey Kong",
+                "path": "Donkey Kong",
+                "alternates": []
+            },
+            "secondaryCharacters": [
+                {
+                    "id": 2,
+                    "codename": "demon",
+                    "displayName": "Kazuya Mishima",
+                    "path": "Kazuya Mishima",
+                    "alternates": []
+                },
+                {
+                    "id": 3,
+                    "codename": "koopa",
+                    "displayName": "Bowser",
+                    "path": "Bowser",
+                    "alternates": []
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "displayName": "Echo",
+            "rank": 0,
+            "mainCharacter": {
+                "id": 1,
+                "codename": "gamewatch",
+                "displayName": "Mr Game & Watch",
+                "path": "Mr Game & Watch",
+                "alternates": []
+            },
+            "secondaryCharacters": [
+                {
+                    "id": 2,
+                    "codename": "sonic",
+                    "displayName": "Sonic",
+                    "path": "Sonic",
+                    "alternates": []
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "displayName": "PK",
+            "rank": 0,
+            "mainCharacter": {
+                "id": 1,
+                "codename": "pit",
+                "displayName": "Pit",
+                "path": "Pit",
+                "alternates": []
+            },
+            "secondaryCharacters": [
+                {
+                    "id": 2,
+                    "codename": "falco",
+                    "displayName": "Falco",
+                    "path": "Falco",
+                    "alternates": []
+                },
+                {
+                    "id": 3,
+                    "codename": "master",
+                    "displayName": "Byleth",
+                    "path": "Byleth",
+                    "alternates": []
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "displayName": "JK",
+            "rank": 0,
+            "mainCharacter": {
+                "id": 1,
+                "codename": "koopa",
+                "displayName": "Bowser",
+                "path": "Bowser",
+                "alternates": []
+            },
+            "secondaryCharacters": [
+                {
+                    "id": 2,
+                    "codename": "ganon",
+                    "displayName": "Ganondorf",
+                    "path": "Ganondorf",
+                    "alternates": []
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "displayName": "Varixah",
+            "rank": 0,
+            "mainCharacter": {
+                "id": 1,
+                "codename": "buddy",
+                "displayName": "Banjo & Kazooie",
+                "path": "Banjo and Kazooie",
+                "alternates": []
+            },
+            "secondaryCharacters": [
+                {
+                    "id": 2,
+                    "codename": "younglink",
+                    "displayName": "Young Link",
+                    "path": "Young Link",
+                    "alternates": []
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "displayName": "khyizer",
+            "rank": 0,
+            "mainCharacter": {
+                "id": 1,
+                "codename": "elight_first",
+                "displayName": "Pyra & Mythra",
+                "path": "Pyra and Mythra",
+                "alternates": []
+            },
+            "secondaryCharacters": []
+        },
+        {
+            "id": 8,
+            "displayName": "Millard",
+            "rank": 0,
+            "mainCharacter": {
+                "id": 1,
+                "codename": "sonic",
+                "displayName": "Sonic",
+                "path": "Sonic",
+                "alternates": []
+            },
+            "secondaryCharacters": []
+        },
+        {
+            "id": 9,
+            "displayName": "HeroKing",
+            "rank": 0,
+            "mainCharacter": {
+                "id": 1,
+                "codename": "yoshi",
+                "displayName": "Yoshi",
+                "path": "Yoshi",
+                "alternates": []
+            },
+            "secondaryCharacters": []
+        },
+        {
+            "id": 10,
+            "displayName": "Linc.inc",
+            "rank": 0,
+            "mainCharacter": {
+                "id": 1,
+                "codename": "younglink",
+                "displayName": "Young Link",
+                "path": "Young Link",
+                "alternates": []
+            },
+            "secondaryCharacters": [
+                {
+                    "id": 2,
+                    "codename": "roy",
+                    "displayName": "Roy",
+                    "path": "Roy",
+                    "alternates": []
+                }
+            ]
+        },
+        {
+            "id": 11,
+            "displayName": "Watr",
+            "rank": 0,
+            "mainCharacter": {
+                "id": 1,
+                "codename": "demon",
+                "displayName": "Kazuya Mishima",
+                "path": "Kazuya Mishima",
+                "alternates": []
+            },
+            "secondaryCharacters": [
+                {
+                    "id": 2,
+                    "codename": "szerosuit",
+                    "displayName": "Zero Suit Samus",
+                    "path": "Zero Suit Samus",
+                    "alternates": []
+                },
+                {
+                    "id": 3,
+                    "codename": "bayonetta",
+                    "displayName": "Bayonetta",
+                    "path": "Bayonetta",
+                    "alternates": []
+                }
+            ]
+        },
+        {
+            "id": 12,
+            "displayName": "Roger",
+            "rank": 0,
+            "mainCharacter": {
+                "id": 1,
+                "codename": "koopa",
+                "displayName": "Bowser",
+                "path": "Bowser",
+                "alternates": []
+            },
+            "secondaryCharacters": []
+        }
+    ],
+    "stages": [
+        {
+            "id": 1,
+            "codename": "battlefield",
+            "displayName": "Battlefield"
+        },
+        {
+            "id": 2,
+            "codename": "final-destination",
+            "displayName": "Final Destination"
+        },
+        {
+            "id": 3,
+            "codename": "smashville",
+            "displayName": "Smashville"
+        },
+        {
+            "id": 4,
+            "codename": "town-and-city",
+            "displayName": "Town and City"
+        },
+        {
+            "id": 5,
+            "codename": "small-battlefield",
+            "displayName": "Small Battlefield"
+        },
+        {
+            "id": 6,
+            "codename": "kalos-pokemon-league",
+            "displayName": "Kalos Pokemon League"
+        },
+        {
+            "id": 7,
+            "codename": "hollow-bastion",
+            "displayName": "Hollow Bastion"
+        }
+    ],
+    "fighters": [
+        {
+            "id": 1,
+            "displayName": "Mario",
+            "path": "Mario",
+            "codename": "mario",
+            "alternates": []
+        },
+        {
+            "id": 2,
+            "displayName": "Donkey Kong",
+            "path": "Donkey Kong",
+            "codename": "donkey",
+            "alternates": []
+        },
+        {
+            "id": 3,
+            "displayName": "Link",
+            "path": "Link",
+            "codename": "link",
+            "alternates": []
+        },
+        {
+            "id": 4,
+            "displayName": "Samus",
+            "path": "Samus",
+            "codename": "samus",
+            "alternates": []
+        },
+        {
+            "id": 5,
+            "displayName": "Dark Samus",
+            "path": "Dark Samus",
+            "codename": "samusd",
+            "alternates": []
+        },
+        {
+            "id": 6,
+            "displayName": "Yoshi",
+            "path": "Yoshi",
+            "codename": "yoshi",
+            "alternates": []
+        },
+        {
+            "id": 7,
+            "displayName": "Kirby",
+            "path": "Kirby",
+            "codename": "kirby",
+            "alternates": []
+        },
+        {
+            "id": 8,
+            "displayName": "Fox",
+            "path": "Fox",
+            "codename": "fox",
+            "alternates": []
+        },
+        {
+            "id": 9,
+            "displayName": "Pikachu",
+            "path": "Pikachu",
+            "codename": "pikachu",
+            "alternates": []
+        },
+        {
+            "id": 10,
+            "displayName": "Luigi",
+            "path": "Luigi",
+            "codename": "luigi",
+            "alternates": []
+        },
+        {
+            "id": 11,
+            "displayName": "Ness",
+            "path": "Ness",
+            "codename": "ness",
+            "alternates": []
+        },
+        {
+            "id": 12,
+            "displayName": "Captain Falcon",
+            "path": "Captain Falcon",
+            "codename": "captain",
+            "alternates": []
+        },
+        {
+            "id": 13,
+            "displayName": "Jigglypuff",
+            "path": "Jigglypuff",
+            "codename": "purin",
+            "alternates": []
+        },
+        {
+            "id": 14,
+            "displayName": "Peach",
+            "path": "Peach",
+            "codename": "peach",
+            "alternates": []
+        },
+        {
+            "id": 15,
+            "displayName": "Daisy",
+            "path": "Daisy",
+            "codename": "daisy",
+            "alternates": []
+        },
+        {
+            "id": 16,
+            "displayName": "Bowser",
+            "path": "Bowser",
+            "codename": "koopa",
+            "alternates": []
+        },
+        {
+            "id": 17,
+            "displayName": "Ice Climbers",
+            "path": "Ice Climbers",
+            "codename": "ice_climber",
+            "alternates": []
+        },
+        {
+            "id": 18,
+            "displayName": "Sheik",
+            "path": "Sheik",
+            "codename": "sheik",
+            "alternates": []
+        },
+        {
+            "id": 19,
+            "displayName": "Zelda",
+            "path": "Zelda",
+            "codename": "zelda",
+            "alternates": []
+        },
+        {
+            "id": 20,
+            "displayName": "Dr. Mario",
+            "path": "Dr Mario",
+            "codename": "mariod",
+            "alternates": []
+        },
+        {
+            "id": 21,
+            "displayName": "Pichu",
+            "path": "Pichu",
+            "codename": "pichu",
+            "alternates": []
+        },
+        {
+            "id": 22,
+            "displayName": "Falco",
+            "path": "Falco",
+            "codename": "falco",
+            "alternates": []
+        },
+        {
+            "id": 23,
+            "displayName": "Marth",
+            "path": "Marth",
+            "codename": "marth",
+            "alternates": []
+        },
+        {
+            "id": 24,
+            "displayName": "Lucina",
+            "path": "Lucina",
+            "codename": "lucina",
+            "alternates": []
+        },
+        {
+            "id": 25,
+            "displayName": "Young Link",
+            "path": "Young Link",
+            "codename": "younglink",
+            "alternates": []
+        },
+        {
+            "id": 26,
+            "displayName": "Ganondorf",
+            "path": "Ganondorf",
+            "codename": "ganon",
+            "alternates": []
+        },
+        {
+            "id": 27,
+            "displayName": "Mewtwo",
+            "path": "Mewtwo",
+            "codename": "mewtwo",
+            "alternates": []
+        },
+        {
+            "id": 28,
+            "displayName": "Roy",
+            "path": "Roy",
+            "codename": "roy",
+            "alternates": []
+        },
+        {
+            "id": 29,
+            "displayName": "Chrom",
+            "path": "Chrom",
+            "codename": "chrom",
+            "alternates": []
+        },
+        {
+            "id": 30,
+            "displayName": "Mr. Game & Watch",
+            "path": "Mr Game & Watch",
+            "codename": "gamewatch",
+            "alternates": []
+        },
+        {
+            "id": 31,
+            "displayName": "Meta Knight",
+            "path": "Meta Knight",
+            "codename": "metaknight",
+            "alternates": []
+        },
+        {
+            "id": 32,
+            "displayName": "Pit",
+            "path": "Pit",
+            "codename": "pit",
+            "alternates": []
+        },
+        {
+            "id": 33,
+            "displayName": "Dark Pit",
+            "path": "Dark Pit",
+            "codename": "pitb",
+            "alternates": []
+        },
+        {
+            "id": 34,
+            "displayName": "Zero Suit Samus",
+            "path": "Zero Suit Samus",
+            "codename": "szerosuit",
+            "alternates": []
+        },
+        {
+            "id": 35,
+            "displayName": "Wario",
+            "path": "Wario",
+            "codename": "wario",
+            "alternates": []
+        },
+        {
+            "id": 36,
+            "displayName": "Snake",
+            "path": "Snake",
+            "codename": "snake",
+            "alternates": []
+        },
+        {
+            "id": 37,
+            "displayName": "Ike",
+            "path": "Ike",
+            "codename": "ike",
+            "alternates": []
+        },
+        {
+            "id": 38,
+            "displayName": "Pokémon Trainer",
+            "path": "Pokemon Trainer",
+            "codename": "ptrainer",
+            "alternates": []
+        },
+        {
+            "id": 39,
+            "displayName": "Diddy Kong",
+            "path": "Diddy Kong",
+            "codename": "diddy",
+            "alternates": []
+        },
+        {
+            "id": 40,
+            "displayName": "Lucas",
+            "path": "Lucas",
+            "codename": "lucas",
+            "alternates": []
+        },
+        {
+            "id": 41,
+            "displayName": "Sonic",
+            "path": "Sonic",
+            "codename": "sonic",
+            "alternates": []
+        },
+        {
+            "id": 42,
+            "displayName": "King Dedede",
+            "path": "King Dedede",
+            "codename": "dedede",
+            "alternates": []
+        },
+        {
+            "id": 43,
+            "displayName": "Olimar",
+            "path": "Olimar (Alph)",
+            "codename": "pikmin",
+            "alternates": []
+        },
+        {
+            "id": 44,
+            "displayName": "Lucario",
+            "path": "Lucario",
+            "codename": "lucario",
+            "alternates": []
+        },
+        {
+            "id": 45,
+            "displayName": "R.O.B.",
+            "path": "ROB",
+            "codename": "robot",
+            "alternates": []
+        },
+        {
+            "id": 46,
+            "displayName": "Toon Link",
+            "path": "Toon Link",
+            "codename": "toonlink",
+            "alternates": []
+        },
+        {
+            "id": 47,
+            "displayName": "Wolf",
+            "path": "Wolf",
+            "codename": "wolf",
+            "alternates": []
+        },
+        {
+            "id": 48,
+            "displayName": "Villager",
+            "path": "Villager",
+            "codename": "murabito",
+            "alternates": []
+        },
+        {
+            "id": 49,
+            "displayName": "Mega Man",
+            "path": "Megaman",
+            "codename": "rockman",
+            "alternates": []
+        },
+        {
+            "id": 50,
+            "displayName": "Wii Fit Trainer",
+            "path": "Wii Fit Trainer",
+            "codename": "wiifit",
+            "alternates": []
+        },
+        {
+            "id": 51,
+            "displayName": "Rosalina & Luma",
+            "path": "Rosalina and Luma",
+            "codename": "rosetta",
+            "alternates": []
+        },
+        {
+            "id": 52,
+            "displayName": "Little Mac",
+            "path": "Littlemac",
+            "codename": "littlemac",
+            "alternates": []
+        },
+        {
+            "id": 53,
+            "displayName": "Greninja",
+            "path": "Greninja",
+            "codename": "gekkouga",
+            "alternates": []
+        },
+        {
+            "id": 54,
+            "displayName": "Mii Brawler",
+            "path": "Mii",
+            "codename": "miifighter",
+            "alternates": []
+        },
+        {
+            "id": 55,
+            "displayName": "Mii Swordfighter",
+            "path": "Mii",
+            "codename": "miiswordsman",
+            "alternates": []
+        },
+        {
+            "id": 56,
+            "displayName": "Mii Gunner",
+            "path": "Mii",
+            "codename": "miigunner",
+            "alternates": []
+        },
+        {
+            "id": 57,
+            "displayName": "Palutena",
+            "path": "Palutena",
+            "codename": "palutena",
+            "alternates": []
+        },
+        {
+            "id": 58,
+            "displayName": "Pac-Man",
+            "path": "Pac-Man",
+            "codename": "pacman",
+            "alternates": []
+        },
+        {
+            "id": 59,
+            "displayName": "Robin",
+            "path": "Robin",
+            "codename": "reflet",
+            "alternates": []
+        },
+        {
+            "id": 60,
+            "displayName": "Shulk",
+            "path": "Shulk",
+            "codename": "shulk",
+            "alternates": []
+        },
+        {
+            "id": 61,
+            "displayName": "Bowser Jr.",
+            "path": "Bowserjr",
+            "codename": "koopajr",
+            "alternates": []
+        },
+        {
+            "id": 62,
+            "displayName": "Duck Hunt",
+            "path": "Duckhunt",
+            "codename": "duckhunt",
+            "alternates": []
+        },
+        {
+            "id": 63,
+            "displayName": "Ryu",
+            "path": "Ryu",
+            "codename": "ryu",
+            "alternates": []
+        },
+        {
+            "id": 64,
+            "displayName": "Ken",
+            "path": "Ken",
+            "codename": "ken",
+            "alternates": []
+        },
+        {
+            "id": 65,
+            "displayName": "Cloud",
+            "path": "Cloud",
+            "codename": "cloud",
+            "alternates": []
+        },
+        {
+            "id": 66,
+            "displayName": "Corrin",
+            "path": "Corrin",
+            "codename": "kamui",
+            "alternates": []
+        },
+        {
+            "id": 67,
+            "displayName": "Bayonetta",
+            "path": "Bayonetta",
+            "codename": "bayonetta",
+            "alternates": []
+        },
+        {
+            "id": 68,
+            "displayName": "Inkling",
+            "path": "Inkling",
+            "codename": "inkling",
+            "alternates": []
+        },
+        {
+            "id": 69,
+            "displayName": "Ridley",
+            "path": "Ridley",
+            "codename": "ridley",
+            "alternates": []
+        },
+        {
+            "id": 70,
+            "displayName": "Simon",
+            "path": "Simon",
+            "codename": "simon",
+            "alternates": []
+        },
+        {
+            "id": 71,
+            "displayName": "Richter",
+            "path": "Richter",
+            "codename": "richter",
+            "alternates": []
+        },
+        {
+            "id": 72,
+            "displayName": "King K. Rool",
+            "path": "Kingkrool",
+            "codename": "krool",
+            "alternates": []
+        },
+        {
+            "id": 73,
+            "displayName": "Isabelle",
+            "path": "Isabelle",
+            "codename": "shizue",
+            "alternates": []
+        },
+        {
+            "id": 74,
+            "displayName": "Incineroar",
+            "path": "Incineroar",
+            "codename": "gaogaen",
+            "alternates": []
+        },
+        {
+            "id": 75,
+            "displayName": "Piranha Plant",
+            "path": "Piranha Plant",
+            "codename": "packun",
+            "alternates": []
+        },
+        {
+            "id": 76,
+            "displayName": "Joker",
+            "path": "Joker",
+            "codename": "jack",
+            "alternates": []
+        },
+        {
+            "id": 77,
+            "displayName": "Hero",
+            "path": "Hero",
+            "codename": "brave",
+            "alternates": []
+        },
+        {
+            "id": 78,
+            "displayName": "Banjo & Kazooie",
+            "path": "Banjo and Kazooie",
+            "codename": "buddy",
+            "alternates": []
+        },
+        {
+            "id": 79,
+            "displayName": "Terry",
+            "path": "Terry Bogard",
+            "codename": "dolly",
+            "alternates": []
+        },
+        {
+            "id": 80,
+            "displayName": "Byleth",
+            "path": "Byleth",
+            "codename": "master",
+            "alternates": []
+        },
+        {
+            "id": 81,
+            "displayName": "Min Min",
+            "path": "Min Min",
+            "codename": "tantan",
+            "alternates": []
+        },
+        {
+            "id": 82,
+            "displayName": "Steve",
+            "path": "Steve",
+            "codename": "pickel",
+            "alternates": []
+        },
+        {
+            "id": 83,
+            "displayName": "Sephiroth",
+            "path": "Sephiroth",
+            "codename": "edge",
+            "alternates": []
+        },
+        {
+            "id": 84,
+            "displayName": "Pyra/Mythra",
+            "path": "Pyra and Mythra",
+            "codename": "elight",
+            "alternates": []
+        },
+        {
+            "id": 85,
+            "displayName": "Kazuya",
+            "path": "Kazuya",
+            "codename": "demon",
+            "alternates": []
+        },
+        {
+            "id": 86,
+            "displayName": "Sora",
+            "path": "Sora",
+            "codename": "trail",
+            "alternates": []
+        }
+    ],
+    "events": [
+        {
+            "id": 1,
+            "title": "Millard's Birthday Bash",
+            "date": "2024-03-23T00:00:00.000Z",
+            "location": "Gaming Grounds",
+            "description": "Millard's Birthday Bash is a tournament to celebrate Millard's birthday. Squad Strike, random stages, stage morph on.",
+            "type": "tournament",
+            "link": "https://challonge.com/"
+        },
+        {
+            "id": 2,
+            "title": "Gaming Grounds April Tournament",
+            "date": "2024-04-06T00:00:00.000Z",
+            "location": "TBD",
+            "description": "Regular GG tournament for April!",
+            "type": "tournament",
+            "link": "https://challonge.com/"
+        },
+        {
+            "id": 3,
+            "title": "SEMO Smash Arcadian and PR Invitational",
+            "date": "2024-04-20T00:00:00.000Z",
+            "location": "TBD",
+            "description": "Placeholder description for the April 20 tournament.",
+            "type": "tournament",
+            "link": "https://challonge.com/"
+        }
+    ]
+}
