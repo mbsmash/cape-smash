@@ -4,7 +4,7 @@ import { Fighter } from 'src/models/fighter';
 import { FighterService } from '../services/fighter.service';
 import { Player } from 'src/models/player';
 import { PlayerService } from '../services/player.service';
-import { FirebaseStorageService } from '../services/firebase-storage.service';
+import { FirebaseService } from '../services/firebase.service';
 
 @Component({
   selector: 'app-player-card',
@@ -30,7 +30,7 @@ export class PlayerCardComponent implements OnInit {
   constructor(
     private fighterService: FighterService,
     private playerService: PlayerService,
-    private firebaseStorageService: FirebaseStorageService
+    private firebaseStorageService: FirebaseService
   ) {
     this.playerId = 0;
     this.player = this.getRandomPlayer();

@@ -1,7 +1,7 @@
 import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Stage } from 'src/models/stage';
-import { FirebaseStorageService } from '../services/firebase-storage.service';
+import { FirebaseService } from '../services/firebase.service';
 import { StageListService } from '../services/stage-list.service';
 
 @Component({
@@ -20,7 +20,7 @@ export class StageCardComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private firebaseStorageService: FirebaseStorageService,
+    private firebaseStorageService: FirebaseService,
     private stageListService: StageListService
   ) {
   }

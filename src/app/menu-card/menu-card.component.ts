@@ -1,7 +1,7 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FirebaseStorageService } from '../services/firebase-storage.service';
+import { FirebaseService } from '../services/firebase.service';
 
 @Component({
   selector: 'app-menu-card',
@@ -17,7 +17,7 @@ export class MenuCardComponent implements OnInit {
   @Output() menuCardClicked: EventEmitter<any> = new EventEmitter<any>();
   constructor(
     private router: Router,
-    private firebaseStorageService: FirebaseStorageService
+    private firebaseStorageService: FirebaseService
   ) {
     this.headerText = '';
     this.infoText = '';

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FirebaseStorageService } from '../services/firebase-storage.service';
+import { FirebaseService } from '../services/firebase.service';
 
 @Component({
   selector: 'app-banner',
@@ -14,7 +14,7 @@ export class BannerComponent implements OnInit {
   @Input() linkText: string = 'Learn More';
   bannerIcon: string = '';
 
-  constructor(private firebaseStorageService: FirebaseStorageService) {
+  constructor(private firebaseStorageService: FirebaseService) {
     this.subject = '';
     this.info = '';
     this.link = '';
