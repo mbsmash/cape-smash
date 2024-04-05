@@ -1,0 +1,7 @@
+.mini-menu-card {
+    border: 1px solid red;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 8px auto;
+}

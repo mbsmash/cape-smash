@@ -18,7 +18,9 @@ import { PowerRankingsFormComponent } from './power-rankings-form/power-rankings
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CopyrightComponent } from './copyright/copyright.component';
 import { BannerComponent } from './banner/banner.component';
-import { TournamentScheduleComponent } from './tournament-schedule/tournament-schedule.component'; // Import MatFormFieldModule
+import { TournamentScheduleComponent } from './tournament-schedule/tournament-schedule.component';
+import { TournamentHubComponent } from './tournament-hub/tournament-hub.component';
+import { MiniCardComponent } from './mini-card/mini-card.component'; // Import MatFormFieldModule
 
 
 @NgModule({
@@ -35,7 +37,9 @@ import { TournamentScheduleComponent } from './tournament-schedule/tournament-sc
     PowerRankingsFormComponent,
     CopyrightComponent,
     BannerComponent,
-    TournamentScheduleComponent
+    TournamentScheduleComponent,
+    TournamentHubComponent,
+    MiniCardComponent
   ],
   imports: [
     BrowserModule,

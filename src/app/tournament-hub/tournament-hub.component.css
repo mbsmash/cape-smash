@@ -1,0 +1,38 @@
+.tournament-hub__container {
+    display: flex;
+    border: 1px solid #3405a1;
+    margin: auto;
+    height: 90%;
+}
+
+.tournament-hub__main {
+    margin: 8px auto;
+    width: 60%;
+    height: 90%;
+    border: 1px solid pink;
+    text-align: center;
+}
+
+.tournament-hub__schedule {
+    border: 1px dashed purple;
+    margin: 8px auto;
+    width: 30%;
+    height: 90%;
+    text-align: center;
+    overflow: auto;
+}
+
+.mat-card {
+    margin: 8px auto;
+    height: 20%;
+    width: 80%;
+    border: 1px solid green;
+}
+
+.tournament-hub__header {
+    padding: 8px;
+    background-color: #f0f0f0;
+    border-radius: 16px;
+    height: 10%;
+}
+
