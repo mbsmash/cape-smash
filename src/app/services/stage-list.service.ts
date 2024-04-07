@@ -10,11 +10,11 @@ export class StageListService {
 
     // Replace these values with your stage names.
     stageNames = [
-        'Battlefield',
-        'Small Battlefield',
-        'Town and City',
-        'Smashville',
         'Pokemon Stadium 2',
+        'Smashville',
+        'Battlefield',
+        'Town and City',
+        'Small Battlefield',
         'Final Destination',
         'Hollow Bastion',
         'Kalos Pokemon League'

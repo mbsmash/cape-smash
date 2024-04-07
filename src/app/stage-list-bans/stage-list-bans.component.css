@@ -19,6 +19,10 @@
     min-height: 15vh;
     text-align: center;
   }
+
+  mat-divider {
+    margin: 8px;
+  }
 }
 
 @media screen and (max-width: 768px) {
@@ -28,7 +32,7 @@
     justify-content: center;
     align-items: center;
     gap: 8px;
-    margin-top: 16px;
+    padding: 8px;
   }
 
   .stage-list__header {

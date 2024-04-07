@@ -1,8 +1,6 @@
 <div class="stage-list__container">
-  <p>Click a stage card to ban.</p>
-  <p>Refresh page to start over.</p>
+  <p>Click a stage to ban. Refresh to start over.</p>
   <div class="stage-list__header">
-    <h2>Starters</h2>
   </div>
   <ng-container *ngFor="let stage of starterStages">
     <app-stage-card
@@ -14,10 +12,9 @@
   </ng-container>
 </div>
 
+<mat-divider></mat-divider>
+
 <div class="stage-list__container">
-  <div class="stage-list__header">
-    <h2>Counterpicks</h2>
-  </div>
   <ng-container *ngFor="let stage of counterpickStages">
     <app-stage-card
       [stage]="stage"

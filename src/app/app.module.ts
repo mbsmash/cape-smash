@@ -19,6 +19,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { CopyrightComponent } from './copyright/copyright.component';
 import { BannerComponent } from './banner/banner.component';
 import { TournamentScheduleComponent } from './tournament-schedule/tournament-schedule.component'; // Import MatFormFieldModule
+import { MatDividerModule } from '@angular/material/divider'; // Import MatDividerModule
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { TournamentScheduleComponent } from './tournament-schedule/tournament-sc
     BrowserAnimationsModule,
     MatCardModule,
     HttpClientModule,
-    MatFormFieldModule // Add MatFormFieldModule to the imports array
+    MatFormFieldModule,
+    MatDividerModule // Add MatFormFieldModule to the imports array
   ],
   providers: [],
   bootstrap: [AppComponent]

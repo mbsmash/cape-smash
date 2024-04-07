@@ -2,21 +2,33 @@
   background-color: #f2f2f2;
   padding: 10px;
   text-align: center;
-  border-radius: 10px; /* Slightly increase the border-radius for rounded corners */
-  width: 75vw;
-  height: 15vh;
+  border-radius: 4px; /* Slightly increase the border-radius for rounded corners */
+  width: 37vw;
+  height: 6vh;
   position: relative; /* Add relative positioning for pseudo-elements */
   background-size: cover;
   background-position: center;
-  color:#f2f2f2
+  color:#f2f2f2;
+  border: 1px solid #D3D3D3;
 }
 
 .mat-card-title{
   margin: auto;
-  font-size: 1em;
+  font-size: .75em;
   font-weight: bold;
   color: #fff;
   background-color: #000;
+}
+
+.small-italic-starter {
+  font-size: 0.8em; /* adjust as needed */
+  font-style: italic;
+}
+
+.small-italic-counterpick {
+  font-size: 0.8em; /* adjust as needed */
+  font-style: italic;
+
 }
 
 @media screen and (min-width: 768px) {
