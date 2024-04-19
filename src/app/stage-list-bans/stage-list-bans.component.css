@@ -47,21 +47,26 @@
     text-align: center;
   }
 
-  .stage-list__footer {
-    display: none;
-  }
 }
   
 
+/* TODO: make this display again */
 .stage-list__footer {
-  width: 100vw;
+  width: 90vw;
+  height: 25vh;
+  margin: 24px auto;
+  padding-top: 0px;
+  border: 1px solid #d3d3d3;
+  display: none;
+  
 }
 
 .mat-card-title {
-  font-size: 1em;
+  font-size: 2em;
   font-weight: bold;
   text-align: center;
-
+  color: #fff;
+  background-color: #000;
 }
 
 .mat-card-content {
