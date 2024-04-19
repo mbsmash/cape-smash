@@ -1,6 +1,7 @@
 <div class="stage-list__container">
-  <p>Click a stage to ban. Refresh to start over.</p>
+  <p>Tap a stage to ban.</p>
   <div class="stage-list__header">
+    <button class="reset-bans-button" (click)="resetBanList()">Reset Bans</button>
   </div>
   <ng-container *ngFor="let stage of starterStages">
     <app-stage-card
@@ -25,3 +26,19 @@
   </ng-container>
 </div>
 
+<div class="stage-list__footer">
+  <mat-card>
+    <mat-card-title>
+      <h2>Ruleset</h2>
+    </mat-card-title>
+    <mat-card-content>
+      <p>3 Stocks</p>
+      <p>7 Minutes</p>
+      <p>3 Bans</p>
+      <p>Hazards Off</p>
+      <p>1-2-1 Strikes</p>
+      <p>Character First</p>
+      <p>No DSR</p>
+    </mat-card-content>
+  </mat-card>
+</div>

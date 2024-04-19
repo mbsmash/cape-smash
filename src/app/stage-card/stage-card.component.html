@@ -1,10 +1,13 @@
 <div class="stage-card" (click)="onClick()">
-  <mat-card [class.banned]="isBanned" [class.unbanned]="!isBanned" [style.backgroundImage]="'url(' + stageImageUrl + ')'">
+  <mat-card [class.banned-image]="isBanned" [class.unbanned]="!isBanned" [style.backgroundImage]="'url(' + stageImageUrl + ')'">
     <mat-card-title>
       <span *ngIf="stage.isCounterpick; else starter"><span class=small-italic-starter>Counterpick:</span><br>{{stage.name}}</span>
       <ng-template #starter><span class="small-italic-counterpick">Starter:</span><br>{{stage.name}}</ng-template>
     </mat-card-title>
     <mat-card-content>
+      <div class="banned-text">
+        <span *ngIf="isBanned">Banned</span>
+      </div>
     </mat-card-content>
   </mat-card>
 </div>
