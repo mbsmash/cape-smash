@@ -36,7 +36,7 @@
     background-color: #f2f2f2;
     padding: 10px;
     border-radius: 5px;
-    width: 17vw;
+    width: 25vw;
     min-height: 20vh;
     text-align: center;
     background-size: cover;
@@ -54,7 +54,7 @@
   }
 
   .banned-text {
-    font-size: 2.5em;
+    font-size: 2em;
     font-weight: bold;
     margin-top: 24px !important;
   }

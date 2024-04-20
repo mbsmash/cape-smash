@@ -20,6 +20,7 @@ import { CopyrightComponent } from './copyright/copyright.component';
 import { BannerComponent } from './banner/banner.component';
 import { TournamentScheduleComponent } from './tournament-schedule/tournament-schedule.component'; // Import MatFormFieldModule
 import { MatDividerModule } from '@angular/material/divider'; // Import MatDividerModule
+import { StageListBansFullComponent } from './stage-list-bans-full/stage-list-bans-full.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { MatDividerModule } from '@angular/material/divider'; // Import MatDivid
     PowerRankingsFormComponent,
     CopyrightComponent,
     BannerComponent,
-    TournamentScheduleComponent
+    TournamentScheduleComponent,
+    StageListBansFullComponent
   ],
   imports: [
     BrowserModule,

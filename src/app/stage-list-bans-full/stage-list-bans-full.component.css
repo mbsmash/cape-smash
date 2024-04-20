@@ -1,0 +1,61 @@
+@media screen and (min-width: 768px) {
+  .stage-list__container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .stage-list__header {
+    font-size: 1.25em;
+    color: #333;
+    width: 100%;
+    text-align: center;
+  }
+
+  .stage-list__stage {
+    min-height: 15vh;
+    text-align: center;
+  }
+
+  mat-divider {
+    margin: 8px;
+  }
+}
+
+  
+
+/* TODO: make this display again */
+.stage-list__footer {
+  padding-top: 0px;
+  justify-content: center;
+  display: flex;
+  
+}
+
+.mat-card-title {
+  font-size: 2em;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+  background-color: #000;
+}
+
+.mat-card-content {
+  display: flex;
+  flex-direction: row;
+  gap: 5%;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.mat-card-content>:first-child {
+  margin-top: auto !important;
+}
+
+.mat-card-content>:last-child {
+  margin-bottom: auto !important;
+}
