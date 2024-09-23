@@ -12,11 +12,14 @@ import { StageListService } from '../services/stage-list.service';
 export class StageCardComponent implements OnInit {
 
   @Input() stage!: Stage;
+  @Input() isPicking: boolean = false;
 
   @Output() stageBanned = new EventEmitter<Stage>();
   @Output() stageUnbanned = new EventEmitter<Stage>();
+  @Output() stagePicked = new EventEmitter<Stage>();
 
   stageImageUrl: string = '';
+  isPicked: boolean = false;
 
   constructor(
     private router: Router,
@@ -40,14 +43,20 @@ export class StageCardComponent implements OnInit {
   isBanned: boolean = false;
 
   onClick(): void {
-    //If an unbanned stage is clicked, it will be added to the ban list.
-    this.isBanned = !this.isBanned;
-    if (this.isBanned) {
-      this.stageBanned.emit(this.stage);
+    if(!this.isPicking) {
+      //If an unbanned stage is clicked, it will be added to the ban list.
+      this.isBanned = !this.isBanned;
+      if (this.isBanned) {
+        this.stageBanned.emit(this.stage);
+      }
+      //If a banned stage is clicked, it will be removed from the ban list.
+      else {
+        this.stageUnbanned.emit(this.stage);
+      }
     }
-    //If a banned stage is clicked, it will be removed from the ban list.
     else {
-      this.stageUnbanned.emit(this.stage);
+      this.isPicked = true;
+      this.stagePicked.emit(this.stage);
     }
   }
 

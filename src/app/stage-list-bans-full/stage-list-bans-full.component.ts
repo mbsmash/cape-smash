@@ -12,9 +12,13 @@ import StageListService from '../services/stage-list.service';
 export class StageListBansFullComponent implements OnInit {
 
 
+  selectedStage: Stage | null = null;
   starterStages: Stage[] = [];
   counterpickStages: Stage[] = [];
   bannedList: any[] = [];
+  isBanning: boolean = true;
+  isPicking: boolean = false;
+  noBans: boolean = false;
 
   constructor(
     private stageListService: StageListService,
@@ -30,7 +34,12 @@ export class StageListBansFullComponent implements OnInit {
   }
 
   handleStageBanned(stage: Stage) {
-    this.bannedList.push(stage);
+    if(this.isBanning) {
+      this.bannedList.push(stage);
+      if(this.bannedList.length === 3) {
+        this.enableStagePick();
+      }
+    }
   }
 
   handleStageUnbanned(stage: Stage) {
@@ -43,6 +52,22 @@ export class StageListBansFullComponent implements OnInit {
     this.bannedList = [];
     this.starterStages = this.starterStages.map(stage => ({ ...stage, isBanned: false }));
     this.counterpickStages = this.counterpickStages.map(stage => ({ ...stage, isBanned: false }));
+  }
+
+  enableStagePick() {
+    if(this.bannedList.length = 3 || this.noBans == true) {
+      console.log("Stage pick enabled");
+      this.isBanning = false;
+      this.isPicking = true;
+    }
+  }
+
+  handleStagePick(stage: Stage) {
+    this.selectedStage = stage;
+  }
+
+  handleNoBans() {
+    this.enableStagePick();
   }
 
 }

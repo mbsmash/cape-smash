@@ -1,28 +1,46 @@
-<div class="stage-list__container">
-  <div class="stage-list__header">
-    Tap a stage to ban.
+<div class="stage-list__header" *ngIf="!selectedStage && !isPicking">
+  Tap a stage to ban. You may ban up to three stages.
+  <button class="no-bans-button" (click)="handleNoBans()">No Bans</button>
+</div>
+<div class="stage-list__header" *ngIf="!selectedStage && !isBanning" >
+  Tap a stage to pick.
   </div>
-  <ng-container *ngFor="let stage of starterStages">
-    <app-stage-card
-      [stage]="stage"
-      (stageBanned)="handleStageBanned($event)"
-      (stageUnbanned)="handleStageUnbanned($event)"
-    >
-    </app-stage-card>
-  </ng-container>
+<div *ngIf="!selectedStage" class="stage-list__container">
+    <div *ngFor="let stage of starterStages">
+      <app-stage-card
+        [stage]="stage"
+        [isPicking]="isPicking"
+        (stageBanned)="handleStageBanned($event)"
+        (stageUnbanned)="handleStageUnbanned($event)"
+        (stagePicked)="handleStagePick($event)">
+      </app-stage-card>
+    </div>
 </div>
 
-<mat-divider></mat-divider>
+<mat-divider *ngIf="!selectedStage"></mat-divider>
 
-<div class="stage-list__container">
-  <ng-container *ngFor="let stage of counterpickStages">
+<div *ngIf="!selectedStage" class="stage-list__container">
+  <div *ngFor="let stage of counterpickStages">
     <app-stage-card
       [stage]="stage"
+      [isPicking]="isPicking"
       (stageBanned)="handleStageBanned($event)"
       (stageUnbanned)="handleStageUnbanned($event)"
-    >
+      (stagePicked)="handleStagePick($event)">
     </app-stage-card>
-  </ng-container>
+  </div>
+</div>
+
+<div class="selected-stage__container">
+  <!-- This div will be hidden until a stage is picked, then show that stage in a bigger card-->
+  <div *ngIf="selectedStage" class="selected-stage__card">
+    <app-stage-card
+      [stage]="selectedStage"
+      [isPicking]="isPicking"
+      (stageBanned)="handleStageBanned($event)"
+      (stageUnbanned)="handleStageUnbanned($event)"
+      (stagePicked)="handleStagePick($event)">
+    </app-stage-card>
 </div>
 
 <div class="stage-list__footer">
