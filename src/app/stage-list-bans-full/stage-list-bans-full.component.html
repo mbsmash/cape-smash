@@ -40,12 +40,16 @@
 </div>
 
 <div class="stage-list__footer">
-  <div class="stage-list__footer-text" *ngIf="!selectedStage && !isPicking">
-    Tap a stage to ban. You may ban up to three stages.
+  <div class="stage-list_footer-banner">
+    <div class="stage-list__footer-text" *ngIf="!selectedStage && !isPicking">
+      Tap a stage to ban. You may ban up to three stages.
+    </div>
+    <div class="stage-list__footer-text" *ngIf="!selectedStage && !isBanning" >
+      Tap a stage to pick.
+    </div>
   </div>
-  <div class="stage-list__footer-text" *ngIf="!selectedStage && !isBanning" >
-    Tap a stage to pick.
+  <div class="stage-list__footer-button-container">
+    <button class="stage-list__footer-button" (click)="resetBanList()">Reset</button>
+    <button *ngIf="isBanning" class="stage-list__footer-button" (click)="handleNoBans()">No Bans</button>
   </div>
-  <button class="stage-list__footer-button" (click)="resetBanList()">Reset</button>
-  <button class="stage-list__footer-button" (click)="handleNoBans()">No Bans</button>
 </div>

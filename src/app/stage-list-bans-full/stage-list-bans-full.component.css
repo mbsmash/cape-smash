@@ -40,6 +40,13 @@
   margin: auto;
 }
 
+.stage-list__footer-button-container {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: auto;
+}
+
 .mat-card-title {
   font-size: 2em;
   font-weight: bold;
