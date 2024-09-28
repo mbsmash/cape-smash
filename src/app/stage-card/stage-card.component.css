@@ -58,6 +58,11 @@
     font-weight: bold;
     margin-top: 24px !important;
   }
+
+  .picked {
+    height: 55vh;
+    width: 69vw;
+  }
 }
 
 

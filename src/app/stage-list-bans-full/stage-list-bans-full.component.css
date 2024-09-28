@@ -8,7 +8,7 @@
     margin-top: 16px;
   }
 
-  .stage-list__header {
+  .stage-list__footer-text {
     font-size: 1.25em;
     color: #333;
     width: 100%;
@@ -29,10 +29,15 @@
 
 /* TODO: make this display again */
 .stage-list__footer {
-  padding-top: 0px;
+  padding-top: 8px;
   justify-content: center;
   display: flex;
-  
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stage-list__footer-button {
+  margin: auto;
 }
 
 .mat-card-title {
@@ -58,4 +63,13 @@
 
 .mat-card-content>:last-child {
   margin-bottom: auto !important;
+}
+
+.selected-stage__container {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid red;
 }

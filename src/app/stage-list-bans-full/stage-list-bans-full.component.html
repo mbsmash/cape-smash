@@ -1,10 +1,3 @@
-<div class="stage-list__header" *ngIf="!selectedStage && !isPicking">
-  Tap a stage to ban. You may ban up to three stages.
-  <button class="no-bans-button" (click)="handleNoBans()">No Bans</button>
-</div>
-<div class="stage-list__header" *ngIf="!selectedStage && !isBanning" >
-  Tap a stage to pick.
-  </div>
 <div *ngIf="!selectedStage" class="stage-list__container">
     <div *ngFor="let stage of starterStages">
       <app-stage-card
@@ -31,18 +24,28 @@
   </div>
 </div>
 
-<div class="selected-stage__container">
+<div *ngIf="selectedStage" class="selected-stage__container">
+  <h2>Selected Stage: </h2>
   <!-- This div will be hidden until a stage is picked, then show that stage in a bigger card-->
-  <div *ngIf="selectedStage" class="selected-stage__card">
+  <div class="selected-stage__card">
     <app-stage-card
       [stage]="selectedStage"
       [isPicking]="isPicking"
+      [isPicked]="true"
       (stageBanned)="handleStageBanned($event)"
       (stageUnbanned)="handleStageUnbanned($event)"
       (stagePicked)="handleStagePick($event)">
     </app-stage-card>
 </div>
+</div>
 
 <div class="stage-list__footer">
-  <button class="reset-bans-button" (click)="resetBanList()">Reset Picks and Bans</button>
+  <div class="stage-list__footer-text" *ngIf="!selectedStage && !isPicking">
+    Tap a stage to ban. You may ban up to three stages.
+  </div>
+  <div class="stage-list__footer-text" *ngIf="!selectedStage && !isBanning" >
+    Tap a stage to pick.
+  </div>
+  <button class="stage-list__footer-button" (click)="resetBanList()">Reset</button>
+  <button class="stage-list__footer-button" (click)="handleNoBans()">No Bans</button>
 </div>

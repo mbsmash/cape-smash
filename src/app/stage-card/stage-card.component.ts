@@ -19,7 +19,7 @@ export class StageCardComponent implements OnInit {
   @Output() stagePicked = new EventEmitter<Stage>();
 
   stageImageUrl: string = '';
-  isPicked: boolean = false;
+  @Input() isPicked: boolean = false;
 
   constructor(
     private router: Router,
