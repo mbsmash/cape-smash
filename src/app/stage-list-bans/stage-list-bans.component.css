@@ -25,6 +25,10 @@
   }
 }
 
+.top-half-container {
+  border: 1px solid green;
+}
+
 @media screen and (max-width: 768px) {
   .stage-list__container {
     display: flex;

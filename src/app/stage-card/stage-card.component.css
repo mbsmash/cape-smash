@@ -1,24 +1,37 @@
-.mat-card {
-  background-color: #f2f2f2;
-  padding: 10px;
-  text-align: center;
-  border-radius: 4px; /* Slightly increase the border-radius for rounded corners */
-  width: 37vw;
-  height: 6vh;
-  position: relative; /* Add relative positioning for pseudo-elements */
-  background-size: cover;
-  background-position: center;
-  color:#f2f2f2;
-  border: 1px solid #D3D3D3;
+/* Small format display styles */
+
+@media screen and (max-width: 1100px) {
+  
+  .mat-card {
+    background-color: #f2f2f2;
+    padding: 10px;
+    text-align: center;
+    border-radius: 4px; /* Slightly increase the border-radius for rounded corners */
+    width: 37vw;
+    height: 6vh;
+    position: relative; /* Add relative positioning for pseudo-elements */
+    background-size: cover;
+    background-position: center;
+    color:#f2f2f2;
+    border: 1px solid #D3D3D3;
+  }
+  
+  .mat-card-title{
+    margin: auto;
+    font-size: .75em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #000;
+  }
+
+  .picked {
+    height: 20vh;
+    width: 69vw;
+  }
+  
+  
 }
 
-.mat-card-title{
-  margin: auto;
-  font-size: .75em;
-  font-weight: bold;
-  color: #fff;
-  background-color: #000;
-}
 
 .small-italic-starter {
   font-size: 0.8em; /* adjust as needed */
@@ -31,7 +44,8 @@
 
 }
 
-@media screen and (min-width: 768px) {
+/* Large format display styles */
+@media screen and (min-width: 1101px) {
   .mat-card {
     background-color: #f2f2f2;
     padding: 10px;

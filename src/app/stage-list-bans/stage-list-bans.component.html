@@ -1,20 +1,23 @@
-<div class="stage-list__container">
-  Tap a stage to ban.
-  <div class="stage-list__header">
-    <button class="reset-bans-button" (click)="resetBanList()">Reset Bans</button>
+<div class="top-half-container">
+  <div class="stage-list__container">
+    Tap a stage to ban.
+    <div class="stage-list__header">
+      <button class="reset-bans-button" (click)="resetBanList()">Reset Bans</button>
+    </div>
+    <ng-container *ngFor="let stage of starterStages">
+      <app-stage-card
+        [stage]="stage"
+        (stageBanned)="handleStageBanned($event)"
+        (stageUnbanned)="handleStageUnbanned($event)"
+      >
+      </app-stage-card>
+    </ng-container>
   </div>
-  <ng-container *ngFor="let stage of starterStages">
-    <app-stage-card
-      [stage]="stage"
-      (stageBanned)="handleStageBanned($event)"
-      (stageUnbanned)="handleStageUnbanned($event)"
-    >
-    </app-stage-card>
-  </ng-container>
 </div>
 
 <mat-divider></mat-divider>
 
+<div class="bottom-half-container">
 <div class="stage-list__container">
   <ng-container *ngFor="let stage of counterpickStages">
     <app-stage-card
@@ -25,20 +28,4 @@
     </app-stage-card>
   </ng-container>
 </div>
-
-<div class="stage-list__footer">
-  <div>
-    <mat-card-title>
-      <p>Ruleset</p>
-    </mat-card-title>
-    <mat-card-content>
-      <p>3 Stocks</p>
-      <p>7 Minutes</p>
-      <p>3 Bans</p>
-      <p>Hazards Off</p>
-      <p>1-2-1 Strikes</p>
-      <p>Character First</p>
-      <p>No DSR</p>
-    </mat-card-content>
-  <div>
 </div>
