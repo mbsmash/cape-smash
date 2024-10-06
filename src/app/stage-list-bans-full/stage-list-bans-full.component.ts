@@ -19,11 +19,13 @@ export class StageListBansFullComponent implements OnInit {
   isBanning: boolean = true;
   isPicking: boolean = false;
   noBans: boolean = false;
+  timer: number = 10;
+  intervalId: any;
 
   constructor(
     private stageListService: StageListService,
     private cd: ChangeDetectorRef
-    ) { }
+  ) { }
 
   ngOnInit(): void {
     //get stages and filter them into starter and counterpick stages
@@ -34,9 +36,9 @@ export class StageListBansFullComponent implements OnInit {
   }
 
   handleStageBanned(stage: Stage) {
-    if(this.isBanning) {
+    if (this.isBanning) {
       this.bannedList.push(stage);
-      if(this.bannedList.length === 3) {
+      if (this.bannedList.length === 3) {
         this.enableStagePick();
       }
     }
@@ -58,7 +60,7 @@ export class StageListBansFullComponent implements OnInit {
   }
 
   enableStagePick() {
-    if(this.bannedList.length = 3 || this.noBans == true) {
+    if (this.bannedList.length = 3 || this.noBans == true) {
       console.log("Stage pick enabled");
       this.isBanning = false;
       this.isPicking = true;
@@ -67,10 +69,20 @@ export class StageListBansFullComponent implements OnInit {
 
   handleStagePick(stage: Stage) {
     this.selectedStage = stage;
+    this.startTimer();
   }
 
   handleNoBans() {
     this.enableStagePick();
   }
 
+  startTimer() {
+    this.intervalId = setInterval(() => {
+      this.timer--;
+      if (this.timer === 0) {
+        clearInterval(this.intervalId);
+        window.location.reload();
+      }
+    }, 1000);
+  }
 }

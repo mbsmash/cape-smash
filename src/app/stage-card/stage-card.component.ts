@@ -36,7 +36,17 @@ export class StageCardComponent implements OnInit {
   
   async getStageImage(): Promise<string> {
     const stage = this.stageListService.parseImagePath(this.stage.name);
-    return await this.firebaseStorageService.getImageUrl(`/stages/` + stage +  `.png`);
+    const localStorageKey = `stageImage-${stage}`;
+
+    const cachedImageUrl = localStorage.getItem(localStorageKey);
+    if(cachedImageUrl) {
+      return cachedImageUrl;
+    }
+
+    const imageUrl = await this.firebaseStorageService.getImageUrl(`/stages/` + stage +  `.png`);
+
+    localStorage.setItem(localStorageKey, imageUrl);
+    return imageUrl;
   }
 
 
