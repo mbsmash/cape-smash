@@ -41,6 +41,16 @@ export class MenuCardComponent implements OnInit {
 
   async getMenuCardBackgroundImage(): Promise<string> {
     const random = Math.floor(Math.random() * 10) + 1;
-    return await this.firebaseStorageService.getImageUrl(`/ui/menu-cards/tile${random}.jpg`);
+    const localStorageKey = `menuCardImage-${random}`;
+
+    const cachedImageUrl = localStorage.getItem(localStorageKey);
+    if (cachedImageUrl) {
+      return cachedImageUrl;
+    }
+
+    const imageUrl = await this.firebaseStorageService.getImageUrl(`/ui/menu-cards/tile${random}.jpg`);
+
+    localStorage.setItem(localStorageKey, imageUrl);
+    return imageUrl;
   }
 }
