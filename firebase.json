@@ -6,16 +6,9 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "redirects": [
-      {
-        "source": "/",
-        "destination": "https://semosmash.com",
-        "type": 301
-      }
-    ],
     "rewrites": [
       {
-        "source": "!/index.html",
+        "source": "**",
         "destination": "/index.html"
       }
     ],
