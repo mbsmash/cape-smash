@@ -5,7 +5,7 @@ import { StageListBansComponent } from './stage-list-bans/stage-list-bans.compon
 import { PowerRankingsComponent } from './power-rankings/power-rankings.component';
 import { CommunityComponent } from './community/community.component';
 import { PowerRankingsFormComponent } from './power-rankings-form/power-rankings-form.component';
-import { TournamentScheduleComponent } from './tournament-schedule/tournament-schedule.component';
+import { TournamentsComponent } from './tournaments/tournaments.component';
 import { StageListBansFullComponent } from './stage-list-bans-full/stage-list-bans-full.component';
 
 
@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: 'power-rankings', component: PowerRankingsComponent},
   { path: 'community', component: CommunityComponent},
   { path: 'power-rankings-form', component: PowerRankingsFormComponent},
-  { path: 'tournament-schedule', component: TournamentScheduleComponent},
+  { path: 'tournaments', component: TournamentsComponent},
   { path: 'stage-list-bans-full', component: StageListBansFullComponent},
 ];
 

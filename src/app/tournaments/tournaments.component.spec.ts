@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TournamentScheduleComponent } from './tournament-schedule.component';
+import { TournamentScheduleComponent } from './tournaments.component';
 
 describe('TournamentScheduleComponent', () => {
   let component: TournamentScheduleComponent;
