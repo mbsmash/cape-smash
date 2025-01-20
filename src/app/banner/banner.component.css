@@ -3,7 +3,7 @@
         display: flex;
         flex-direction: column;
         background-color: #f2f2f2;
-        margin: 8px auto;
+        margin: 8px auto 100px;
         padding: 10px;
         border-radius: 10px;
         /* Slightly increase the border-radius for rounded corners */
@@ -25,11 +25,12 @@
         margin-bottom: 0;
         background-color: red;
         color: #ffffff;
-        height: 35%;
+        height: 20%;
     }
 
     .banner-card__content {
         display: flex;
+        padding-top: 10px;
     }
 
     .banner-card__icon {
@@ -79,6 +80,7 @@
     .banner-card__content {
         display: flex;
         font-size: 0.75em;
+        padding-top: 10px;
     }
 
     .banner-card__icon {

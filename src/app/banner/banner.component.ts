@@ -11,7 +11,7 @@ export class BannerComponent implements OnInit {
   @Input() subject: string;
   @Input() info: string;
   @Input() link: string;
-  @Input() linkText: string = 'Learn More';
+  @Input() linkText: string = '';
   bannerIcon: string = '';
 
   constructor(private firebaseStorageService: FirebaseService) {

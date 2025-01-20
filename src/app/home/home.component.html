@@ -1,12 +1,10 @@
 <div class="page-container">
   <div class=banner-container>
 
-    <!-- <app-banner
-    [subject]="'Cape Smash Web Portal: Release v0.2'"
-    [info]="'See below for a full list of additions to the application.'"
-    [link]="'version-history'"
-    [linkText]="'View full application version history here!  '">
-  </app-banner> -->
+    <app-banner
+    [subject]="'semosmash.com - Official Release!'"
+    [info]="'Welcome to the new SEMO Smash web portal! This page will be kept up to date with quick links to all of our area tournaments and resources for our community. Take a look around by clicking the menu cards!'">
+  </app-banner>
 
   
     <!-- <app-banner
@@ -24,16 +22,26 @@
     [url]="'stage-list-bans-full'">
     </app-menu-card>
   </div>
-  <div class="menu-card">
+  <!-- Community component is dead lol -->
+  <!-- <div class="menu-card">
     <app-menu-card [headerText]="'Community'"
     [infoText]="'Tournaments, Discord, videos and more!'"
     [url]="'community'">
     </app-menu-card>
-  </div>
+  </div> -->
   <!-- TODO: change this back to a clickable card when Power Rankings component is complete.-->
-  <div class="menu-card">
+  <!-- <div class="menu-card">
     <app-menu-card [headerText]="'Power Rankings'"
     [infoText]="'Coming Soon!'">
     </app-menu-card>
-  </div>
+  </div> -->
+  <app-menu-card [headerText]="'SEMO Tournaments'" [infoText]="'View a list of our regular events with quick links!'"
+  [url]="'tournaments'">
+</app-menu-card>
+<app-menu-card [headerText]="'Join our Discord'" [infoText]="'Click the card for an invite to our server!'"
+  [url]="'https://discord.gg/ye9zJAxda9'">
+</app-menu-card>
+<app-menu-card [headerText]="'YouTube'" [infoText]="'Tournament VODs and streams'"
+  [url]="'https://www.youtube.com/@MBsmash'">
+</app-menu-card>
 </div>
