@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Fighter } from 'src/models/fighter';
-import { FighterService } from '../services/fighter.service';
-import { Player } from 'src/models/player';
-import { PlayerService } from '../services/player.service';
+import { PlayerRecord, PowerRankingService } from '../services/power-ranking.service';
 
 @Component({
   selector: 'app-power-rankings',
@@ -11,19 +8,12 @@ import { PlayerService } from '../services/player.service';
 })
 export class PowerRankingsComponent implements OnInit {
 
-  samplePlayers: number[] = [];
+  records: PlayerRecord[] = [];
 
-  constructor(
-    private fighterService: FighterService,
-    private playerService: PlayerService
-  ) {
-   }
+  constructor(private prService: PowerRankingService) {}
 
   ngOnInit(): void {
+    // Example event ids array; in a real app these would be provided by user input
+    this.prService.computeSeason([]).then(r => this.records = r);
   }
-
-  buildPlayer(playerId: number): Player {
-    return this.playerService.players[playerId];
-  }
-
 }
