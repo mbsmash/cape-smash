@@ -3,7 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  // Token used for authenticating requests to start.gg GraphQL API
+  // Replace with your personal access token in a local environment file
+  startggApiToken: ''
 };
 
 /*
