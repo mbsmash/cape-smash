@@ -7,6 +7,7 @@ import { CommunityComponent } from './community/community.component';
 import { PowerRankingsFormComponent } from './power-rankings-form/power-rankings-form.component';
 import { TournamentsComponent } from './tournaments/tournaments.component';
 import { StageListBansFullComponent } from './stage-list-bans-full/stage-list-bans-full.component';
+import { PlayerProfileComponent } from './player-profile/player-profile.component';
 
 
 const routes: Routes = [
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'power-rankings-form', component: PowerRankingsFormComponent},
   { path: 'tournaments', component: TournamentsComponent},
   { path: 'stage-list-bans-full', component: StageListBansFullComponent},
+  { path: 'player/:id', component: PlayerProfileComponent},
 ];
 
 @NgModule({

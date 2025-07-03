@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,6 +22,7 @@ import { BannerComponent } from './banner/banner.component';
 import { TournamentsComponent } from './tournaments/tournaments.component'; // Import MatFormFieldModule
 import { MatDividerModule } from '@angular/material/divider'; // Import MatDividerModule
 import { StageListBansFullComponent } from './stage-list-bans-full/stage-list-bans-full.component';
+import { PlayerProfileComponent } from './player-profile/player-profile.component';
 
 
 @NgModule({
@@ -38,12 +40,14 @@ import { StageListBansFullComponent } from './stage-list-bans-full/stage-list-ba
     CopyrightComponent,
     BannerComponent,
     TournamentsComponent,
-    StageListBansFullComponent
+    StageListBansFullComponent,
+    PlayerProfileComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    FormsModule,
     MatCardModule,
     HttpClientModule,
     MatFormFieldModule,

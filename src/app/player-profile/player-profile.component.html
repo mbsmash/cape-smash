@@ -1,0 +1,86 @@
+<div class="player-profile" *ngIf="player">
+  <div class="profile-header">
+    <button (click)="goBack()" class="back-button">← Back to Rankings</button>
+    <h1>{{ player.tag }}</h1>
+    <div class="rank-badge" *ngIf="currentRank > 0">
+      Rank #{{ currentRank }}
+    </div>
+  </div>
+
+  <div class="profile-content">
+    <!-- Overall Statistics -->
+    <section class="stats-section">
+      <h2>Overall Statistics</h2>
+      <div class="stats-grid">
+        <div class="stat-card points-card">
+          <div class="stat-value">{{ getDisplayPoints() }}</div>
+          <div class="stat-label">Points</div>
+          <div class="stat-detail">TrueSkill: {{ getTrueSkillDisplay() }} (μ={{ getTrueSkillMu() }}, σ={{ getTrueSkillSigma() }})</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">{{ player.wins }}</div>
+          <div class="stat-label">Wins</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">{{ player.losses }}</div>
+          <div class="stat-label">Losses</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">{{ winRate.toFixed(1) }}%</div>
+          <div class="stat-label">Win Rate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">{{ player.appearances }}</div>
+          <div class="stat-label">Tournaments</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Head-to-Head Records -->
+    <section class="h2h-section" *ngIf="headToHeadRecords.length > 0">
+      <h2>Head-to-Head Records</h2>
+      <div class="h2h-table-container">
+        <table class="h2h-table">
+          <thead>
+            <tr>
+              <th>Opponent</th>
+              <th>Wins</th>
+              <th>Losses</th>
+              <th>Win Rate</th>
+              <th>Record</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let record of headToHeadRecords" [class.positive-record]="record.wins > record.losses" [class.negative-record]="record.wins < record.losses">
+              <td class="opponent-name">{{ record.player.tag }}</td>
+              <td class="wins">{{ record.wins }}</td>
+              <td class="losses">{{ record.losses }}</td>
+              <td class="win-rate">{{ getHeadToHeadWinRate(record).toFixed(1) }}%</td>
+              <td class="record">{{ record.wins }}-{{ record.losses }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Placeholder for future features -->
+    <section class="future-section">
+      <h2>Additional Stats</h2>
+      <div class="coming-soon">
+        <p>🚧 Coming Soon:</p>
+        <ul>
+          <li>Main Characters</li>
+          <li>Player Rating</li>
+          <li>Recent Match History</li>
+          <li>Tournament Performance</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="player-not-found" *ngIf="!player">
+  <h2>Player Not Found</h2>
+  <p>The requested player could not be found.</p>
+  <button (click)="goBack()" class="back-button">← Back to Rankings</button>
+</div>

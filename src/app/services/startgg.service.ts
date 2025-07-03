@@ -14,6 +14,9 @@ export class StartggService {
   constructor(private http: HttpClient) {}
 
   private get headers(): HttpHeaders {
+    if (!environment.startggApiToken) {
+      throw new Error('start.gg API token is not configured. Please add your token to the environment file.');
+    }
     return new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${environment.startggApiToken}`
@@ -27,8 +30,15 @@ export class StartggService {
     );
   }
 
+  getTournamentEvents(slug: string): Observable<number[]> {
+    const query = `query TournamentEvents($slug: String!) {\n  tournament(slug: $slug) {\n    events {\n      id\n      name\n    }\n  }\n}`;
+    return this.post(query, { slug }).pipe(
+      map(res => res.data.tournament.events.map((e: any) => Number(e.id)))
+    );
+  }
+
   getPlayers(eventId: number): Observable<GgPlayer[]> {
-    const query = `query EventPlayers($eventId: ID!) {\n  event(id: $eventId) {\n    entrants(query: {page: 1, perPage: 50}) {\n      nodes {\n        id\n        participants {\n          gamerTag\n        }\n      }\n    }\n  }\n}`;
+    const query = `query EventPlayers($eventId: ID!) {\n  event(id: $eventId) {\n    entrants(query: {page: 1, perPage: 50}) {\n      nodes {\n        id\n        participants {\n          gamerTag\n          user {\n            id\n          }\n        }\n      }\n    }\n  }\n}`;
     return this.post(query, { eventId }).pipe(
       map(res => this.mapPlayers(res))
     );
@@ -50,7 +60,11 @@ export class StartggService {
   // exposed for unit testing
   mapPlayers(response: any): GgPlayer[] {
     const nodes = response.data.event.entrants.nodes as any[];
-    return nodes.map(n => ({ id: Number(n.id), tag: n.participants[0].gamerTag }));
+    return nodes.map(n => ({ 
+      id: Number(n.id), 
+      tag: n.participants[0].gamerTag,
+      userId: n.participants[0].user?.id ? Number(n.participants[0].user.id) : undefined
+    }));
   }
 
   // exposed for unit testing

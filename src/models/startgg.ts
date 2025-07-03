@@ -7,6 +7,7 @@ export interface GgTournament {
 export interface GgPlayer {
   id: number;
   tag: string;
+  userId?: number; // start.gg user ID for player identification
 }
 
 export interface GgSet {

@@ -1,19 +1,98 @@
 <div class="power-rankings__header">
     <h2>Power Rankings</h2>
+    <div class="filter-controls">
+        <label class="filter-toggle">
+            <input 
+                type="checkbox" 
+                [(ngModel)]="showAllPlayers" 
+                (change)="togglePlayerFilter()"
+            />
+            Show all players (including 1 tournament attendees)
+        </label>
+        <div *ngIf="hasStoredData && records.length > 0" class="data-status">
+            <small>✓ Data automatically saved</small>
+        </div>
+    </div>
 </div>
-<table>
-  <tr>
-    <th>Rank</th>
-    <th>Player</th>
-    <th>Wins</th>
-    <th>Losses</th>
-    <th>Appearances</th>
-  </tr>
-  <tr *ngFor="let r of records; index as i">
-    <td>{{ i + 1 }}</td>
-    <td>{{ r.tag }}</td>
-    <td>{{ r.wins }}</td>
-    <td>{{ r.losses }}</td>
-    <td>{{ r.appearances }}</td>
-  </tr>
+
+<div class="import-section">
+    <h3>Import Tournament from start.gg</h3>
+    <div class="import-form">
+        <input 
+            type="text" 
+            [(ngModel)]="tournamentSlug" 
+            placeholder="Enter tournament slug (e.g., 'super-smash-con-2024')"
+            [disabled]="isImporting"
+        />
+        <button 
+            (click)="importTournament()" 
+            [disabled]="isImporting || !tournamentSlug.trim()"
+        >
+            {{ isImporting ? 'Importing...' : 'Import Tournament' }}
+        </button>
+        <button 
+            (click)="clearRankings()" 
+            [disabled]="isImporting"
+            class="clear-button"
+        >
+            Clear Rankings
+        </button>
+        <button 
+            (click)="loadTestData()" 
+            [disabled]="isImporting"
+            class="test-button"
+        >
+            Load Test Data
+        </button>
+        <button 
+            (click)="recalculateTrueSkill()" 
+            [disabled]="isImporting || records.length === 0"
+            class="recalculate-button"
+        >
+            Recalculate TrueSkill
+        </button>
+        <button 
+            (click)="resetSeason()" 
+            [disabled]="isImporting || records.length === 0"
+            class="reset-button"
+        >
+            Reset Season
+        </button>
+    </div>
+</div>
+
+<div *ngIf="records.length === 0" class="empty-state">
+    <p>No rankings data available. Import a tournament or load test data to get started.</p>
+    <small *ngIf="!hasStoredData">Your data will be automatically saved and persist between sessions.</small>
+</div>
+
+<table *ngIf="records.length > 0">
+  <caption *ngIf="!showAllPlayers && totalPlayers > filteredPlayers" class="table-caption">
+    Showing {{ filteredPlayers }} of {{ totalPlayers }} players (2+ tournament appearances only)
+  </caption>
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Player</th>
+      <th>Points</th>
+      <th>Wins</th>
+      <th>Losses</th>
+      <th>Win Rate</th>
+      <th>Appearances</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let r of records; index as i">
+      <td>{{ i + 1 }}</td>
+      <td class="player-name"><a [routerLink]="['/player', r.id]">{{ r.tag }}</a></td>
+      <td class="points-display">
+        <span class="points-value">{{ getDisplayPoints(r) }}</span>
+        <small class="points-detail">(TrueSkill: {{ getTrueSkillDisplay(r) }})</small>
+      </td>
+      <td>{{ r.wins }}</td>
+      <td>{{ r.losses }}</td>
+      <td>{{ getWinRate(r) }}%</td>
+      <td>{{ r.appearances }}</td>
+    </tr>
+  </tbody>
 </table>
