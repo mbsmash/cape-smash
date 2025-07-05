@@ -13,6 +13,7 @@ export class MenuCardComponent implements OnInit {
   @Input() headerText: string;
   @Input() infoText: string;
   @Input() url: string;
+  @Input() isRip: boolean = false; // For special "RIP" styling
   backgroundImage: string;
   @Output() menuCardClicked: EventEmitter<any> = new EventEmitter<any>();
   constructor(
@@ -32,6 +33,11 @@ export class MenuCardComponent implements OnInit {
   }
 
   onClick(): void {
+    // Don't navigate if this is a RIP card
+    if (this.isRip) {
+      return;
+    }
+    
     if (this.url.startsWith('http')) {
       window.open(this.url, '_blank');
     } else {

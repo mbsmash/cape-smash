@@ -1,90 +1,149 @@
 /* Small format display styles */
-
 @media screen and (max-width: 1100px) {
-  
   .mat-card {
     background-color: #f2f2f2;
     padding: 10px;
     text-align: center;
-    border-radius: 4px; /* Slightly increase the border-radius for rounded corners */
+    border-radius: 12px;
     width: 37vw;
     height: 6vh;
-    position: relative; /* Add relative positioning for pseudo-elements */
+    position: relative;
     background-size: cover;
     background-position: center;
-    color:#f2f2f2;
-    border: 1px solid #D3D3D3;
+    color: #f2f2f2;
+    border: 2px solid rgba(255,255,255,0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   }
   
-  .mat-card-title{
+  .mat-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.6);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  }
+  
+  .mat-card-title {
     margin: auto;
     font-size: .75em;
     font-weight: bold;
     color: #fff;
-    background-color: #000;
+    background-color: rgba(0,0,0,0.8);
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
   }
 
   .picked {
     height: 20vh;
     width: 69vw;
+    border-color: #4f46e5;
+    box-shadow: 0 0 20px rgba(79, 70, 229, 0.6);
   }
-  
-  
-}
-
-
-.small-italic-starter {
-  font-size: 0.8em; /* adjust as needed */
-  font-style: italic;
-}
-
-.small-italic-counterpick {
-  font-size: 0.8em; /* adjust as needed */
-  font-style: italic;
-
 }
 
 /* Large format display styles */
 @media screen and (min-width: 1101px) {
   .mat-card {
     background-color: #f2f2f2;
-    padding: 10px;
-    border-radius: 5px;
-    width: 25vw;
-    min-height: 20vh;
+    padding: 12px;
+    border-radius: 12px;
+    width: 24vw;
+    min-height: 14vh;
     text-align: center;
     background-size: cover;
     background-position: center;
-    img {
-      width: 90%;
-      height: 90%;
-    }
+    border: 2px solid rgba(255,255,255,0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
   }
-  .mat-card-title{
-    font-size: 1em;
+
+  .mat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%);
+    pointer-events: none;
+  }
+  
+  .mat-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.6);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  }
+  
+  .mat-card-title {
+    font-size: 0.95em;
     font-weight: bold;
     color: #fff;
-    background-color: #000;
+    background-color: rgba(0,0,0,0.8);
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    position: relative;
+    z-index: 1;
   }
 
   .banned-text {
-    font-size: 2em;
+    font-size: 1.8em;
     font-weight: bold;
-    margin-top: 24px !important;
+    margin-top: 16px !important;
+    color: #ff4444;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    position: relative;
+    z-index: 1;
   }
 
   .picked {
-    height: 55vh;
-    width: 69vw;
+    height: 50vh;
+    width: 60vw;
+    border-color: #4f46e5;
+    box-shadow: 0 0 25px rgba(79, 70, 229, 0.8);
   }
 }
 
 
 
+.small-italic-starter {
+  font-size: 0.8em;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.small-italic-counterpick {
+  font-size: 0.8em;
+  font-style: italic;
+  opacity: 0.9;
+}
+
 .banned-image {
-  filter: grayscale(100%);
+  filter: grayscale(100%) brightness(0.5);
+  border-color: #ff4444 !important;
+}
+
+.banned-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 68, 68, 0.2);
+  pointer-events: none;
 }
 
 .unbanned {
   filter: none;
+}
+
+/* Add visual feedback for interactive states */
+.mat-card:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
 }

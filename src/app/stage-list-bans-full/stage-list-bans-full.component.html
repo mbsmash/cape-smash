@@ -1,5 +1,22 @@
-<div *ngIf="!selectedStage" class="stage-list__container">
-    <div *ngFor="let stage of starterStages">
+<div *ngIf="!selectedStage" class="main-content">
+  <div class="stage-section-header">Starter Stages</div>
+  <div class="stage-list__container">
+      <div *ngFor="let stage of starterStages">
+        <app-stage-card
+          [stage]="stage"
+          [isPicking]="isPicking"
+          (stageBanned)="handleStageBanned($event)"
+          (stageUnbanned)="handleStageUnbanned($event)"
+          (stagePicked)="handleStagePick($event)">
+        </app-stage-card>
+      </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="stage-section-header">Counterpick Stages</div>
+  <div class="stage-list__container">
+    <div *ngFor="let stage of counterpickStages">
       <app-stage-card
         [stage]="stage"
         [isPicking]="isPicking"
@@ -8,19 +25,6 @@
         (stagePicked)="handleStagePick($event)">
       </app-stage-card>
     </div>
-</div>
-
-<mat-divider *ngIf="!selectedStage"></mat-divider>
-
-<div *ngIf="!selectedStage" class="stage-list__container">
-  <div *ngFor="let stage of counterpickStages">
-    <app-stage-card
-      [stage]="stage"
-      [isPicking]="isPicking"
-      (stageBanned)="handleStageBanned($event)"
-      (stageUnbanned)="handleStageUnbanned($event)"
-      (stagePicked)="handleStagePick($event)">
-    </app-stage-card>
   </div>
 </div>
 

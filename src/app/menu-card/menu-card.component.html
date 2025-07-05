@@ -1,8 +1,13 @@
 <div class="menu-card" (click)="onClick()">
-  <mat-card [style.backgroundImage]="'url(' + backgroundImage + ')'">
+  <mat-card [style.backgroundImage]="'url(' + backgroundImage + ')'" [class.rip-theme]="isRip">
     <mat-card-content>
-      <p class="menu-card__header">{{headerText}}</p>
-      <p class="menu-card__info">{{infoText}}</p>
+      <p class="menu-card__header" [class.rip-header]="isRip">{{headerText}}</p>
+      <p class="menu-card__info" [class.rip-info]="isRip">{{infoText}}</p>
+      <div *ngIf="isRip" class="rip-overlay">
+        <div class="rip-text">RIP</div>
+        <div class="rip-years">2024-2025</div>
+        <div class="rip-message">💀 Gone but not forgotten 💀</div>
+      </div>
     </mat-card-content>
   </mat-card>
 </div>

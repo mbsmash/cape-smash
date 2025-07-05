@@ -43,3 +43,83 @@
   margin-top: 0;
   color: #f2f2f2;
 }
+
+/* RIP Theme Styles */
+.rip-theme {
+  filter: grayscale(100%) contrast(1.2);
+  border: 3px solid #000;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+  background-color: #1a1a1a !important;
+  cursor: not-allowed;
+}
+
+.rip-theme:hover {
+  filter: grayscale(100%) contrast(1.4) brightness(0.8);
+  transform: scale(0.98);
+  transition: all 0.3s ease;
+}
+
+.rip-header {
+  color: #e0e0e0 !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  text-decoration: line-through;
+}
+
+.rip-info {
+  color: #c0c0c0 !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  opacity: 0.8;
+}
+
+.rip-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 15px;
+  border-radius: 10px;
+  border: 2px solid #333;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+}
+
+.rip-text {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
+  margin-bottom: 5px;
+  letter-spacing: 2px;
+}
+
+.rip-years {
+  font-size: 1.2em;
+  color: #ccc;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+.rip-message {
+  font-size: 0.9em;
+  color: #aaa;
+  margin-top: 5px;
+}
+
+@media screen and (max-width: 768px) {
+  .rip-overlay {
+    padding: 10px;
+  }
+  
+  .rip-text {
+    font-size: 1.8em;
+  }
+  
+  .rip-years {
+    font-size: 1em;
+  }
+  
+  .rip-message {
+    font-size: 0.8em;
+  }
+}
