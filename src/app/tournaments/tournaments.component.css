@@ -6,9 +6,21 @@
       gap: 8px;
       margin-top: 16px;
     }
-  }
-  
-  @media screen and (min-width: 768px) {
+
+    .results-section {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .results-card {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      padding: 16px;
+      background-color: #f9f9f9;
+    }
+}
+
+@media screen and (min-width: 768px) {
     .menu-cards-container {
       margin: 8% 16px;
       display: grid;
@@ -16,5 +28,17 @@
       gap: 16px;
       align-content: center;
       height: 50vh;
+    }
+
+    .results-section {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .results-card {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      padding: 24px;
+      background-color: #f9f9f9;
     }
 }
