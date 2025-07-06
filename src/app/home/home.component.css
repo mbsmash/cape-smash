@@ -1,27 +1,17 @@
-@media screen and (max-width: 768px) {
-  .menu-cards-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    margin-top: 16px;
-  }
+.page-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-@media screen and (min-width: 768px) {
-  .menu-cards-container {
-    margin: 0 16px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    align-content: center;
-    height: 50vh;
-  }
+.banner-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
 
-  .banner-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-  }
+.menu-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
 }
