@@ -1,4 +1,42 @@
 <div *ngIf="!selectedStage" class="main-content">
+  <!-- Move the footer information to the top -->
+  <div class="stage-list__header">
+    <div class="stage-list__header-banner">
+      <div class="stage-list__mode-section" *ngIf="!selectedStage && isBanning">
+        <!-- Top banner message -->
+        <div class="ban-phase-message ban-phase-message--primary">
+          BAN PHASE: You may ban up to three stages you don't wish to play on.
+        </div>
+        
+        <!-- Bottom banner with ban counter -->
+        <div class="ban-counter">
+          <div class="ban-counter-label">Bans Used:</div>
+          <div class="ban-bullets">
+            <div class="ban-bullet" 
+                 [class.filled]="i < bannedList.length" 
+                 *ngFor="let bullet of [1,2,3]; let i = index">
+            </div>
+          </div>
+          <div class="ban-counter-count">{{bannedList.length}}/3</div>
+        </div>
+      </div>
+      
+      <div class="stage-list__mode-section" *ngIf="!selectedStage && isPicking">
+        <div class="mode-badge picking-mode">
+          <span class="mode-icon">🎯</span>
+          <span class="mode-text">PICKING PHASE</span>
+        </div>
+        <div class="stage-list__header-text">
+          Tap a stage to pick for the match.
+        </div>
+      </div>
+    </div>
+    <div class="stage-list__header-button-container">
+      <button class="stage-list__header-button" (click)="resetBanList()">Reset</button>
+      <button *ngIf="isBanning" class="stage-list__header-button" (click)="handleNoBans()">No Bans</button>
+    </div>
+  </div>
+
   <div class="stage-section-header">Starter Stages</div>
   <div class="stage-list__container">
       <div *ngFor="let stage of starterStages">
@@ -15,6 +53,9 @@
   <mat-divider></mat-divider>
 
   <div class="stage-section-header">Counterpick Stages</div>
+  <div class="counterpick-info">
+    Counterpick stages may not be selected for game 1 unless agreed upon by both players.
+  </div>
   <div class="stage-list__container">
     <div *ngFor="let stage of counterpickStages">
       <app-stage-card
@@ -43,20 +84,5 @@
     <div class="timer">
       Page will refresh in {{timer}} seconds.
     </div>
-</div>
-</div>
-
-<div class="stage-list__footer">
-  <div class="stage-list_footer-banner">
-    <div class="stage-list__footer-text" *ngIf="!selectedStage && !isPicking">
-      Tap a stage to ban. You may ban up to three stages.
-    </div>
-    <div class="stage-list__footer-text" *ngIf="!selectedStage && !isBanning" >
-      Tap a stage to pick.
-    </div>
-  </div>
-  <div class="stage-list__footer-button-container">
-    <button class="stage-list__footer-button" (click)="resetBanList()">Reset</button>
-    <button *ngIf="isBanning" class="stage-list__footer-button" (click)="handleNoBans()">No Bans</button>
   </div>
 </div>

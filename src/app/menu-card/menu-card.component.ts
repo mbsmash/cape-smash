@@ -14,6 +14,7 @@ export class MenuCardComponent implements OnInit {
   @Input() infoText: string;
   @Input() url: string;
   @Input() isRip: boolean = false; // For special "RIP" styling
+  @Input() sidebarStyle: boolean = false; // For sidebar styling
   backgroundImage: string;
   @Output() menuCardClicked: EventEmitter<any> = new EventEmitter<any>();
   constructor(

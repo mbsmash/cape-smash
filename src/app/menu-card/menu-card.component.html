@@ -1,5 +1,5 @@
-<div class="menu-card" (click)="onClick()">
-  <mat-card [style.backgroundImage]="'url(' + backgroundImage + ')'" [class.rip-theme]="isRip">
+<div class="menu-card" (click)="onClick()" [class.sidebar-style]="sidebarStyle">
+  <mat-card *ngIf="!sidebarStyle" [style.backgroundImage]="'url(' + backgroundImage + ')'" [class.rip-theme]="isRip">
     <mat-card-content>
       <p class="menu-card__header" [class.rip-header]="isRip">{{headerText}}</p>
       <p class="menu-card__info" [class.rip-info]="isRip">{{infoText}}</p>
@@ -10,4 +10,11 @@
       </div>
     </mat-card-content>
   </mat-card>
+  
+  <!-- Sidebar style -->
+  <div *ngIf="sidebarStyle" class="sidebar-menu-item" [style.backgroundImage]="'url(' + backgroundImage + ')'">
+    <div class="sidebar-content-overlay">
+      <span class="sidebar-menu-text">{{headerText}}</span>
+    </div>
+  </div>
 </div>

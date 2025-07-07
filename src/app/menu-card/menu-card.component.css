@@ -123,3 +123,56 @@
     font-size: 0.8em;
   }
 }
+
+/* Sidebar Style */
+.sidebar-style {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.sidebar-menu-item {
+  background-color: #4a4a4a;
+  color: #ffffff;
+  padding: 0;
+  margin-bottom: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  font-weight: 400;
+  border: none;
+  display: flex;
+  align-items: center;
+  height: 90px;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+.sidebar-menu-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-content-overlay {
+  background: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  transition: background 0.3s ease;
+}
+
+.sidebar-menu-item:hover .sidebar-content-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.sidebar-menu-text {
+  color: #ffffff;
+  text-decoration: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 500;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}

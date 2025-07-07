@@ -11,3 +11,72 @@
     
   }
 }
+
+/* App-wide layout with sidebar */
+@media screen and (max-width: 768px) {
+  .app-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .sidebar-container {
+    width: 100%;
+    background-color: #333333;
+    border-radius: 0;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 0 16px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .app-container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .sidebar-container {
+    width: 300px;
+    background-color: #333333;
+    border-radius: 0;
+    overflow: hidden;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 100;
+    padding-top: 20px;
+  }
+  
+  .main-content {
+    flex: 1;
+    margin-left: 300px;
+    padding: 20px;
+    min-height: 100vh;
+  }
+}
+
+/* Sidebar Groups */
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sidebar-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-main {
+  flex-grow: 1;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding-top: 20px;
+}

@@ -1,3 +1,72 @@
-<app-nav></app-nav>
-<router-outlet></router-outlet>
+<div class="app-container">
+  <!-- Sidebar -->
+  <div class="sidebar-container">
+    <!-- Main navigation group -->
+    <div class="sidebar-group sidebar-main">
+      <app-menu-card 
+        [headerText]="'Home'"
+        [infoText]="''"
+        [url]="'/'"
+        [sidebarStyle]="true">
+      </app-menu-card>
+      
+      <app-menu-card 
+        [headerText]="'Stage List and Bans Tool'"
+        [infoText]="'All SEMO Smash events use the same stage list.'"
+        [url]="'stage-list-bans-full'"
+        [sidebarStyle]="true">
+      </app-menu-card>
+      
+      <app-menu-card 
+        [headerText]="'SEMO Tournaments'" 
+        [infoText]="'View a list of our regular events with quick links!'"
+        [url]="'tournaments'"
+        [sidebarStyle]="true">
+      </app-menu-card>
+      
+      <app-menu-card 
+        [headerText]="'Join our Discord'" 
+        [infoText]="'Click the card for an invite to our server!'"
+        [url]="'https://discord.gg/ye9zJAxda9'"
+        [sidebarStyle]="true">
+      </app-menu-card>
+      
+      <app-menu-card 
+        [headerText]="'Find us on Facebook'" 
+        [infoText]="'Click to join our Facebook group!'"
+        [url]="'https://www.facebook.com/groups/1038435794713688'"
+        [sidebarStyle]="true">
+      </app-menu-card>
+      
+      <app-menu-card 
+        [headerText]="'YouTube'" 
+        [infoText]="'Tournament VODs and streams'"
+        [url]="'https://www.youtube.com/@MBsmash'"
+        [sidebarStyle]="true">
+      </app-menu-card>
+    </div>
+
+    <!-- Bottom group for contact and source code -->
+    <div class="sidebar-group sidebar-bottom">
+      <app-menu-card 
+        [headerText]="'Contact'" 
+        [infoText]="''"
+        [url]="'mailto:mbsmashacct@gmail.com'"
+        [sidebarStyle]="true">
+      </app-menu-card>
+      
+      <app-menu-card 
+        [headerText]="'Source Code'" 
+        [infoText]="''"
+        [url]="'https://github.com/mbsmash/cape-smash'"
+        [sidebarStyle]="true">
+      </app-menu-card>
+    </div>
+  </div>
+
+  <!-- Main content area -->
+  <div class="main-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>
 <app-copyright></app-copyright>
