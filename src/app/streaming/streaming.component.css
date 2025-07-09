@@ -1,13 +1,13 @@
-/* Community layout with secondary sidebar */
-.community-layout {
+/* Streaming layout with secondary sidebar */
+.streaming-layout {
   display: flex;
   height: 100vh;
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   color: #fff;
 }
 
-/* Secondary sidebar for community/social cards */
-.community-sidebar {
+/* Secondary sidebar for streaming content */
+.streaming-sidebar {
   width: 480px; /* Back to original wider width */
   border-right: 2px solid rgba(255, 255, 255, 0.05);
   display: flex;
@@ -22,14 +22,14 @@
               inset 0 0 40px rgba(0, 0, 0, 0.3);
 }
 
-.community-sidebar-header {
+.streaming-sidebar-header {
   padding: 24px 20px 16px 0px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   background: linear-gradient(145deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-.community-sidebar-header h2 {
+.streaming-sidebar-header h2 {
   margin: 0;
   font-size: 1.8em;
   font-weight: 300;
@@ -39,67 +39,20 @@
   letter-spacing: 1px;
 }
 
-.streaming-header {
-  padding: 24px 20px 16px 0px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(145deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%);
-  margin-top: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-.streaming-header h2 {
-  margin: 0;
-  font-size: 1.6em;
-  font-weight: 300;
-  color: #fff;
-  text-align: center;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  letter-spacing: 1px;
-}
-
-.player-socials-header {
-  padding: 24px 20px 16px 0px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(145deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%);
-  margin-top: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-.player-socials-header h2 {
-  margin: 0;
-  font-size: 1.6em;
-  font-weight: 300;
-  color: #fff;
-  text-align: center;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  letter-spacing: 1px;
-}
-
-.community-cards-container {
+.streaming-cards-container {
   display: flex;
   flex-direction: column;
   padding: 0;
   margin: 0;
 }
 
-.community-cards-container app-menu-card {
-  margin: 0;
-  border-radius: 0;
-}
-
-.streaming-container app-menu-card {
-  height: calc((100vh - 80px) / 5);
-  margin: 0;
-  border-radius: 0;
-}
-
-.player-socials-container app-menu-card {
+.streaming-cards-container app-menu-card {
   margin: 0;
   border-radius: 0;
 }
 
 /* Main content area */
-.community-main-content {
+.streaming-main-content {
   flex: 1;
   margin-left: 480px; /* Account for secondary sidebar width */
   padding: 40px;
@@ -110,13 +63,13 @@
   min-height: 100vh;
 }
 
-.community-section {
+.streaming-section {
   max-width: 800px;
   width: 100%;
   text-align: center;
 }
 
-.community-section h2 {
+.streaming-section h2 {
   font-size: 3em;
   font-weight: 300;
   margin-bottom: 30px;
@@ -125,7 +78,7 @@
   letter-spacing: 2px;
 }
 
-.community-info-card {
+.streaming-info-card {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
   padding: 30px;
   border-radius: 15px;
@@ -134,7 +87,7 @@
   backdrop-filter: blur(10px);
 }
 
-.community-info-card p {
+.streaming-info-card p {
   font-size: 1.2em;
   line-height: 1.6;
   color: #e0e0e0;
@@ -143,30 +96,30 @@
 
 /* Laptop/tablet responsive adjustments */
 @media screen and (max-width: 1600px) and (min-width: 1201px) {
-  .community-sidebar {
+  .streaming-sidebar {
     width: 400px; /* Match tournaments sidebar responsive width */
   }
 }
 
 @media screen and (max-width: 1400px) and (min-width: 1001px) {
-  .community-sidebar {
+  .streaming-sidebar {
     width: 320px; /* Match tournaments sidebar responsive width */
   }
 }
 
 @media screen and (max-width: 1200px) and (min-width: 769px) {
-  .community-sidebar {
+  .streaming-sidebar {
     width: 250px; /* Match tournaments sidebar responsive width */
   }
 }
 
 /* Mobile responsiveness */
 @media screen and (max-width: 768px) {
-  .community-layout {
+  .streaming-layout {
     flex-direction: column;
   }
   
-  .community-sidebar {
+  .streaming-sidebar {
     width: 100%;
     position: relative;
     left: 0;
@@ -174,20 +127,20 @@
     margin-bottom: 20px;
   }
   
-  .community-main-content {
+  .streaming-main-content {
     margin-left: 0;
     padding: 20px;
   }
   
-  .community-section h2 {
+  .streaming-section h2 {
     font-size: 2em;
   }
   
-  .community-info-card {
+  .streaming-info-card {
     padding: 20px;
   }
   
-  .community-info-card p {
+  .streaming-info-card p {
     font-size: 1em;
   }
 }

@@ -57,9 +57,61 @@ export class PowerRankingsComponent implements OnInit {
     this.refreshRecords();
   }
 
-  loadTestData(): void {
-    this.prService.insertTestRecords();
-    this.refreshRecords();
+  /**
+   * Load sample tournament data from two real start.gg tournaments:
+   * - Kachow Kup
+   * - Heartland Arena (Heartland Gaming Con)
+   */
+  async loadTestData(): Promise<void> {
+    this.isImporting = true;
+    try {
+      console.log('=== Starting sample data import ===');
+      
+      // Import first tournament
+      console.log('1. Importing Kachow Kup tournament...');
+      await this.prService.importTournament('kachow-kup');
+      console.log('✓ Kachow Kup import completed');
+      console.log('Current tournament history length:', this.prService.getTournamentHistory().length);
+      
+      // Import second tournament with detailed error handling
+      console.log('2. Importing Heartland Arena tournament...');
+      try {
+        await this.prService.importTournament('heartland-arena-heartland-gaming-con');
+        console.log('✓ Heartland Arena import completed');
+      } catch (error) {
+        console.error('Detailed error for Heartland Arena:', error);
+        if (error instanceof Error) {
+          console.error('Error message:', error.message);
+          console.error('Error stack:', error.stack);
+        }
+        // Continue anyway - we still have Kachow Kup data
+        console.log('Continuing with Kachow Kup data only...');
+      }
+      
+      console.log('Final tournament history length:', this.prService.getTournamentHistory().length);
+      
+      // Log tournament results for debugging
+      const tournamentResults = this.prService.getRecentTournamentResults(100);
+      console.log('Tournament results found:', tournamentResults.length);
+      tournamentResults.forEach(result => {
+        console.log(`- Tournament: ${result.tournamentName}, Date: ${result.date}, Rounds: ${result.roundGroups.length}`);
+      });
+      
+      this.refreshRecords();
+      alert('Tournament import completed! Check console for details.');
+    } catch (error) {
+      console.error('Error importing tournament data:', error);
+      let errorMessage = 'Unknown error occurred';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+        if (errorMessage.includes('API token is not configured')) {
+          errorMessage += '\n\nTo fix this:\n1. Go to https://start.gg/admin/profile/developer\n2. Create a new personal access token\n3. Add it to src/environments/environment.ts';
+        }
+      }
+      alert(`Error importing tournament data: ${errorMessage}`);
+    } finally {
+      this.isImporting = false;
+    }
   }
 
   recalculateTrueSkill(): void {

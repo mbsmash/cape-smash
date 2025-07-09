@@ -124,6 +124,154 @@
   }
 }
 
+/* Disabled Theme Styles */
+.disabled-theme {
+  filter: grayscale(100%) brightness(0.4) contrast(0.8);
+  border: 3px solid #666;
+  box-shadow: 0 0 20px rgba(102, 102, 102, 0.3);
+  background-color: #2a2a2a !important;
+  cursor: not-allowed;
+}
+
+.disabled-theme:hover {
+  filter: grayscale(100%) brightness(0.3) contrast(0.8);
+  transform: none;
+  transition: all 0.3s ease;
+}
+
+.disabled-header {
+  color: #999 !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  opacity: 0.7;
+}
+
+.disabled-info {
+  color: #777 !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  opacity: 0.7;
+}
+
+.disabled-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background: rgba(102, 102, 102, 0.9);
+  padding: 15px;
+  border-radius: 10px;
+  border: 2px solid #555;
+  box-shadow: 0 0 15px rgba(102, 102, 102, 0.5);
+}
+
+.disabled-text {
+  font-size: 2.2em;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
+  margin-bottom: 5px;
+  letter-spacing: 2px;
+}
+
+.disabled-message {
+  font-size: 0.9em;
+  color: #ccc;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* Sidebar disabled styles */
+.disabled-sidebar {
+  filter: grayscale(100%) brightness(0.4) contrast(0.8);
+  cursor: not-allowed;
+}
+
+.disabled-sidebar:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.disabled-overlay-sidebar {
+  background: linear-gradient(145deg, rgba(102, 102, 102, 0.8) 0%, rgba(66, 66, 66, 0.9) 100%);
+}
+
+.disabled-text-sidebar {
+  color: #999 !important;
+  opacity: 0.7;
+}
+
+.disabled-content .tournament-name {
+  opacity: 0.7;
+}
+
+.disabled-status {
+  color: #ff6b6b;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  margin-top: 4px;
+}
+
+.disabled-reason {
+  color: #ccc;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  opacity: 0.9;
+  margin-top: 2px;
+  font-style: italic;
+}
+
+.disabled-name {
+  color: #999 !important;
+}
+
+.sidebar-menu-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+
+.sidebar-menu-content .disabled-status {
+  color: #ff6b6b;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  margin-top: 4px;
+}
+
+.sidebar-menu-content .disabled-reason {
+  color: #ccc;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  opacity: 0.9;
+  margin-top: 2px;
+  font-style: italic;
+}
+
+@media screen and (max-width: 768px) {
+  .disabled-overlay {
+    padding: 10px;
+  }
+  
+  .disabled-text {
+    font-size: 1.6em;
+  }
+  
+  .disabled-message {
+    font-size: 0.8em;
+  }
+}
+
 /* Sidebar Style */
 .sidebar-style {
   width: 100%;
@@ -148,25 +296,94 @@
   background-position: center;
   background-repeat: no-repeat;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  border-left: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Larger sizing for tournaments secondary sidebar */
+.tournaments-secondary-sidebar .sidebar-menu-item {
+  height: 350px;
+  margin-bottom: 28px;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Secondary Sidebar Menu Item - New dedicated class */
+.secondary-sidebar-menu-item {
+  background-color: #2a2a2a;
+  color: #ffffff;
+  padding: 0;
+  margin-bottom: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  font-weight: 400;
+  border: none;
+  display: flex;
+  align-items: center;
+  height: 130px;
+  position: relative;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  border-left: 3px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .sidebar-menu-item:hover {
   transform: scale(1.02);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  border-left: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.secondary-sidebar-menu-item:hover {
+  transform: none;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-left: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.tournaments-secondary-sidebar .sidebar-menu-item:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
 .sidebar-content-overlay {
-  background: rgba(0, 0, 0, 0.7);
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%);
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   padding: 0 16px;
   transition: background 0.3s ease;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.secondary-sidebar-content-overlay {
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.9) 100%);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 16px 0 16px;
+  transition: background 0.3s ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.tournaments-secondary-sidebar .sidebar-content-overlay {
+  border-radius: 24px;
 }
 
 .sidebar-menu-item:hover .sidebar-content-overlay {
   background: rgba(0, 0, 0, 0.5);
+}
+
+.secondary-sidebar-menu-item:hover .secondary-sidebar-content-overlay {
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.7) 100%);
 }
 
 .sidebar-menu-text {
@@ -175,4 +392,80 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-weight: 500;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.secondary-sidebar-menu-text {
+  color: #ffffff;
+  text-decoration: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.secondary-sidebar-menu-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+}
+
+.secondary-sidebar-header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.secondary-sidebar-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: brightness(1.1);
+}
+
+.tournament-name {
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+  line-height: 1.2;
+}
+
+.tournament-timing {
+  color: #fbbf24;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  opacity: 0.95;
+}
+
+.tournament-location {
+  color: #e5e7eb;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  opacity: 0.9;
+}
+
+/* Larger text for tournaments secondary sidebar */
+.tournaments-secondary-sidebar .sidebar-menu-text {
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.tournaments-secondary-sidebar .sidebar-menu-text .menu-card__header {
+  font-size: 2.1em;
+  margin-bottom: 18px;
+  font-weight: 700;
+}
+
+.tournaments-secondary-sidebar .sidebar-menu-text .menu-card__info {
+  font-size: 1.5em;
+  opacity: 0.9;
+  line-height: 1.5;
 }

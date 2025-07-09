@@ -23,6 +23,7 @@ import { TournamentsComponent } from './tournaments/tournaments.component'; // I
 import { MatDividerModule } from '@angular/material/divider'; // Import MatDividerModule
 import { StageListBansFullComponent } from './stage-list-bans-full/stage-list-bans-full.component';
 import { PlayerProfileComponent } from './player-profile/player-profile.component';
+import { StreamingComponent } from './streaming/streaming.component';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { PlayerProfileComponent } from './player-profile/player-profile.componen
     BannerComponent,
     TournamentsComponent,
     StageListBansFullComponent,
-    PlayerProfileComponent
+    PlayerProfileComponent,
+    StreamingComponent
   ],
   imports: [
     BrowserModule,

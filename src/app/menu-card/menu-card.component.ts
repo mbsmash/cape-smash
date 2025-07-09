@@ -12,9 +12,16 @@ export class MenuCardComponent implements OnInit {
 
   @Input() headerText: string;
   @Input() infoText: string;
+  @Input() timingText: string; // For tournament timing info
+  @Input() locationText: string; // For tournament location info
+  @Input() iconPath: string = ''; // For icons in secondary sidebar
   @Input() url: string;
   @Input() isRip: boolean = false; // For special "RIP" styling
   @Input() sidebarStyle: boolean = false; // For sidebar styling
+  @Input() secondarySidebar: boolean = false; // For secondary sidebar styling
+  @Input() isDisabled: boolean = false; // For disabled styling
+  @Input() disabledMessage: string = 'Currently unavailable'; // Customizable disabled message
+  @Input() disabledStatusText: string = 'DISABLED'; // Customizable status text
   backgroundImage: string;
   @Output() menuCardClicked: EventEmitter<any> = new EventEmitter<any>();
   constructor(
@@ -23,6 +30,8 @@ export class MenuCardComponent implements OnInit {
   ) {
     this.headerText = '';
     this.infoText = '';
+    this.timingText = '';
+    this.locationText = '';
     this.url = '';
     this.backgroundImage = '';
   }
@@ -34,8 +43,8 @@ export class MenuCardComponent implements OnInit {
   }
 
   onClick(): void {
-    // Don't navigate if this is a RIP card
-    if (this.isRip) {
+    // Don't navigate if this is a RIP card or disabled
+    if (this.isRip || this.isDisabled) {
       return;
     }
     

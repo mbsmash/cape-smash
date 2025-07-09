@@ -1,11 +1,59 @@
-<div class="page-container">
-    <app-menu-card [headerText]="'SEMO Tournaments'" [infoText]="'View a list of our regular events with quick links!'"
-        [url]="'tournaments'">
-    </app-menu-card>
-    <app-menu-card [headerText]="'Join our Discord'" [infoText]="'Click the card for an invite to our server!'"
-        [url]="'https://discord.gg/ye9zJAxda9'">
-    </app-menu-card>
-    <app-menu-card [headerText]="'YouTube'" [infoText]="'Tournament VODs and streams'"
-        [url]="'https://www.youtube.com/@MBsmash'">
-    </app-menu-card>
+<div class="community-layout">
+  <!-- Secondary sidebar for socials -->
+  <div class="community-sidebar">
+    <div class="community-sidebar-header">
+      <h2>SEMO Smash Community Groups</h2>
+    </div>
+    <div class="community-cards-container">
+      <app-menu-card [headerText]="'Join our Discord Server'"
+          [timingText]="'Most active community hub'"
+          [locationText]="'Chat, matchmaking, and tournament announcements'"
+          [iconPath]="'images/Discord-Symbol-White.png'"
+          [url]="'https://discord.gg/ye9zJAxda9'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+      <app-menu-card [headerText]="'Join our Facebook Group'" 
+          [timingText]="'Community discussions'"
+          [locationText]="'Event updates and local tournament talk'"
+          [iconPath]="'images/Facebook_Logo_Secondary.png'"
+          [url]="'https://www.facebook.com/groups/1038435794713688'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+      <app-menu-card [headerText]="'Follow us on Twitter'" 
+          [timingText]="'Quick updates and announcements'"
+          [locationText]="'Latest news and tournament bracket updates'"
+          [iconPath]="'images/twitter.png'"
+          [url]="'#'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+    </div>
+    
+    <div class="community-sidebar-header player-socials-header">
+      <h2>Player Socials</h2>
+    </div>
+    <div class="community-cards-container player-socials-container">
+      <app-menu-card [headerText]="'Submit Your Socials'"
+          [timingText]="'Share your content'"
+          [locationText]="'Submit your Twitter, BlueSky, and other socials to be featured'"
+          [url]="'#'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+      <app-menu-card [headerText]="'Player Content Directory'"
+          [timingText]="'Community creators'"
+          [locationText]="'Browse content from SEMO Smash community members'"
+          [url]="'#'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+    </div>
+  </div>
+
+  <!-- Main content area -->
+  <div class="community-main-content">
+    <div class="community-section">
+      <h2>Community Hub</h2>
+      <div class="community-info-card">
+        <p>Connect with the SEMO Smash community across all our social platforms. Join our Discord for real-time chat, follow us on Facebook for event updates, and subscribe to our YouTube channel for tournament VODs and highlights.</p>
+      </div>
+    </div>
+  </div>
 </div>

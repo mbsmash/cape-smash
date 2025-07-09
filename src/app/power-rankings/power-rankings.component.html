@@ -42,7 +42,7 @@
             [disabled]="isImporting"
             class="test-button"
         >
-            Load Test Data
+            Load Sample Data
         </button>
         <button 
             (click)="recalculateTrueSkill()" 
@@ -62,7 +62,7 @@
 </div>
 
 <div *ngIf="records.length === 0" class="empty-state">
-    <p>No rankings data available. Import a tournament or load test data to get started.</p>
+    <p>No rankings data available. Import a tournament or load sample data to get started.</p>
     <small *ngIf="!hasStoredData">Your data will be automatically saved and persist between sessions.</small>
 </div>
 

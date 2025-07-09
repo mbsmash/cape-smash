@@ -1,20 +1,47 @@
 <div class="menu-card" (click)="onClick()" [class.sidebar-style]="sidebarStyle">
-  <mat-card *ngIf="!sidebarStyle" [style.backgroundImage]="'url(' + backgroundImage + ')'" [class.rip-theme]="isRip">
+  <mat-card *ngIf="!sidebarStyle" [style.backgroundImage]="'url(' + backgroundImage + ')'" [class.rip-theme]="isRip" [class.disabled-theme]="isDisabled">
     <mat-card-content>
-      <p class="menu-card__header" [class.rip-header]="isRip">{{headerText}}</p>
-      <p class="menu-card__info" [class.rip-info]="isRip">{{infoText}}</p>
+      <p class="menu-card__header" [class.rip-header]="isRip" [class.disabled-header]="isDisabled">{{headerText}}</p>
+      <p class="menu-card__info" [class.rip-info]="isRip" [class.disabled-info]="isDisabled">{{infoText}}</p>
       <div *ngIf="isRip" class="rip-overlay">
         <div class="rip-text">RIP</div>
         <div class="rip-years">2024-2025</div>
         <div class="rip-message">💀 Gone but not forgotten 💀</div>
       </div>
+      <div *ngIf="isDisabled" class="disabled-overlay">
+        <div class="disabled-text">{{disabledStatusText}}</div>
+        <div class="disabled-message">{{disabledMessage}}</div>
+      </div>
     </mat-card-content>
   </mat-card>
   
   <!-- Sidebar style -->
-  <div *ngIf="sidebarStyle" class="sidebar-menu-item" [style.backgroundImage]="'url(' + backgroundImage + ')'">
-    <div class="sidebar-content-overlay">
-      <span class="sidebar-menu-text">{{headerText}}</span>
+  <div *ngIf="sidebarStyle" 
+       [class]="secondarySidebar ? 'secondary-sidebar-menu-item' : 'sidebar-menu-item'" 
+       [style.backgroundImage]="'url(' + backgroundImage + ')'"
+       [class.disabled-sidebar]="isDisabled">
+    <div [class]="secondarySidebar ? 'secondary-sidebar-content-overlay' : 'sidebar-content-overlay'"
+         [class.disabled-overlay-sidebar]="isDisabled">
+      <div *ngIf="!secondarySidebar && !isDisabled" [class]="'sidebar-menu-text'">{{headerText}}</div>
+      <div *ngIf="!secondarySidebar && isDisabled" class="sidebar-menu-content disabled-content">
+        <div class="sidebar-menu-text disabled-text-sidebar">{{headerText}}</div>
+        <div class="disabled-status">{{disabledStatusText}}</div>
+        <div class="disabled-reason">{{disabledMessage}}</div>
+      </div>
+      <div *ngIf="secondarySidebar && !isDisabled" class="secondary-sidebar-menu-content">
+        <div class="secondary-sidebar-header-row" *ngIf="iconPath">
+          <img [src]="iconPath" alt="{{headerText}} icon" class="secondary-sidebar-icon">
+          <div class="tournament-name">{{headerText}}</div>
+        </div>
+        <div class="tournament-name" *ngIf="!iconPath">{{headerText}}</div>
+        <div class="tournament-timing" *ngIf="timingText">{{timingText}}</div>
+        <div class="tournament-location" *ngIf="locationText">{{locationText}}</div>
+      </div>
+      <div *ngIf="secondarySidebar && isDisabled" class="secondary-sidebar-menu-content disabled-content">
+        <div class="tournament-name disabled-name">{{headerText}}</div>
+        <div class="disabled-status">{{disabledStatusText}}</div>
+        <div class="disabled-reason">{{disabledMessage}}</div>
+      </div>
     </div>
   </div>
 </div>

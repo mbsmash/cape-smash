@@ -45,7 +45,25 @@ export class StartggService {
   }
 
   getSets(eventId: number): Observable<GgSet[]> {
-    const query = `query EventSets($eventId: ID!) {\n  event(id: $eventId) {\n    sets(page: 1, perPage: 50) {\n      nodes {\n        id\n        winnerId\n        slots {\n          entrant { id }\n        }\n      }\n    }\n  }\n}`;
+    const query = `query EventSets($eventId: ID!) {
+  event(id: $eventId) {
+    sets(page: 1, perPage: 50) {
+      nodes {
+        id
+        winnerId
+        round
+        identifier
+        fullRoundText
+        displayScore
+        totalGames
+        completedAt
+        slots {
+          entrant { id }
+        }
+      }
+    }
+  }
+}`;
     return this.post(query, { eventId }).pipe(
       map(res => this.mapSets(res))
     );
@@ -73,7 +91,13 @@ export class StartggService {
     return nodes.map(n => ({
       id: n.id,
       winnerId: Number(n.winnerId),
-      entrantIds: n.slots.map((s: any) => Number(s.entrant.id))
+      entrantIds: n.slots.map((s: any) => Number(s.entrant.id)),
+      round: n.round || undefined,
+      identifier: n.identifier || undefined,
+      fullRoundText: n.fullRoundText || undefined,
+      displayScore: n.displayScore || undefined,
+      totalGames: n.totalGames || undefined,
+      completedAt: n.completedAt || undefined
     }));
   }
 

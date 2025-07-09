@@ -1,18 +1,160 @@
-<div class="menu-cards-container">
-    <app-menu-card [headerText]="'Raffle Rumble'"
-        [infoText]="'Cape Girardeau Monthly - typically Saturday afternoon'"
-        [url]="'https://www.start.gg/raffle-rumble'"></app-menu-card>
-    <app-menu-card [headerText]="'Kachow Kup'" [infoText]="'Ste. Genevieve Monthly - typically Friday evening'"
-        [url]="'https://start.gg/kachow-kup'"></app-menu-card>
-    <app-menu-card [headerText]="'Underground Smash'" 
-        [infoText]="'The Legendary Park Hills Monthly'"
-        [url]="'#'"
-        [isRip]="true"></app-menu-card>
-</div>
-
-<div class="results-section">
-    <h2>Recent Tournament Results</h2>
-    <div class="results-card">
-        <p>Results will be displayed here.</p>
+<div class="tournaments-layout">
+  <!-- Secondary sidebar for tournaments -->
+  <div class="tournaments-sidebar">
+    <div class="tournaments-sidebar-header">
+      <h2>Monthly SEMO Tournaments</h2>
     </div>
+    <div class="tournaments-cards-container">
+      <app-menu-card [headerText]="'Raffle Rumble'"
+          [timingText]="'Second Saturday'"
+          [locationText]="'Cape Girardeau, MO'"
+          [url]="'https://www.start.gg/raffle-rumble'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+      <app-menu-card [headerText]="'Kachow Kup'" 
+          [timingText]="'Last Friday'"
+          [locationText]="'Ste. Genevieve, MO'"
+          [url]="'https://start.gg/kachow-kup'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+      <app-menu-card [headerText]="'Underground Smash'" 
+          [timingText]="'Third Saturday of the month'"
+          [locationText]="'Park Hills, MO'"
+          [url]="'#'"
+          [isDisabled]="true"
+          [disabledStatusText]="'On Indefinite Hiatus'"
+          [disabledMessage]="'But at least now I get home before 2:00 am on Tuesdays.'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+    </div>
+    
+    <div class="tournaments-sidebar-header special-events-header">
+      <h2>Special Events</h2>
+    </div>
+    <div class="tournaments-cards-container special-events-container">
+      <app-menu-card [headerText]="'SEMO Smash Arcadian'"
+          [timingText]="'End of each season'"
+          [locationText]="'Players listed on the SEMO PR or another regional PR in 2024 or 2025 not allowed to participate.'"
+          [url]="'#'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+      <app-menu-card [headerText]="'SEMO Smash Invitational'"
+          [timingText]="'End of each season'"
+          [locationText]="'Our top 12 ranked players make one final push to prove they deserve the top spot!'"
+          [url]="'#'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+    </div>
+    
+    <div class="tournaments-sidebar-header special-events-header">
+      <h2>Conventions</h2>
+    </div>
+    <div class="tournaments-cards-container special-events-container">
+      <app-menu-card [headerText]="'Heartland Arena'"
+          [timingText]="'Annual gaming convention'"
+          [locationText]="'Heartland Gaming Con'"
+          [url]="'https://start.gg/heartland-arena-heartland-gaming-con'"
+          [isDisabled]="true"
+          [disabledStatusText]="'Returning in 2026!'"
+          [disabledMessage]="'Check back next year'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+      <app-menu-card [headerText]="'Heroes for Kids'"
+          [timingText]="'Annual comic convention'"
+          [locationText]="'Comic Con'"
+          [url]="'https://start.gg/heroes-for-kids'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+    </div>
+  </div>
+
+  <!-- Main content area -->
+  <div class="tournaments-main-content">
+    <div class="results-section">
+      <h2>Recent Tournament Results</h2>
+      
+      <div *ngIf="loading" class="loading-message">
+        <p>Loading tournament results...</p>
+      </div>
+      
+      <div *ngIf="!loading && tournamentResults.length === 0" class="no-results-message">
+        <p>No tournament results available yet. Import tournaments from start.gg to see results here.</p>
+      </div>
+      
+      <div *ngIf="!loading && tournamentResults.length > 0" class="tournament-results-container">
+        <div *ngFor="let tournament of tournamentResults" class="tournament-result-card">
+          <div class="tournament-header">
+            <h3>{{ tournament.tournamentName }}</h3>
+            <span class="tournament-date">{{ formatDate(tournament.date) }}</span>
+          </div>
+          
+          <div class="round-groups-container" *ngIf="tournament.roundGroups.length > 0">
+            <div *ngFor="let roundGroup of tournament.roundGroups" class="round-group">
+              <div class="round-header">
+                <h4>{{ roundGroup.roundName }}</h4>
+              </div>
+              
+              <div class="sets-list" *ngIf="roundGroup.sets.length > 0">
+                <div *ngFor="let set of roundGroup.sets" class="set-result">
+                  <div class="match-layout">
+                    <!-- Left Player -->
+                    <div class="player-section left-player" [class.winner]="set.winner === set.player1">
+                      <div class="player-sponsor" *ngIf="getSponsor(set.player1)">{{ getSponsor(set.player1) }}</div>
+                      <div class="player-name">{{ getPlayerNameWithoutSponsor(set.player1) }}</div>
+                      <div class="player-score">{{ getPlayerScore(set, set.player1) }}</div>
+                    </div>
+                    
+                    <!-- VS Section -->
+                    <div class="vs-section">
+                      <span class="vs-text">vs</span>
+                    </div>
+                    
+                    <!-- Right Player -->
+                    <div class="player-section right-player" [class.winner]="set.winner === set.player2">
+                      <div class="player-score">{{ getPlayerScore(set, set.player2) }}</div>
+                      <div class="player-sponsor" *ngIf="getSponsor(set.player2)">{{ getSponsor(set.player2) }}</div>
+                      <div class="player-name">{{ getPlayerNameWithoutSponsor(set.player2) }}</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Best of X -->
+                  <div class="match-footer">
+                    <div class="best-of" *ngIf="set.totalGames">Best of {{ set.totalGames }}</div>
+                    <a *ngIf="set.vodUrl" [href]="set.vodUrl" target="_blank" class="vod-link">📺 VOD</a>
+                  </div>
+                  
+                  <!-- Game-by-game breakdown -->
+                  <div *ngIf="set.games && set.games.length > 0" class="games-breakdown">
+                    <div class="games-header">Game Details:</div>
+                    <div *ngFor="let game of set.games" class="game-result">
+                      <div class="game-info">
+                        <span class="game-number">Game {{ game.orderNum }}:</span>
+                        <span class="game-score">{{ game.player1Score }} - {{ game.player2Score }}</span>
+                      </div>
+                      <div *ngIf="game.player1Characters?.length || game.player2Characters?.length" class="character-info">
+                        <div *ngIf="game.player1Characters?.length" class="character-selection">
+                          <strong>{{ set.player1 }}:</strong> {{ game.player1Characters!.join(', ') }}
+                        </div>
+                        <div *ngIf="game.player2Characters?.length" class="character-selection">
+                          <strong>{{ set.player2 }}:</strong> {{ game.player2Characters!.join(', ') }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div *ngIf="roundGroup.sets.length === 0" class="no-sets-message">
+                <p>No sets in this round.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="tournament.roundGroups.length === 0" class="no-sets-message">
+            <p>No round data available for this tournament.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

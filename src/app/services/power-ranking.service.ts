@@ -32,7 +32,7 @@ export interface PlayerRecord {
  * - importTournament('tournament-slug') to import data from start.gg
  * - getRecords() to get current rankings sorted by TrueSkill rating
  * - getFilteredRecords() to get rankings with 2+ appearance filter
- * - insertTestRecords() to reset to test data
+ * - insertTestRecords() to create synthetic test data (for development)
  * - clearRecords() to clear all data
  * - recalculateTrueSkillRatings() to retroactively apply TrueSkill to existing data
  */
@@ -472,7 +472,12 @@ export class PowerRankingService {
         const tournamentHistory = data.tournamentHistory || [];
         
         this.records.clear();
-        this.tournamentHistory = tournamentHistory;
+        
+        // Reconstruct tournament history with proper Map objects
+        this.tournamentHistory = tournamentHistory.map((tournament: any) => ({
+          ...tournament,
+          playerMap: new Map(tournament.playerMap ? Object.entries(tournament.playerMap).map(([k, v]) => [Number(k), Number(v)]) : [])
+        }));
         
         records.forEach((record: any) => {
           // Convert plain objects back to Rating instances
@@ -543,9 +548,16 @@ export class PowerRankingService {
 
   private saveToStorage(): void {
     const recordsArray = Array.from(this.records.values());
+    
+    // Convert tournament history Maps to plain objects for JSON serialization
+    const tournamentHistoryForStorage = this.tournamentHistory.map(tournament => ({
+      ...tournament,
+      playerMap: Object.fromEntries(tournament.playerMap)
+    }));
+    
     const data = {
       records: recordsArray,
-      tournamentHistory: this.tournamentHistory
+      tournamentHistory: tournamentHistoryForStorage
     };
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
   }
@@ -617,5 +629,302 @@ export class PowerRankingService {
     this.tournamentHistory = [];
     this.saveToStorage();
     console.log('Season reset complete');
+  }
+
+  // Get tournament history for displaying results
+  getTournamentHistory(): Array<{ sets: GgSet[]; playerMap: Map<number, number>; tournamentName?: string; timestamp: number }> {
+    return this.tournamentHistory.slice().reverse(); // Return most recent first
+  }
+
+  /**
+   * Groups sets by their tournament bracket rounds
+   */
+  private groupSetsByRounds(sets: GgSet[]): Map<string, GgSet[]> {
+    const roundGroups = new Map<string, GgSet[]>();
+    
+    console.log('Grouping sets by rounds. Total sets:', sets.length);
+    console.log('Sample set data:', sets.slice(0, 3));
+    
+    sets.forEach((set, index) => {
+      let roundName = 'Other';
+      
+      console.log(`Set ${index + 1}:`, {
+        id: set.id,
+        round: set.round,
+        identifier: set.identifier,
+        fullRoundText: set.fullRoundText,
+        winnerId: set.winnerId,
+        entrantIds: set.entrantIds
+      });
+      
+      // First try fullRoundText if available
+      if (set.fullRoundText) {
+        roundName = set.fullRoundText;
+        console.log(`Using fullRoundText: ${roundName}`);
+      }
+      // Then try to map identifier to meaningful names
+      else if (set.identifier) {
+        roundName = this.mapIdentifierToRoundName(set.identifier);
+        console.log(`Mapped identifier ${set.identifier} to: ${roundName}`);
+      } 
+      // Fallback to round number logic
+      else if (set.round !== undefined) {
+        // Positive rounds are winners bracket, negative are losers bracket
+        if (set.round > 0) {
+          if (set.round === 1) roundName = 'Grand Finals';
+          else if (set.round === 2) roundName = 'Winners Finals';
+          else if (set.round === 3) roundName = 'Winners Semis';
+          else roundName = `Winners R${set.round}`;
+        } else if (set.round < 0) {
+          const absRound = Math.abs(set.round);
+          if (absRound === 1) roundName = 'Losers Finals';
+          else if (absRound === 2) roundName = 'Losers Semis';
+          else roundName = `Losers R${absRound}`;
+        }
+        console.log(`Determined round from number ${set.round}: ${roundName}`);
+      } else {
+        console.log('No round information available, using "Other"');
+      }
+      
+      if (!roundGroups.has(roundName)) {
+        roundGroups.set(roundName, []);
+      }
+      roundGroups.get(roundName)!.push(set);
+    });
+    
+    console.log('Final round groups:', Array.from(roundGroups.keys()));
+    return roundGroups;
+  }
+
+  /**
+   * Maps Start.gg bracket identifiers to human-readable round names
+   */
+  private mapIdentifierToRoundName(identifier: string): string {
+    // Common Start.gg bracket position mappings
+    // These vary by tournament format, but here are common patterns:
+    
+    // For double elimination brackets:
+    const doubleElimMapping: { [key: string]: string } = {
+      // Grand Finals area
+      'GF': 'Grand Finals',
+      'GFRESET': 'Grand Finals Reset',
+      
+      // Winners bracket
+      'WF': 'Winners Finals',
+      'WSF': 'Winners Semis',
+      'WQF': 'Winners Quarters',
+      
+      // Losers bracket
+      'LF': 'Losers Finals',
+      'LSF': 'Losers Semis',
+      'LQF': 'Losers Quarters',
+      
+      // Common alphabetical patterns (may vary by tournament)
+      'AA': 'Grand Finals',
+      'AB': 'Winners Finals',
+      'AC': 'Losers Finals', 
+      'AD': 'Winners Semis',
+      'AE': 'Losers Semis',
+      'AF': 'Winners Quarters',
+      'AG': 'Losers Quarters',
+    };
+    
+    // Check for exact matches first
+    if (doubleElimMapping[identifier]) {
+      return doubleElimMapping[identifier];
+    }
+    
+    // For pool play or other formats, try to extract meaningful info
+    if (identifier.includes('Pool')) {
+      return identifier; // Keep pool names as-is
+    }
+    
+    // For round robin or swiss, keep the identifier
+    if (identifier.match(/^R\d+/)) {
+      return `Round ${identifier.substring(1)}`;
+    }
+    
+    // Try to parse patterns like "Winners Round 1", "Losers Round 2", etc.
+    if (identifier.toLowerCase().includes('winners')) {
+      return identifier;
+    }
+    if (identifier.toLowerCase().includes('losers')) {
+      return identifier;
+    }
+    
+    // For unknown patterns, try to make it more readable
+    if (identifier.length <= 3 && identifier.match(/^[A-Z]+$/)) {
+      // For short alphabetical codes, try to determine bracket position
+      const charCode = identifier.charCodeAt(identifier.length - 1);
+      const position = charCode - 65; // A=0, B=1, C=2, etc.
+      
+      if (position === 0) return 'Grand Finals';
+      else if (position === 1) return 'Winners Finals';  
+      else if (position === 2) return 'Losers Finals';
+      else if (position === 3) return 'Winners Semis';
+      else if (position === 4) return 'Losers Semis';
+      else return `Bracket ${identifier}`;
+    }
+    
+    // Default: return the identifier as-is but with better formatting
+    return identifier.replace(/([A-Z])/g, ' $1').trim() || 'Unknown Round';
+  }
+
+  // Get recent tournament results formatted for display, grouped by rounds
+  getRecentTournamentResults(limit: number = 50): Array<{
+    tournamentName: string;
+    date: Date;
+    roundGroups: Array<{
+      roundName: string;
+      sets: Array<{
+        player1: string;
+        player2: string;
+        winner: string;
+        setId: string;
+      }>;
+    }>;
+  }> {
+    console.log('Getting recent tournament results...');
+    console.log('Tournament history length:', this.tournamentHistory.length);
+    console.log('Tournament history:', this.tournamentHistory);
+    
+    const results: Array<{
+      tournamentName: string;
+      date: Date;
+      roundGroups: Array<{
+        roundName: string;
+        sets: Array<{
+          player1: string;
+          player2: string;
+          winner: string;
+          setId: string;
+        }>;
+      }>;
+    }> = [];
+
+    // Group sets by tournament
+    const tournamentGroups = new Map<string, { sets: GgSet[], playerMap: Map<number, number>, timestamp: number }>();
+    
+    this.tournamentHistory.forEach(tournament => {
+      const key = tournament.tournamentName || 'Unknown Tournament';
+      if (!tournamentGroups.has(key)) {
+        tournamentGroups.set(key, {
+          sets: [],
+          playerMap: tournament.playerMap,
+          timestamp: tournament.timestamp
+        });
+      }
+      tournamentGroups.get(key)!.sets.push(...tournament.sets);
+    });
+
+    // Convert to display format with round grouping
+    Array.from(tournamentGroups.entries()).forEach(([tournamentName, data]) => {
+      // Group sets by rounds
+      const roundGroups = this.groupSetsByRounds(data.sets.slice(0, limit));
+      
+      // Helper function to get player name
+      const getPlayerName = (originalId: number): string => {
+        // First try to get mapped ID and find record
+        const mappedId = data.playerMap.get(originalId);
+        if (mappedId) {
+          const record = this.records.get(mappedId);
+          if (record?.tag) {
+            return record.tag;
+          }
+        }
+        
+        // Fallback: search all records for one with matching original ID
+        const directRecord = this.records.get(originalId);
+        if (directRecord?.tag) {
+          return directRecord.tag;
+        }
+        
+        // Final fallback: format the ID nicely
+        return `Player ${originalId}`;
+      };
+      
+      // Convert round groups to display format
+      const roundGroupsDisplay = Array.from(roundGroups.entries()).map(([roundName, roundSets]) => {
+        console.log(`Processing round: ${roundName} with ${roundSets.length} sets`);
+        console.log('Sample set data:', roundSets[0]);
+        
+        const setsDisplay = roundSets.map(set => {
+          const entrantIds = set.entrantIds || [];
+          const player1Id = entrantIds[0];
+          const player2Id = entrantIds[1];
+          
+          const player1Name = getPlayerName(player1Id);
+          const player2Name = getPlayerName(player2Id);
+          
+          // Determine winner using the same logic
+          const winnerId = set.winnerId;
+          const winnerName = getPlayerName(winnerId);
+
+          // Process games data if available
+          const gamesData = set.games?.map(game => {
+            // Get character selections for each player
+            const player1Characters = game.selections
+              ?.filter(s => s.entrantId === player1Id)
+              ?.map(s => s.character?.name)
+              ?.filter(name => name) || [];
+            
+            const player2Characters = game.selections
+              ?.filter(s => s.entrantId === player2Id)
+              ?.map(s => s.character?.name)
+              ?.filter(name => name) || [];
+
+            return {
+              orderNum: game.orderNum,
+              player1Score: game.entrant1Score,
+              player2Score: game.entrant2Score,
+              player1Characters,
+              player2Characters
+            };
+          }) || [];
+
+          return {
+            player1: player1Name,
+            player2: player2Name,
+            winner: winnerName,
+            setId: set.id,
+            score: set.displayScore,
+            totalGames: set.totalGames,
+            vodUrl: set.vodUrl,
+            completedAt: set.completedAt ? new Date(set.completedAt) : undefined,
+            games: gamesData
+          };
+        });
+
+        console.log('Sets display data sample:', setsDisplay.slice(0, 2));
+
+        return {
+          roundName,
+          sets: setsDisplay
+        };
+      });
+
+      // Sort round groups by importance (Grand Finals first, then Winners, then Losers)
+      roundGroupsDisplay.sort((a, b) => {
+        const order = ['Grand Finals', 'Winners Finals', 'Winners Semis', 'Losers Finals', 'Losers Semis'];
+        const aIndex = order.findIndex(round => a.roundName.includes(round.split(' ')[0]));
+        const bIndex = order.findIndex(round => b.roundName.includes(round.split(' ')[0]));
+        
+        if (aIndex === -1 && bIndex === -1) return a.roundName.localeCompare(b.roundName);
+        if (aIndex === -1) return 1;
+        if (bIndex === -1) return -1;
+        return aIndex - bIndex;
+      });
+
+      results.push({
+        tournamentName,
+        date: new Date(data.timestamp),
+        roundGroups: roundGroupsDisplay
+      });
+    });
+
+    // Sort by date (most recent first) and limit results
+    return results
+      .sort((a, b) => b.date.getTime() - a.date.getTime())
+      .slice(0, Math.ceil(limit / 10)); // Limit number of tournaments
   }
 }

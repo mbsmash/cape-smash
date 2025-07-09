@@ -18,30 +18,33 @@
       </app-menu-card>
       
       <app-menu-card 
-        [headerText]="'SEMO Tournaments'" 
+        [headerText]="'Tournaments'" 
         [infoText]="'View a list of our regular events with quick links!'"
         [url]="'tournaments'"
         [sidebarStyle]="true">
       </app-menu-card>
       
       <app-menu-card 
-        [headerText]="'Join our Discord'" 
-        [infoText]="'Click the card for an invite to our server!'"
-        [url]="'https://discord.gg/ye9zJAxda9'"
+        [headerText]="'Power Rankings'" 
+        [infoText]="'See the top SEMO Smash players ranked by skill!'"
+        [url]="'power-rankings'"
+        [isDisabled]="true"
+        [disabledStatusText]="'Coming soon!'"
+        [disabledMessage]="'Power rankings feature is currently being developed.'"
         [sidebarStyle]="true">
       </app-menu-card>
       
       <app-menu-card 
-        [headerText]="'Find us on Facebook'" 
-        [infoText]="'Click to join our Facebook group!'"
-        [url]="'https://www.facebook.com/groups/1038435794713688'"
+        [headerText]="'Socials'" 
+        [infoText]="'Connect with the SEMO Smash community online!'"
+        [url]="'community'"
         [sidebarStyle]="true">
       </app-menu-card>
       
       <app-menu-card 
-        [headerText]="'YouTube'" 
-        [infoText]="'Tournament VODs and streams'"
-        [url]="'https://www.youtube.com/@MBsmash'"
+        [headerText]="'Streams, VODs & Content'" 
+        [infoText]="'Watch tournaments, streams, and community content'"
+        [url]="'streaming'"
         [sidebarStyle]="true">
       </app-menu-card>
     </div>
