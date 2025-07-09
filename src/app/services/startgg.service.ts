@@ -58,7 +58,12 @@ export class StartggService {
         totalGames
         completedAt
         slots {
-          entrant { id }
+          entrant { 
+            id
+            participants {
+              gamerTag
+            }
+          }
         }
       }
     }
@@ -88,17 +93,33 @@ export class StartggService {
   // exposed for unit testing
   mapSets(response: any): GgSet[] {
     const nodes = response.data.event.sets.nodes as any[];
-    return nodes.map(n => ({
-      id: n.id,
-      winnerId: Number(n.winnerId),
-      entrantIds: n.slots.map((s: any) => Number(s.entrant.id)),
-      round: n.round || undefined,
-      identifier: n.identifier || undefined,
-      fullRoundText: n.fullRoundText || undefined,
-      displayScore: n.displayScore || undefined,
-      totalGames: n.totalGames || undefined,
-      completedAt: n.completedAt || undefined
-    }));
+    
+    return nodes.map((n, index) => {
+      const entrantNames = n.slots.map((s: any, slotIndex: number) => {
+        const participants = s.entrant.participants || [];
+        // Try to find a participant with a valid gamerTag
+        for (const participant of participants) {
+          if (participant.gamerTag && typeof participant.gamerTag === 'string' && !/^\d+$/.test(participant.gamerTag)) {
+            return participant.gamerTag;
+          }
+        }
+        // If no valid gamerTag found, return undefined to let the fallback logic handle it
+        return undefined;
+      });
+      
+      return {
+        id: n.id,
+        winnerId: Number(n.winnerId),
+        entrantIds: n.slots.map((s: any) => Number(s.entrant.id)),
+        entrantNames: entrantNames,
+        round: n.round || undefined,
+        identifier: n.identifier || undefined,
+        fullRoundText: n.fullRoundText || undefined,
+        displayScore: n.displayScore || undefined,
+        totalGames: n.totalGames || undefined,
+        completedAt: n.completedAt || undefined
+      };
+    });
   }
 
   private post(query: string, variables: any): Observable<any> {

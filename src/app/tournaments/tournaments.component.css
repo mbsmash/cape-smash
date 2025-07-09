@@ -92,6 +92,91 @@
   min-height: 100vh;
 }
 
+/* Large desktop monitors (1440p and above) */
+@media screen and (min-width: 1900px) {
+  .tournaments-main-content {
+    margin-left: 500px; /* More space for larger screens */
+    padding: 32px;
+  }
+  
+  .tournaments-sidebar {
+    width: 500px; /* Wider sidebar for better proportion */
+  }
+  
+  .set-result {
+    flex: 0 1 auto; /* Natural flexible sizing */
+    min-width: 320px; /* Larger minimum width for very large screens */
+    max-width: 380px; /* Larger maximum width for very large screens */
+    height: 180px; /* Taller for better readability */
+    padding: 20px; /* More padding */
+  }
+  
+  .player-section {
+    min-height: 80px; /* Taller player sections */
+    padding: 10px 8px; /* More padding */
+  }
+  
+  .player-name {
+    font-size: 1.0em; /* Larger font for better readability */
+    max-width: 120px; /* More space for longer names */
+  }
+  
+  .player-score {
+    font-size: 1.3em; /* Larger scores */
+    right: 10px; /* More space from edge */
+  }
+  
+  .vs-section {
+    min-width: 80px; /* Wider vs section */
+  }
+  
+  .tournament-result-card {
+    padding: 32px; /* More padding */
+  }
+  
+  .round-groups-container {
+    gap: 36px; /* More space between rounds */
+  }
+  
+  .round-group {
+    padding: 24px; /* More padding */
+  }
+}
+
+@media screen and (min-width: 1601px) and (max-width: 1899px) {
+  .tournaments-main-content {
+    margin-left: 480px;
+    padding: 24px;
+  }
+  
+  .set-result {
+    flex: 0 1 auto; /* Natural flexible sizing */
+    min-width: 300px; /* Consistent sizing for medium-large screens */
+    max-width: 360px; /* Consistent sizing for medium-large screens */
+    height: 160px; /* Slightly taller */
+    padding: 18px;
+  }
+  
+  .player-section {
+    min-height: 70px; /* Taller player sections */
+    padding: 8px 6px;
+  }
+  
+  .player-name {
+    font-size: 0.9em; /* Slightly larger font */
+    max-width: 110px; /* More space for names */
+  }
+  
+  .player-score {
+    font-size: 1.2em; /* Larger scores */
+    right: 8px;
+  }
+  
+  .vs-section {
+    min-width: 70px; /* Wider vs section */
+  }
+}
+
 /* Laptop/tablet responsive adjustments */
 @media screen and (max-width: 1600px) and (min-width: 1201px) {
   .tournaments-main-content {
@@ -115,9 +200,11 @@
   }
   
   .set-result {
-    flex: 0 1 calc(100% - 16px); /* Single column on smaller laptops */
-    min-width: 240px;
-    height: auto;
+    flex: 0 1 auto; /* Natural flexible sizing */
+    min-width: 260px; /* Consistent minimum width for laptops */
+    max-width: 320px; /* Consistent maximum width for laptops */
+    height: 140px; /* Consistent height for laptops */
+    padding: 14px; /* Appropriate padding for laptops */
     margin: 4px;
   }
   
@@ -137,8 +224,11 @@
   }
   
   .set-result {
-    flex: 0 1 100%; /* Full width for smaller laptops */
-    min-width: unset;
+    flex: 0 1 auto; /* Natural flexible sizing */
+    min-width: 240px; /* Consistent minimum width for smaller laptops */
+    max-width: 300px; /* Consistent maximum width for smaller laptops */
+    height: 130px; /* Consistent height for smaller laptops */
+    padding: 12px; /* Appropriate padding for smaller laptops */
     margin: 4px 0;
   }
 }
@@ -314,9 +404,10 @@
   padding: 16px; /* Reduced padding */
   margin: 4px; /* Reduced margin */
   transition: all 0.3s ease;
-  flex: 0 1 calc(33.333% - 16px); /* Three columns on wider screens */
-  min-width: 260px; /* Reduced min-width */
-  height: 140px; /* Reduced height */
+  flex: 0 1 auto; /* Allow flexible sizing */
+  min-width: 280px; /* Consistent minimum width for all sets */
+  max-width: 340px; /* Consistent maximum width for all sets */
+  height: 150px; /* Consistent height for all sets */
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -373,13 +464,13 @@
 
 .player-name {
   color: #fff;
-  font-size: 0.75em; /* Slightly smaller */
+  font-size: 0.85em; /* Increased from 0.75em for better readability */
   font-weight: 700;
   margin-bottom: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100%;
+  max-width: 90px; /* Set specific width instead of 100% for better control */
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
@@ -519,8 +610,11 @@
 /* Medium screen responsive design */
 @media screen and (max-width: 1024px) and (min-width: 769px) {
   .set-result {
-    flex: 0 1 calc(100% - 32px); /* Take full width on medium screens */
-    min-width: 280px;
+    flex: 0 1 auto; /* Natural flexible sizing */
+    min-width: 260px; /* Consistent minimum width for tablets */
+    max-width: 320px; /* Consistent maximum width for tablets */
+    height: 140px; /* Consistent height for tablets */
+    padding: 14px; /* Appropriate padding for tablets */
   }
 }
 
@@ -643,5 +737,130 @@
 
   .vod-link {
     font-size: 0.7em;
+  }
+}
+
+/* 1440p monitors (2560px wide) - specific optimization */
+@media screen and (min-width: 2400px) and (max-width: 2800px) {
+  .tournaments-main-content {
+    margin-left: 500px;
+    padding: 28px;
+  }
+  
+  .tournaments-sidebar {
+    width: 480px;
+  }
+  
+  .set-result {
+    flex: 0 1 auto; /* Natural flexible sizing */
+    min-width: 360px; /* Larger minimum width for 1440p */
+    max-width: 420px; /* Larger maximum width for 1440p */
+    height: 170px; /* Taller boxes */
+    padding: 20px; /* More internal padding */
+    margin: 6px; /* More margin between boxes */
+  }
+  
+  .player-section {
+    min-height: 75px; /* Taller player sections for better name display */
+    padding: 10px 8px; /* More padding for names */
+    max-width: none; /* Remove width restrictions */
+  }
+  
+  .player-name {
+    font-size: 0.95em; /* Larger font */
+    max-width: 140px; /* Much more space for player names */
+    white-space: normal; /* Allow text wrapping if needed */
+    line-height: 1.2; /* Better line spacing */
+  }
+  
+  .player-score {
+    font-size: 1.25em; /* Larger, more visible scores */
+    right: 12px; /* More space from edge */
+  }
+  
+  .vs-section {
+    min-width: 75px; /* Wider vs section */
+    gap: 6px;
+  }
+  
+  .vs-text {
+    font-size: 0.9em; /* Slightly larger vs text */
+  }
+  
+  .game-score {
+    font-size: 1.0em; /* Larger game scores */
+  }
+  
+  .round-groups-container {
+    gap: 32px; /* More space between round groups */
+  }
+  
+  .round-group {
+    padding: 20px; /* More padding in round groups */
+  }
+  
+  .sets-list {
+    gap: 16px; /* More gap between sets */
+    padding: 12px; /* More padding around sets list */
+  }
+}
+
+/* Round group row for side-by-side layout */
+.round-group-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+/* Adjustments for side-by-side round groups */
+.round-group.side-by-side {
+  flex: 1;
+  min-width: 0; /* Allow flex items to shrink below their content size */
+  max-width: calc(50% - 12px); /* Ensure two items fit side-by-side with gap */
+}
+
+/* Ensure single round groups take full width */
+.round-group-row .round-group:only-child {
+  max-width: 100%;
+}
+
+/* On larger screens, optimize the side-by-side layout */
+@media screen and (min-width: 1900px) {
+  .round-group.side-by-side {
+    max-width: calc(50% - 18px); /* Account for larger gap */
+  }
+  
+  .round-group-row {
+    gap: 36px; /* Larger gap for bigger screens */
+  }
+}
+
+/* On medium-large screens */
+@media screen and (min-width: 1601px) and (max-width: 1899px) {
+  .round-group.side-by-side {
+    max-width: calc(50% - 16px);
+  }
+  
+  .round-group-row {
+    gap: 32px;
+  }
+}
+
+/* Disable side-by-side on smaller screens */
+@media screen and (max-width: 1600px) {
+  .round-group-row {
+    flex-direction: column;
+  }
+  
+  .round-group.side-by-side {
+    max-width: 100%;
+  }
+}
+
+/* Mobile: ensure proper stacking */
+@media screen and (max-width: 768px) {
+  .round-group-row {
+    gap: 16px;
   }
 }

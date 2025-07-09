@@ -36,6 +36,7 @@ export interface GgSet {
   id: string;
   winnerId: number;
   entrantIds: number[];
+  entrantNames?: string[]; // Player names from start.gg
   round?: number; // Tournament round information
   identifier?: string; // Round identifier like "Grand Final", "Winners Finals", etc.
   fullRoundText?: string; // Complete round description

@@ -839,8 +839,15 @@ export class PowerRankingService {
           return directRecord.tag;
         }
         
-        // Final fallback: format the ID nicely
-        return `Player ${originalId}`;
+        // Try to find by searching through all records for potential matches
+        for (const [recordId, record] of this.records.entries()) {
+          if (record.startggUserId === originalId) {
+            return record.tag;
+          }
+        }
+        
+        // If no player record is found, return the ID as string
+        return originalId.toString();
       };
       
       // Convert round groups to display format
@@ -850,15 +857,21 @@ export class PowerRankingService {
         
         const setsDisplay = roundSets.map(set => {
           const entrantIds = set.entrantIds || [];
+          const entrantNames = set.entrantNames || [];
           const player1Id = entrantIds[0];
           const player2Id = entrantIds[1];
           
-          const player1Name = getPlayerName(player1Id);
-          const player2Name = getPlayerName(player2Id);
+          // Use player names directly from start.gg if available and valid, otherwise fall back to ID resolution
+          const isValidPlayerName = (name: string | undefined) => name && typeof name === 'string' && !/^\d+$/.test(name);
           
-          // Determine winner using the same logic
+          const player1Name = isValidPlayerName(entrantNames[0]) ? entrantNames[0] : getPlayerName(player1Id);
+          const player2Name = isValidPlayerName(entrantNames[1]) ? entrantNames[1] : getPlayerName(player2Id);
+          
+          // Determine winner name
           const winnerId = set.winnerId;
-          const winnerName = getPlayerName(winnerId);
+          const winnerIndex = entrantIds.indexOf(winnerId);
+          const winnerEntrantName = winnerIndex >= 0 ? entrantNames[winnerIndex] : undefined;
+          const winnerName = isValidPlayerName(winnerEntrantName) ? winnerEntrantName! : getPlayerName(winnerId);
 
           // Process games data if available
           const gamesData = set.games?.map(game => {

@@ -7,17 +7,17 @@
     <div class="tournaments-cards-container">
       <app-menu-card [headerText]="'Raffle Rumble'"
           [timingText]="'Second Saturday'"
-          [locationText]="'Cape Girardeau, MO'"
+          [locationText]="'STG Cards & Collectables in Cape Girardeau, MO'"
           [url]="'https://www.start.gg/raffle-rumble'"
           [sidebarStyle]="true"
           [secondarySidebar]="true"></app-menu-card>
       <app-menu-card [headerText]="'Kachow Kup'" 
-          [timingText]="'Last Friday'"
-          [locationText]="'Ste. Genevieve, MO'"
+          [timingText]="'Last Friday each month'"
+          [locationText]="'Above Common Grounds in Ste. Genevieve, MO'"
           [url]="'https://start.gg/kachow-kup'"
           [sidebarStyle]="true"
           [secondarySidebar]="true"></app-menu-card>
-      <app-menu-card [headerText]="'Underground Smash'" 
+      <!-- <app-menu-card [headerText]="'Underground Smash'" 
           [timingText]="'Third Saturday of the month'"
           [locationText]="'Park Hills, MO'"
           [url]="'#'"
@@ -25,7 +25,7 @@
           [disabledStatusText]="'On Indefinite Hiatus'"
           [disabledMessage]="'But at least now I get home before 2:00 am on Tuesdays.'"
           [sidebarStyle]="true"
-          [secondarySidebar]="true"></app-menu-card>
+          [secondarySidebar]="true"></app-menu-card> -->
     </div>
     
     <div class="tournaments-sidebar-header special-events-header">
@@ -51,17 +51,17 @@
     </div>
     <div class="tournaments-cards-container special-events-container">
       <app-menu-card [headerText]="'Heartland Arena'"
-          [timingText]="'Annual gaming convention'"
-          [locationText]="'Heartland Gaming Con'"
+          [timingText]="'Heartland\'s Annual Gaming Convention'"
+          [locationText]="'Cape Girardeau, MO'"
           [url]="'https://start.gg/heartland-arena-heartland-gaming-con'"
           [isDisabled]="true"
           [disabledStatusText]="'Returning in 2026!'"
-          [disabledMessage]="'Check back next year'"
+          [disabledMessage]="'Check back next year!'"
           [sidebarStyle]="true"
           [secondarySidebar]="true"></app-menu-card>
       <app-menu-card [headerText]="'Heroes for Kids'"
-          [timingText]="'Annual comic convention'"
-          [locationText]="'Comic Con'"
+          [timingText]="'Annual Comic Convention benefitting local charities'"
+          [locationText]="'Perry Park Center in Perryville, MO'"
           [url]="'https://start.gg/heroes-for-kids'"
           [sidebarStyle]="true"
           [secondarySidebar]="true"></app-menu-card>
@@ -89,63 +89,66 @@
           </div>
           
           <div class="round-groups-container" *ngIf="tournament.roundGroups.length > 0">
-            <div *ngFor="let roundGroup of tournament.roundGroups" class="round-group">
-              <div class="round-header">
-                <h4>{{ roundGroup.roundName }}</h4>
-              </div>
-              
-              <div class="sets-list" *ngIf="roundGroup.sets.length > 0">
-                <div *ngFor="let set of roundGroup.sets" class="set-result">
-                  <div class="match-layout">
-                    <!-- Left Player -->
-                    <div class="player-section left-player" [class.winner]="set.winner === set.player1">
-                      <div class="player-sponsor" *ngIf="getSponsor(set.player1)">{{ getSponsor(set.player1) }}</div>
-                      <div class="player-name">{{ getPlayerNameWithoutSponsor(set.player1) }}</div>
-                      <div class="player-score">{{ getPlayerScore(set, set.player1) }}</div>
-                    </div>
-                    
-                    <!-- VS Section -->
-                    <div class="vs-section">
-                      <span class="vs-text">vs</span>
-                    </div>
-                    
-                    <!-- Right Player -->
-                    <div class="player-section right-player" [class.winner]="set.winner === set.player2">
-                      <div class="player-score">{{ getPlayerScore(set, set.player2) }}</div>
-                      <div class="player-sponsor" *ngIf="getSponsor(set.player2)">{{ getSponsor(set.player2) }}</div>
-                      <div class="player-name">{{ getPlayerNameWithoutSponsor(set.player2) }}</div>
-                    </div>
-                  </div>
-                  
-                  <!-- Best of X -->
-                  <div class="match-footer">
-                    <div class="best-of" *ngIf="set.totalGames">Best of {{ set.totalGames }}</div>
-                    <a *ngIf="set.vodUrl" [href]="set.vodUrl" target="_blank" class="vod-link">📺 VOD</a>
-                  </div>
-                  
-                  <!-- Game-by-game breakdown -->
-                  <div *ngIf="set.games && set.games.length > 0" class="games-breakdown">
-                    <div class="games-header">Game Details:</div>
-                    <div *ngFor="let game of set.games" class="game-result">
-                      <div class="game-info">
-                        <span class="game-number">Game {{ game.orderNum }}:</span>
-                        <span class="game-score">{{ game.player1Score }} - {{ game.player2Score }}</span>
+            <div *ngFor="let roundGroupRow of groupRoundsForDisplay(tournament.roundGroups)" class="round-group-row">
+              <div *ngFor="let roundGroup of roundGroupRow" class="round-group" 
+                   [class.side-by-side]="roundGroupRow.length > 1">
+                <div class="round-header">
+                  <h4>{{ roundGroup.roundName }}</h4>
+                </div>
+                
+                <div class="sets-list" *ngIf="roundGroup.sets.length > 0">
+                  <div *ngFor="let set of roundGroup.sets" class="set-result">
+                    <div class="match-layout">
+                      <!-- Left Player -->
+                      <div class="player-section left-player" [class.winner]="set.winner === set.player1">
+                        <div class="player-sponsor" *ngIf="getSponsor(set.player1)">{{ getSponsor(set.player1) }}</div>
+                        <div class="player-name">{{ getPlayerNameWithoutSponsor(set.player1) }}</div>
+                        <div class="player-score">{{ getPlayerScore(set, set.player1) }}</div>
                       </div>
-                      <div *ngIf="game.player1Characters?.length || game.player2Characters?.length" class="character-info">
-                        <div *ngIf="game.player1Characters?.length" class="character-selection">
-                          <strong>{{ set.player1 }}:</strong> {{ game.player1Characters!.join(', ') }}
+                      
+                      <!-- VS Section -->
+                      <div class="vs-section">
+                        <span class="vs-text">vs</span>
+                      </div>
+                      
+                      <!-- Right Player -->
+                      <div class="player-section right-player" [class.winner]="set.winner === set.player2">
+                        <div class="player-score">{{ getPlayerScore(set, set.player2) }}</div>
+                        <div class="player-sponsor" *ngIf="getSponsor(set.player2)">{{ getSponsor(set.player2) }}</div>
+                        <div class="player-name">{{ getPlayerNameWithoutSponsor(set.player2) }}</div>
+                      </div>
+                    </div>
+                    
+                    <!-- Best of X -->
+                    <div class="match-footer">
+                      <div class="best-of" *ngIf="set.totalGames">Best of {{ set.totalGames }}</div>
+                      <a *ngIf="set.vodUrl" [href]="set.vodUrl" target="_blank" class="vod-link">📺 VOD</a>
+                    </div>
+                    
+                    <!-- Game-by-game breakdown -->
+                    <div *ngIf="set.games && set.games.length > 0" class="games-breakdown">
+                      <div class="games-header">Game Details:</div>
+                      <div *ngFor="let game of set.games" class="game-result">
+                        <div class="game-info">
+                          <span class="game-number">Game {{ game.orderNum }}:</span>
+                          <span class="game-score">{{ game.player1Score }} - {{ game.player2Score }}</span>
                         </div>
-                        <div *ngIf="game.player2Characters?.length" class="character-selection">
-                          <strong>{{ set.player2 }}:</strong> {{ game.player2Characters!.join(', ') }}
+                        <div *ngIf="game.player1Characters?.length || game.player2Characters?.length" class="character-info">
+                          <div *ngIf="game.player1Characters?.length" class="character-selection">
+                            <strong>{{ set.player1 }}:</strong> {{ game.player1Characters!.join(', ') }}
+                          </div>
+                          <div *ngIf="game.player2Characters?.length" class="character-selection">
+                            <strong>{{ set.player2 }}:</strong> {{ game.player2Characters!.join(', ') }}
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              
-              <div *ngIf="roundGroup.sets.length === 0" class="no-sets-message">
-                <p>No sets in this round.</p>
+                
+                <div *ngIf="roundGroup.sets.length === 0" class="no-sets-message">
+                  <p>No sets in this round.</p>
+                </div>
               </div>
             </div>
           </div>
