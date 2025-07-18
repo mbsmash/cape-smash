@@ -26,6 +26,7 @@ import { MatDividerModule } from '@angular/material/divider'; // Import MatDivid
 import { StageListBansFullComponent } from './stage-list-bans-full/stage-list-bans-full.component';
 import { PlayerProfileComponent } from './player-profile/player-profile.component';
 import { StreamingComponent } from './streaming/streaming.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -57,7 +58,8 @@ import { StreamingComponent } from './streaming/streaming.component';
     MatFormFieldModule,
     MatDividerModule, // Add MatFormFieldModule to the imports array
     MatSidenavModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]
