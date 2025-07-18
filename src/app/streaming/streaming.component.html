@@ -1,5 +1,39 @@
 <div class="streaming-layout">
   <!-- Secondary sidebar for streaming content -->
+  <ng-container *ngIf="isMobile; else desktopLayout">
+    <div class="streaming-main-mobile">
+      <div class="streaming-sidebar-header">
+        <h2>Streaming & Content</h2>
+      </div>
+      <div class="streaming-cards-container">
+        <app-menu-card [headerText]="'SEMO VODS on YouTube'"
+        [timingText]="'Official tournament coverage'"
+        [locationText]="'Full tournament VODs and highlight reels'"
+        [url]="'https://www.youtube.com/@VodsPog/videos'"
+        [sidebarStyle]="true"
+        [secondarySidebar]="true"></app-menu-card>
+        <app-menu-card [headerText]="'MBSmash on YouTube'"
+        [timingText]="'Tournament streams and content'"
+        [locationText]="'Live streams and community content'"
+        [url]="'https://www.youtube.com/@MBsmash/videos'"
+        [sidebarStyle]="true"
+        [secondarySidebar]="true"></app-menu-card>
+        <app-menu-card [headerText]="'mbsmash_ttv on Twitch'"
+        [timingText]="'Live tournament broadcasts'"
+        [locationText]="'Watch tournaments live and catch reruns'"
+        [url]="'https://www.twitch.tv/mbsmash_ttv'"
+        [sidebarStyle]="true"
+        [secondarySidebar]="true"></app-menu-card>
+        <app-menu-card [headerText]="'Kachow Gaming on YouTube'"
+        [timingText]="'Gaming streams and content'"
+        [locationText]="'How to play Minecraft Steve'"
+        [url]="'https://www.youtube.com/@KachowGamers/videos'"
+        [sidebarStyle]="true"
+        [secondarySidebar]="true"></app-menu-card>
+      </div>
+    </div>
+  </ng-container>
+
   <div class="streaming-sidebar">
     <div class="streaming-sidebar-header">
       <h2>Streaming & Content</h2>
@@ -31,14 +65,53 @@
           [secondarySidebar]="true"></app-menu-card>
     </div>
   </div>
+  
 
-  <!-- Main content area -->
-  <div class="streaming-main-content">
-    <div class="streaming-section">
-      <h2>Streams, VODs & Content</h2>
-      <div class="streaming-info-card">
-        <p>Discover all the ways to watch SEMO Smash content! Whether it's YouTube, Twitch, Patreon, OnlyFans, or FOX News, you'll find the link here!</p>
+  <ng-template #desktopLayout>
+    <div class="streaming-layout">
+      <div class="streaming-sidebar">
+        <!-- Secondary sidebar for streaming content -->
+        <div class="streaming-sidebar-header">
+          <h2>Streaming & Content</h2>
+        </div>
+        <div class="streaming-cards-container">
+          <app-menu-card [headerText]="'SEMO VODS on YouTube'"
+          [timingText]="'Official tournament coverage'"
+          [locationText]="'Full tournament VODs and highlight reels'"
+          [url]="'https://www.youtube.com/@VodsPog/videos'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+          <app-menu-card [headerText]="'MBSmash on YouTube'"
+          [timingText]="'Tournament streams and content'"
+          [locationText]="'Live streams and community content'"
+          [url]="'https://www.youtube.com/@MBsmash/videos'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+          <app-menu-card [headerText]="'mbsmash_ttv on Twitch'"
+          [timingText]="'Live tournament broadcasts'"
+          [locationText]="'Watch tournaments live and catch reruns'"
+          [url]="'https://www.twitch.tv/mbsmash_ttv'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+          <app-menu-card [headerText]="'Kachow Gaming on YouTube'"
+          [timingText]="'Gaming streams and content'"
+          [locationText]="'How to play Minecraft Steve'"
+          [url]="'https://www.youtube.com/@KachowGamers/videos'"
+          [sidebarStyle]="true"
+          [secondarySidebar]="true"></app-menu-card>
+        </div>
+      </div>
+      
+      <!-- Main content area -->
+      <div class="streaming-main-content">
+        <div class="streaming-section">
+          <h2>Streams, VODs & Content</h2>
+          <div class="streaming-info-card">
+            <p>Discover all the ways to watch SEMO Smash content! Whether it's YouTube, Twitch, Patreon, OnlyFans, or FOX News, you'll find the link here!</p>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </ng-template>
+  
 </div>

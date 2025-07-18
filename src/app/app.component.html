@@ -17,21 +17,24 @@
         [headerText]="'Home'"
         [infoText]="''"
         [url]="'/'"
-        [sidebarStyle]="true">
+        [sidebarStyle]="true"
+        (menuCardClicked)="closeSidebarOnMobile()">
       </app-menu-card>
       
       <app-menu-card 
         [headerText]="'Stage List and Bans Tool'"
         [infoText]="'All SEMO Smash events use the same stage list.'"
         [url]="'stage-list-bans-full'"
-        [sidebarStyle]="true">
+        [sidebarStyle]="true"
+        (menuCardClicked)="closeSidebarOnMobile()">
       </app-menu-card>
       
       <app-menu-card 
         [headerText]="'Tournaments'" 
         [infoText]="'View a list of our regular events with quick links!'"
         [url]="'tournaments'"
-        [sidebarStyle]="true">
+        [sidebarStyle]="true"
+        (menuCardClicked)="closeSidebarOnMobile()">
       </app-menu-card>
       
       <app-menu-card 
@@ -41,21 +44,24 @@
         [isDisabled]="true"
         [disabledStatusText]="'Coming soon!'"
         [disabledMessage]="'Power rankings feature is currently being developed.'"
-        [sidebarStyle]="true">
+        [sidebarStyle]="true"
+        (menuCardClicked)="closeSidebarOnMobile()">
       </app-menu-card>
       
       <app-menu-card 
         [headerText]="'Socials'" 
         [infoText]="'Connect with the SEMO Smash community online!'"
         [url]="'community'"
-        [sidebarStyle]="true">
+        [sidebarStyle]="true"
+        (menuCardClicked)="closeSidebarOnMobile()">
       </app-menu-card>
       
       <app-menu-card 
         [headerText]="'Streams, VODs & Content'" 
         [infoText]="'Watch tournaments, streams, and community content'"
         [url]="'streaming'"
-        [sidebarStyle]="true">
+        [sidebarStyle]="true"
+        (menuCardClicked)="closeSidebarOnMobile()">
       </app-menu-card>
     </div>
 
@@ -65,14 +71,16 @@
         [headerText]="'Contact'" 
         [infoText]="''"
         [url]="'mailto:mbsmashacct@gmail.com'"
-        [sidebarStyle]="true">
+        [sidebarStyle]="true"
+        (menuCardClicked)="closeSidebarOnMobile()">
       </app-menu-card>
       
       <app-menu-card 
         [headerText]="'Source Code'" 
         [infoText]="''"
         [url]="'https://github.com/mbsmash/cape-smash'"
-        [sidebarStyle]="true">
+        [sidebarStyle]="true"
+        (menuCardClicked)="closeSidebarOnMobile()">
       </app-menu-card>
     </div>
   </div>

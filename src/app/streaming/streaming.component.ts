@@ -1,15 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 @Component({
   selector: 'app-streaming',
   templateUrl: './streaming.component.html',
   styleUrls: ['./streaming.component.css']
 })
-export class StreamingComponent implements OnInit {
+export class StreamingComponent implements OnInit, OnDestroy {
+  isMobile: boolean = false;
 
   constructor() { }
 
   ngOnInit(): void {
+    this.checkMobile();
+    window.addEventListener('resize', this.checkMobile.bind(this));
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.checkMobile.bind(this));
+  }
+
+  checkMobile(): void {
+    this.isMobile = window.innerWidth <= 768;
   }
 
 }

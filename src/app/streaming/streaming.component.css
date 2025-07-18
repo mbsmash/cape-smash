@@ -94,6 +94,39 @@
   margin: 0;
 }
 
+/* Mobile menu styles */
+.streaming-main-mobile {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: #fff;
+  overflow-y: auto;
+}
+
+.streaming-cards-container {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-y: auto;
+  padding-bottom: 16px;
+}
+
+/* Ensure the mobile menu is scrollable and not cut off */
+@media screen and (max-width: 768px) {
+  html, body, .streaming-main-mobile {
+    height: 100%;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+  .streaming-cards-container {
+    max-height: 100vh;
+    overflow-y: auto;
+    padding-bottom: 32px;
+  }
+}
+
 /* Laptop/tablet responsive adjustments */
 @media screen and (max-width: 1600px) and (min-width: 1201px) {
   .streaming-sidebar {

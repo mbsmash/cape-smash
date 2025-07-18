@@ -34,11 +34,22 @@ interface TournamentResult {
 export class TournamentsComponent implements OnInit {
   tournamentResults: TournamentResult[] = [];
   loading: boolean = true;
+  isMobile: boolean = false;
 
   constructor(private powerRankingService: PowerRankingService) { }
 
   ngOnInit(): void {
     this.loadTournamentResults();
+    this.checkMobile();
+    window.addEventListener('resize', this.checkMobile.bind(this));
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.checkMobile.bind(this));
+  }
+
+  checkMobile(): void {
+    this.isMobile = window.innerWidth <= 768;
   }
 
   private loadTournamentResults(): void {

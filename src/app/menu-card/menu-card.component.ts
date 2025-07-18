@@ -23,7 +23,7 @@ export class MenuCardComponent implements OnInit {
   @Input() disabledMessage: string = 'Currently unavailable'; // Customizable disabled message
   @Input() disabledStatusText: string = 'DISABLED'; // Customizable status text
   backgroundImage: string;
-  @Output() menuCardClicked: EventEmitter<any> = new EventEmitter<any>();
+  @Output() menuCardClicked: EventEmitter<void> = new EventEmitter<void>();
   constructor(
     private router: Router,
     private firebaseStorageService: FirebaseService
@@ -47,7 +47,7 @@ export class MenuCardComponent implements OnInit {
     if (this.isRip || this.isDisabled) {
       return;
     }
-    
+    this.menuCardClicked.emit();
     if (this.url.startsWith('http')) {
       window.open(this.url, '_blank');
     } else if (this.url.startsWith('mailto:')) {

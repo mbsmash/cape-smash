@@ -1,5 +1,6 @@
 <div class="community-layout">
   <!-- Secondary sidebar for socials -->
+  <ng-container *ngIf="isMobile; else desktopLayout">
   <div class="community-sidebar">
     <div class="community-sidebar-header">
       <h2>SEMO Smash Community Groups</h2>
@@ -36,17 +37,96 @@
         <p>Stay updated with our latest news and events.</p>
       </app-menu-card>
     </div>
-  
-
   </div>
 
-  <!-- Main content area -->
-  <div class="community-main-content">
-    <div class="community-section">
-      <h2>Community Hub</h2>
-      <div class="community-info-card">
-        <p>Welcome to the community hub! Check back here later for content from SEMO Smash community members. This feature is currently under construction.</p>
+  
+    <div class="community-main-mobile">
+      <div class="community-sidebar-header">
+        <h2>SEMO Smash Community Groups</h2>
+      </div>
+      <div class="community-cards-container">
+        <app-menu-card [headerText]="'Join our Discord Server'"
+        [timingText]="'News, chat, games and more'"
+        [locationText]="'Our community is most active on Discord'"
+        [iconPath]="'images/Discord-Symbol-White.png'"
+        [url]="'https://discord.gg/ye9zJAxda9'"
+            [sidebarStyle]="true"
+            [secondarySidebar]="true"></app-menu-card>
+        <app-menu-card [headerText]="'Join our Facebook Group'" 
+            [timingText]="'Community discussion group'"
+            [locationText]="'Event updates and local tournament talk'"
+            [iconPath]="'images/Facebook_Logo_Secondary.png'"
+            [url]="'https://www.facebook.com/groups/1038435794713688'"
+            [sidebarStyle]="true"
+            [secondarySidebar]="true"></app-menu-card>
+        <app-menu-card [headerText]="'Follow SEMO Smash  on Twitter'" 
+            [timingText]="'Quick updates and announcements'"
+            [locationText]="'Latest news and tournament bracket updates'"
+            [iconPath]="'images/twitter.png'"
+            [url]="'https://twitter.com/SemoSmash'"
+            [sidebarStyle]="true"
+            [secondarySidebar]="true"></app-menu-card>
+        <app-menu-card [headerText]="'Follow MB on BlueSky'"
+            [timingText]="'Or don\'t. He doesn\'t really care as long as it\'s not Twitter.'"
+            [locationText]="'Fuck Elon Musk'"
+            [iconPath]="'images/Bluesky_Logo.png'"
+            [url]="'https://bsky.app/profile/mbsmash.bsky.social'"
+            [sidebarStyle]="true"
+            [secondarySidebar]="true">
+          <p>Stay updated with our latest news and events.</p>
+        </app-menu-card>
       </div>
     </div>
-  </div>
+  </ng-container>
+  <ng-template #desktopLayout>
+    <div class="community-layout">
+      <div class="community-sidebar">
+        <div class="community-sidebar-header">
+          <h2>SEMO Smash Community Groups</h2>
+        </div>
+        <div class="community-cards-container">
+          <app-menu-card [headerText]="'Join our Discord Server'"
+              [timingText]="'News, chat, games and more'"
+              [locationText]="'Our community is most active on Discord'"
+              [iconPath]="'images/Discord-Symbol-White.png'"
+              [url]="'https://discord.gg/ye9zJAxda9'"
+              [sidebarStyle]="true"
+              [secondarySidebar]="true"></app-menu-card>
+          <app-menu-card [headerText]="'Join our Facebook Group'" 
+              [timingText]="'Community discussion group'"
+              [locationText]="'Event updates and local tournament talk'"
+              [iconPath]="'images/Facebook_Logo_Secondary.png'"
+              [url]="'https://www.facebook.com/groups/1038435794713688'"
+              [sidebarStyle]="true"
+              [secondarySidebar]="true"></app-menu-card>
+          <app-menu-card [headerText]="'Follow SEMO Smash  on Twitter'" 
+              [timingText]="'Quick updates and announcements'"
+              [locationText]="'Latest news and tournament bracket updates'"
+              [iconPath]="'images/twitter.png'"
+              [url]="'https://twitter.com/SemoSmash'"
+              [sidebarStyle]="true"
+              [secondarySidebar]="true"></app-menu-card>
+          <app-menu-card [headerText]="'Follow MB on BlueSky'"
+              [timingText]="'Or don\'t. He doesn\'t really care as long as it\'s not Twitter.'"
+              [locationText]="'Fuck Elon Musk'"
+              [iconPath]="'images/Bluesky_Logo.png'"
+              [url]="'https://bsky.app/profile/mbsmash.bsky.social'"
+              [sidebarStyle]="true"
+              [secondarySidebar]="true">
+            <p>Stay updated with our latest news and events.</p>
+          </app-menu-card>
+        </div>
+      </div>
+
+      <!-- Main content area -->
+      <div class="community-main-content">
+        <div class="community-section">
+          <h2>Community Hub</h2>
+          <div class="community-info-card">
+            <p>Welcome to the community hub! Check back here later for content from SEMO Smash community members. This feature is currently under construction.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
 </div>
