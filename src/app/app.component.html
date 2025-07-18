@@ -1,6 +1,6 @@
-<div class="app-container">
+<mat-sidenav-container class="app-container">
   <!-- Sidebar -->
-  <div class="sidebar-container">
+  <mat-sidenav #sidenav class="sidebar-container" [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile">
     <!-- Main navigation group -->
     <div class="sidebar-group sidebar-main">
       <app-menu-card 
@@ -65,11 +65,19 @@
         [sidebarStyle]="true">
       </app-menu-card>
     </div>
-  </div>
+  </mat-sidenav>
 
   <!-- Main content area -->
-  <div class="main-content">
-    <router-outlet></router-outlet>
-  </div>
-</div>
+  <mat-sidenav-content>
+    <mat-toolbar class="mobile-toolbar" *ngIf="isMobile">
+      <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>SEMO Smash Hub</span>
+    </mat-toolbar>
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
 <app-copyright></app-copyright>

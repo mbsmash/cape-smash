@@ -7,6 +7,8 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
 import { MatCardModule } from '@angular/material/card';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MenuCardComponent } from './menu-card/menu-card.component';
 import { StageListBansComponent } from './stage-list-bans/stage-list-bans.component';
 import { PowerRankingsComponent } from './power-rankings/power-rankings.component';
@@ -53,7 +55,9 @@ import { StreamingComponent } from './streaming/streaming.component';
     MatCardModule,
     HttpClientModule,
     MatFormFieldModule,
-    MatDividerModule // Add MatFormFieldModule to the imports array
+    MatDividerModule, // Add MatFormFieldModule to the imports array
+    MatSidenavModule,
+    MatToolbarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
