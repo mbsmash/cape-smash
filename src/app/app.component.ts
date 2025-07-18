@@ -8,6 +8,8 @@ import { NavigationEnd, Router } from '@angular/router';
 })
 export class AppComponent {
   title = 'cape-smash';
+  sidebarHiddenOnMobile = true;
+
   constructor(private router: Router) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -18,5 +20,15 @@ export class AppComponent {
         }
       }
     });
+  }
+
+  toggleSidebar() {
+    this.sidebarHiddenOnMobile = !this.sidebarHiddenOnMobile;
+  }
+
+  closeSidebarOnMobile() {
+    if (window.innerWidth <= 768 && !this.sidebarHiddenOnMobile) {
+      this.sidebarHiddenOnMobile = true;
+    }
   }
 }
