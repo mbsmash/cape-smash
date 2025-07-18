@@ -50,6 +50,8 @@ export class MenuCardComponent implements OnInit {
     
     if (this.url.startsWith('http')) {
       window.open(this.url, '_blank');
+    } else if (this.url.startsWith('mailto:')) {
+      window.location.href = this.url;
     } else {
       this.router.navigateByUrl(this.url);
     }

@@ -36,12 +36,18 @@
           [timingText]="'End of each season'"
           [locationText]="'Players listed on the SEMO PR or another regional PR in 2024 or 2025 not allowed to participate.'"
           [url]="'#'"
+          [isDisabled]="true"
+          [disabledStatusText]="'Coming End of Season'"
+          [disabledMessage]="'Stay tuned for updates!'"
           [sidebarStyle]="true"
           [secondarySidebar]="true"></app-menu-card>
       <app-menu-card [headerText]="'SEMO Smash Invitational'"
           [timingText]="'End of each season'"
           [locationText]="'Our top 12 ranked players make one final push to prove they deserve the top spot!'"
           [url]="'#'"
+          [isDisabled]="true"
+          [disabledStatusText]="'Coming End of Season'"
+          [disabledMessage]="'Stay tuned for updates!'"
           [sidebarStyle]="true"
           [secondarySidebar]="true"></app-menu-card>
     </div>
@@ -70,92 +76,15 @@
 
   <!-- Main content area -->
   <div class="tournaments-main-content">
-    <div class="results-section">
-      <h2>Recent Tournament Results</h2>
-      
-      <div *ngIf="loading" class="loading-message">
-        <p>Loading tournament results...</p>
-      </div>
-      
-      <div *ngIf="!loading && tournamentResults.length === 0" class="no-results-message">
-        <p>No tournament results available yet. Import tournaments from start.gg to see results here.</p>
-      </div>
-      
-      <div *ngIf="!loading && tournamentResults.length > 0" class="tournament-results-container">
-        <div *ngFor="let tournament of tournamentResults" class="tournament-result-card">
-          <div class="tournament-header">
-            <h3>{{ tournament.tournamentName }}</h3>
-            <span class="tournament-date">{{ formatDate(tournament.date) }}</span>
-          </div>
-          
-          <div class="round-groups-container" *ngIf="tournament.roundGroups.length > 0">
-            <div *ngFor="let roundGroupRow of groupRoundsForDisplay(tournament.roundGroups)" class="round-group-row">
-              <div *ngFor="let roundGroup of roundGroupRow" class="round-group" 
-                   [class.side-by-side]="roundGroupRow.length > 1">
-                <div class="round-header">
-                  <h4>{{ roundGroup.roundName }}</h4>
-                </div>
-                
-                <div class="sets-list" *ngIf="roundGroup.sets.length > 0">
-                  <div *ngFor="let set of roundGroup.sets" class="set-result">
-                    <div class="match-layout">
-                      <!-- Left Player -->
-                      <div class="player-section left-player" [class.winner]="set.winner === set.player1">
-                        <div class="player-sponsor" *ngIf="getSponsor(set.player1)">{{ getSponsor(set.player1) }}</div>
-                        <div class="player-name">{{ getPlayerNameWithoutSponsor(set.player1) }}</div>
-                        <div class="player-score">{{ getPlayerScore(set, set.player1) }}</div>
-                      </div>
-                      
-                      <!-- VS Section -->
-                      <div class="vs-section">
-                        <span class="vs-text">vs</span>
-                      </div>
-                      
-                      <!-- Right Player -->
-                      <div class="player-section right-player" [class.winner]="set.winner === set.player2">
-                        <div class="player-score">{{ getPlayerScore(set, set.player2) }}</div>
-                        <div class="player-sponsor" *ngIf="getSponsor(set.player2)">{{ getSponsor(set.player2) }}</div>
-                        <div class="player-name">{{ getPlayerNameWithoutSponsor(set.player2) }}</div>
-                      </div>
-                    </div>
-                    
-                    <!-- Best of X -->
-                    <div class="match-footer">
-                      <div class="best-of" *ngIf="set.totalGames">Best of {{ set.totalGames }}</div>
-                      <a *ngIf="set.vodUrl" [href]="set.vodUrl" target="_blank" class="vod-link">📺 VOD</a>
-                    </div>
-                    
-                    <!-- Game-by-game breakdown -->
-                    <div *ngIf="set.games && set.games.length > 0" class="games-breakdown">
-                      <div class="games-header">Game Details:</div>
-                      <div *ngFor="let game of set.games" class="game-result">
-                        <div class="game-info">
-                          <span class="game-number">Game {{ game.orderNum }}:</span>
-                          <span class="game-score">{{ game.player1Score }} - {{ game.player2Score }}</span>
-                        </div>
-                        <div *ngIf="game.player1Characters?.length || game.player2Characters?.length" class="character-info">
-                          <div *ngIf="game.player1Characters?.length" class="character-selection">
-                            <strong>{{ set.player1 }}:</strong> {{ game.player1Characters!.join(', ') }}
-                          </div>
-                          <div *ngIf="game.player2Characters?.length" class="character-selection">
-                            <strong>{{ set.player2 }}:</strong> {{ game.player2Characters!.join(', ') }}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div *ngIf="roundGroup.sets.length === 0" class="no-sets-message">
-                  <p>No sets in this round.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div *ngIf="tournament.roundGroups.length === 0" class="no-sets-message">
-            <p>No round data available for this tournament.</p>
-          </div>
+    <div class="coming-soon-section">
+      <div class="simple-minecraft-banner">
+        <div class="steve-container">
+          <img src="../../images/assets_task_01jzs43zsxfqyaxvx5bahdtcp4_1752116183_img_0.webp" alt="Minecraft Steve" class="steve-sprite"/>
+        </div>
+        <div class="simple-text">
+          <h2>Tournament Results Coming Soon!</h2>
+          <p>Steve is hard at work mining tournament results.</p>
+          <p>Click the block to give Steve one moral support.</p>
         </div>
       </div>
     </div>
