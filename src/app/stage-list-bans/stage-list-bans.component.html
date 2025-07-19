@@ -1,15 +1,21 @@
 <div class="top-half-container">
+  <div class="stage-list__banner">
+    BAN PHASE: You may ban up to three stages you don't wish to play on.
+  </div>
+  <div class="bans-indicator">
+    Bans Used: <span>{{ bannedList.length }}/3</span>
+  </div>
+  <div class="banner-buttons">
+    <button (click)="resetBanList()">RESET</button>
+    <button (click)="handleNoBans()">NO BANS</button>
+  </div>
   <div class="stage-list__container">
     Tap a stage to ban.
-    <div class="stage-list__header">
-      <button class="reset-bans-button" (click)="resetBanList()">Reset Bans</button>
-    </div>
     <ng-container *ngFor="let stage of starterStages">
       <app-stage-card
         [stage]="stage"
         (stageBanned)="handleStageBanned($event)"
-        (stageUnbanned)="handleStageUnbanned($event)"
-      >
+        (stageUnbanned)="handleStageUnbanned($event)">
       </app-stage-card>
     </ng-container>
   </div>

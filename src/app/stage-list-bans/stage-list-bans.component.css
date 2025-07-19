@@ -30,6 +30,37 @@
 }
 
 @media screen and (max-width: 768px) {
+  .top-half-container {
+    padding: 8px 4px;
+    margin-bottom: 8px;
+  }
+  .stage-list__banner {
+    font-size: 1em;
+    padding: 8px 6px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .bans-indicator {
+    font-size: 0.95em;
+    padding: 4px 8px;
+    margin: 6px 0;
+  }
+  .banner-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    margin: 0 auto 8px auto;
+  }
+  .banner-buttons button {
+    font-size: 1em;
+    padding: 8px 0;
+    width: 100%;
+    min-width: unset;
+    border-radius: 8px;
+  }
+
   .stage-list__container {
     display: flex;
     flex-wrap: wrap;

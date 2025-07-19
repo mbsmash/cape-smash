@@ -4,12 +4,28 @@
       <h1>SEMO Smash Hub v2</h1>
     </div>
     <div class="welcome-content">
-      <div class="greeting-section">
-        <h2>Welcome to our new online portal!</h2>
-        <p>Explore the sidebar to dive into our community features!</p>
-        <p>Please note that this portal is under construction. Some features may not be fully implemented or work as intended. Thank you for your patience! </p>
-        <p>Any feedback or issues can be reported by using the Contact link in the sidebar or by contacting MB on Discord.</p>
+      <div *ngIf="liveVideoId; else showHomeContent" class="stream-embed-container">
+        <iframe
+          width="100%"
+          height="500"
+          [src]="('https://www.youtube.com/embed/' + liveVideoId + '?autoplay=1&mute=1') | safeUrl"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          title="SEMO Smash Live Stream">
+        </iframe>
       </div>
+      <ng-template #showHomeContent>
+        <div class="greeting-section">
+          <h2>Welcome to our new online portal!</h2>
+          <p>Explore the sidebar to dive into our community features!</p>
+          <p>Please note that this portal is under construction. Some features may not be fully implemented or work as intended. Thank you for your patience! </p>
+          <p>Any feedback or issues can be reported by using the Contact link in the sidebar or by contacting MB on Discord.</p>
+        </div>
+        <div class="stream-embed-container">
+          <p>No live stream is currently active.</p>
+        </div>
+      </ng-template>
     </div>
     <div class="welcome-footer">
       <p>What's new: site redesign!</p>

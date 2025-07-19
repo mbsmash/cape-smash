@@ -43,4 +43,9 @@ export class StageListBansComponent implements OnInit {
     this.counterpickStages = this.counterpickStages.map(stage => ({ ...stage, isBanned: false }));
   }
 
+  handleNoBans() {
+    this.resetBanList();
+    // Optionally, you could add logic here to disable further banning if needed
+  }
+
 }
