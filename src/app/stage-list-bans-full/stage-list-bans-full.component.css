@@ -42,13 +42,20 @@
 @media screen and (max-width: 1100px) {
   .stage-list__container {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 16px;
     margin: 0 auto;
-    max-width: 90vw;
+    max-width: 100%;
+  }
+
+  .stage-list__header {
+    padding: 8px 12px;
+    margin-bottom: 6px;
+  }
+
+  .stage-list__header-banner {
+    margin-bottom: 4px;
   }
 
   .stage-list__header-text {
@@ -72,9 +79,9 @@
   }
 
   mat-divider {
-    margin: 10px 0;
-    background-color: rgba(255,255,255,0.3);
-    height: 2px;
+    margin: 6px 0;
+    background-color: rgba(255,255,255,0.2);
+    height: 1px;
   }
 
   /* Responsive styles for mobile */
@@ -84,33 +91,63 @@
   }
 
   .ban-counter {
-    gap: 8px;
-    padding: 6px 12px;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .ban-counter-label,
   .ban-counter-count {
-    font-size: 0.8em;
+    font-size: 0.75em;
   }
 
   .ban-bullet {
-    width: 10px;
-    height: 10px;
+    width: 5px;
+    height: 5px;
   }
 
   .stage-list__mode-section {
-    gap: 12px;
+    gap: 4px;
   }
 
   /* Additional responsive styles for ban phase messages */
   .ban-phase-message--primary {
-    font-size: 1.1em;
-    padding: 10px 16px;
+    font-size: 0.85em;
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    text-transform: none;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    background: rgba(251, 191, 36, 0.15);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    color: #fbbf24;
   }
 
   .ban-phase-message--secondary {
     font-size: 0.95em;
     padding: 8px 16px;
+  }
+  
+  .stage-section-header {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin: 8px 0 4px 0;
+    padding: 0 16px;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  }
+  
+  .counterpick-info {
+    margin: 0 16px 6px 16px;
+    padding: 6px 10px;
+    font-size: 0.75em;
+    border-radius: 4px;
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
   }
 }
 
@@ -120,17 +157,17 @@
   background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.95) 100%);
   -webkit-backdrop-filter: blur(15px);
   backdrop-filter: blur(15px);
-  padding: 20px 30px;
-  border-bottom: 2px solid rgba(79, 70, 229, 0.4);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(79, 70, 229, 0.4);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
   z-index: 100;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
 }
 
 .stage-list__header-banner {
   display: flex;
   justify-content: center;
-  margin-bottom: 18px;
+  margin-bottom: 4px;
 }
 
 .stage-list__header-text {
@@ -281,10 +318,12 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.1);
+  padding: 10px 16px;
+  background: rgba(30, 30, 30, 0.8);
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 .ban-counter-label {
@@ -338,18 +377,19 @@
 }
 
 .ban-phase-message--primary {
-  font-size: 1.3em;
-  font-weight: 700;
+  font-size: 0.95em;
+  font-weight: 500;
   color: #fbbf24;
   border-color: rgba(251, 191, 36, 0.6);
   background: linear-gradient(135deg, rgba(220, 38, 38, 0.15) 0%, rgba(239, 68, 68, 0.15) 100%);
   box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
   text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-  text-transform: uppercase;
+  text-transform: none;
+  letter-spacing: 0.2px;
 }
 
 .ban-phase-message--secondary {
-  font-size: 1.1em;
+  font-size: 0.95em;
   font-weight: 400;
   color: #e5e7eb;
   border-color: rgba(229, 231, 235, 0.3);
@@ -449,7 +489,8 @@
 .main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 0;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
 }
 
 /* Animations */
@@ -481,4 +522,27 @@
     transform: scale(1); 
     box-shadow: 0 0 0 0 rgba(5, 150, 105, 0);
   }
+}
+
+@media screen and (max-width: 1100px) {
+  .stage-list__header-button-container {
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .stage-list__header-button {
+    padding: 8px 16px;
+    font-size: 0.9em;
+    min-width: 80px;
+    border-radius: 12px;
+    text-transform: none;
+    letter-spacing: 0.1px;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+    font-weight: 600;
+  }
+}
+
+.stage-list__header-button {
+  text-transform: none;
+  font-weight: 500;
+  letter-spacing: 0.2px;
 }

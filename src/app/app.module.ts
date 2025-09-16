@@ -10,7 +10,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MenuCardComponent } from './menu-card/menu-card.component';
-import { StageListBansComponent } from './stage-list-bans/stage-list-bans.component';
 import { PowerRankingsComponent } from './power-rankings/power-rankings.component';
 import { CommunityComponent } from './community/community.component';
 import { StageCardComponent } from './stage-card/stage-card.component';
@@ -34,7 +33,6 @@ import { SafeUrlPipe } from './safe-url.pipe';
     AppComponent,
     HomeComponent,
     MenuCardComponent,
-    StageListBansComponent,
     PowerRankingsComponent,
     CommunityComponent,
     StageCardComponent,

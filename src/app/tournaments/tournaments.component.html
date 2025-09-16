@@ -5,15 +5,18 @@
       <div class="tournaments-sidebar-header">
         <h2>Monthly SEMO Tournaments</h2>
       </div>
+      <div class="tournament-info-notice">
+        <p><strong>💡 Pro tip:</strong> Click any tournament name to view the most recent event on start.gg!</p>
+      </div>
       <div class="tournaments-cards-container">
         <app-menu-card [headerText]="'Raffle Rumble'"
-            [timingText]="'Second Saturday'"
+            [timingText]="'Typically second or third Saturday of the month (at times may vary)'"
             [locationText]="'STG Cards & Collectables in Cape Girardeau, MO'"
             [url]="'https://www.start.gg/raffle-rumble'"
             [sidebarStyle]="true"
             [secondarySidebar]="true"></app-menu-card>
         <app-menu-card [headerText]="'Kachow Kup'" 
-            [timingText]="'Last Friday each month'"
+            [timingText]="'New Saturday dates coming soon!'"
             [locationText]="'Above Common Grounds in Ste. Genevieve, MO'"
             [url]="'https://start.gg/kachow-kup'"
             [sidebarStyle]="true"
@@ -41,6 +44,16 @@
             [disabledMessage]="'Stay tuned for updates!'"
             [sidebarStyle]="true"
             [secondarySidebar]="true"></app-menu-card>
+        <app-menu-card [headerText]="'▓░e ▒B█▓░▓i▒na▓'"
+            [timingText]="'█▓░mi▒ ▓▓y█▓ ░nv▓▒▓▓▓o▓▓▓'"
+            [locationText]="'▒▓s ▓a▓▓me▓t'"
+            [url]="'#'"
+            [isDisabled]="true"
+            [disabledStatusText]="'▓░st▒m ▓▓rr▓pt▒d'"
+            [disabledMessage]="'▒▓s ▓a▓▓me▓t'"
+            [sidebarStyle]="true"
+            [secondarySidebar]="true"
+            [ngClass]="'glitched-event'"></app-menu-card>
       </div>
       <div class="tournaments-sidebar-header special-events-header">
         <h2>Conventions</h2>
@@ -59,6 +72,8 @@
             [timingText]="'Annual Comic Convention benefitting local charities'"
             [locationText]="'Perry Park Center in Perryville, MO'"
             [url]="'https://start.gg/heroes-for-kids'"
+            [isDisabled]="true"
+            [disabledStatusText]="'Check back next year!'"
             [sidebarStyle]="true"
             [secondarySidebar]="true"></app-menu-card>
       </div>
@@ -69,15 +84,18 @@
       <div class="tournaments-sidebar-header">
         <h2>Monthly SEMO Tournaments</h2>
       </div>
+      <div class="tournament-info-notice">
+        <p><strong>💡 Pro tip:</strong> Click any tournament name to view the most recent event on start.gg!</p>
+      </div>
       <div class="tournaments-cards-container">
         <app-menu-card [headerText]="'Raffle Rumble'"
-            [timingText]="'Second Saturday'"
+            [timingText]="'Typically second or third Saturday of the month (at times may vary)'"
             [locationText]="'STG Cards & Collectables in Cape Girardeau, MO'"
             [url]="'https://www.start.gg/raffle-rumble'"
             [sidebarStyle]="true"
             [secondarySidebar]="true"></app-menu-card>
         <app-menu-card [headerText]="'Kachow Kup'" 
-            [timingText]="'Last Friday each month'"
+            [timingText]="'New Saturday dates coming soon!'"
             [locationText]="'Above Common Grounds in Ste. Genevieve, MO'"
             [url]="'https://start.gg/kachow-kup'"
             [sidebarStyle]="true"
@@ -115,6 +133,16 @@
             [disabledMessage]="'Stay tuned for updates!'"
             [sidebarStyle]="true"
             [secondarySidebar]="true"></app-menu-card>
+        <app-menu-card [headerText]="'▓░e ▒B█▓░▓i▒na▓'"
+            [timingText]="'█▓░mi▒ ▓▓y█▓ ░nv▓▒▓▓▓o▓▓▓'"
+            [locationText]="'▒▓s ▓a▓▓me▓t'"
+            [url]="'#'"
+            [isDisabled]="true"
+            [disabledStatusText]="'█▓░mi▒ ▓▓y█▓ ░nv▓▒▓▓▓o▓▓▓'"
+            [disabledMessage]="'▒▓s ▓a▓▓me▓t'"
+            [sidebarStyle]="true"
+            [secondarySidebar]="true"
+            [ngClass]="'glitched-event'"></app-menu-card>
       </div>
       
       <div class="tournaments-sidebar-header special-events-header">
@@ -134,6 +162,9 @@
             [timingText]="'Annual Comic Convention benefitting local charities'"
             [locationText]="'Perry Park Center in Perryville, MO'"
             [url]="'https://start.gg/heroes-for-kids'"
+            [isDisabled]="true"
+            [disabledStatusText]="'Returning in 2026!'"
+            [disabledMessage]="'Check back next year!'"
             [sidebarStyle]="true"
             [secondarySidebar]="true"></app-menu-card>
       </div>
