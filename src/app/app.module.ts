@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -22,10 +22,20 @@ import { CopyrightComponent } from './copyright/copyright.component';
 import { BannerComponent } from './banner/banner.component';
 import { TournamentsComponent } from './tournaments/tournaments.component'; // Import MatFormFieldModule
 import { MatDividerModule } from '@angular/material/divider'; // Import MatDividerModule
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { StageListBansFullComponent } from './stage-list-bans-full/stage-list-bans-full.component';
 import { PlayerProfileComponent } from './player-profile/player-profile.component';
 import { StreamingComponent } from './streaming/streaming.component';
 import { SafeUrlPipe } from './safe-url.pipe';
+import { CompetitionViewComponent } from './competition-view/competition-view.component';
+import { CompetitionAdminComponent } from './competition-admin/competition-admin.component';
+import { LoginComponent } from './login/login.component';
+import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 
 
 @NgModule({
@@ -45,19 +55,30 @@ import { SafeUrlPipe } from './safe-url.pipe';
     StageListBansFullComponent,
     PlayerProfileComponent,
     StreamingComponent,
-    SafeUrlPipe
+    SafeUrlPipe,
+    CompetitionViewComponent,
+    CompetitionAdminComponent,
+    LoginComponent,
+    UnauthorizedComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,
+    ReactiveFormsModule,
     MatCardModule,
     HttpClientModule,
     MatFormFieldModule,
     MatDividerModule, // Add MatFormFieldModule to the imports array
     MatSidenavModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatInputModule,
+    MatIconModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

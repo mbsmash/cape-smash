@@ -1,0 +1,19 @@
+<div class="unauthorized-container">
+  <div class="unauthorized-content">
+    <mat-icon class="warning-icon">block</mat-icon>
+    <h1>Access Denied</h1>
+    <p class="message">You don't have permission to access this resource.</p>
+    <p class="details">Contact an administrator if you believe this is an error.</p>
+    
+    <div class="actions">
+      <button mat-raised-button color="primary" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Go Back
+      </button>
+      <button mat-stroked-button (click)="goHome()">
+        <mat-icon>home</mat-icon>
+        Home
+      </button>
+    </div>
+  </div>
+</div>

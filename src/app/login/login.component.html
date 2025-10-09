@@ -1,0 +1,78 @@
+<div class="login-container">
+  <div class="login-card">
+    <!-- Header -->
+    <div class="login-header">
+      <mat-icon class="login-icon">account_circle</mat-icon>
+      <h2>Login to Cape Smash</h2>
+      <p class="subtitle">Access the Fire Emblem: Three Houses Competition System</p>
+    </div>
+
+    <!-- Login Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" required>
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
+          Username is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required>
+        <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+          <mat-icon>{{hidePassword ? 'visibility' : 'visibility_off'}}</mat-icon>
+        </button>
+        <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+          Password is required
+        </mat-error>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" 
+              [disabled]="!loginForm.valid || isLoading" class="login-button">
+        <mat-spinner *ngIf="isLoading" diameter="20" class="spinner"></mat-spinner>
+        <span *ngIf="!isLoading">Login</span>
+        <span *ngIf="isLoading">Logging in...</span>
+      </button>
+    </form>
+
+    <!-- Test Accounts Section -->
+    <div class="test-accounts-section">
+      <mat-divider></mat-divider>
+      <h3>Test Accounts (Development Only)</h3>
+      <p class="test-info">Click to fill credentials or use Quick Login</p>
+      
+      <div class="test-accounts-grid">
+        <div *ngFor="let cred of testCredentials" class="test-account-card">
+          <div class="test-account-header">
+            <mat-icon [ngClass]="'role-icon role-' + cred.role.toLowerCase().replace(' ', '-')">
+              {{ getRoleIcon(cred.role) }}
+            </mat-icon>
+            <span class="role-name">{{ cred.role }}</span>
+          </div>
+          <div class="test-account-details">
+            <span class="username">{{ cred.username }}</span>
+            <button mat-stroked-button size="small" 
+                    (click)="fillCredentials(cred.username, cred.password)" 
+                    class="fill-button">
+              Fill Form
+            </button>
+            <button mat-flat-button color="accent" size="small" 
+                    (click)="quickLogin(cred.username)" 
+                    [disabled]="isLoading"
+                    class="quick-login-button">
+              Quick Login
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Development Note -->
+    <div class="dev-note">
+      <mat-icon>info</mat-icon>
+      <span>This is a development authentication system. In production, proper security measures would be implemented.</span>
+    </div>
+  </div>
+</div>

@@ -5,8 +5,9 @@
 export const environment = {
   production: false,
   // Token used for authenticating requests to start.gg GraphQL API
-  // Replace with your personal access token in a local environment file
-  startggApiToken: '5a0505fed115ae13321c19658dc8ea5a'
+  // For development, you can temporarily add your token here
+  // In production, this will be replaced during build process
+  startggApiToken: '032576e80b66070e0b094051d3282789'
 };
 
 /*

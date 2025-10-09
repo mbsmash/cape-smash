@@ -1,5 +1,21 @@
 <div class="topnav">
     <a routerLink="/">Home</a>
+    <a routerLink="/competition">Season 6 Competition</a>
+    <a routerLink="/competition-admin" *ngIf="canAccessAdmin()">Admin</a>
     <a href="mailto:mbsmashacct@gmail.com">Contact</a>
     <a href="https://github.com/mbsmash/cape-smash">Source Code</a>
+    
+    <!-- Authentication Section -->
+    <div class="auth-section">
+        <div *ngIf="currentUser$ | async as user; else loginSection" class="user-info">
+            <span class="user-display">{{ user.displayName }}</span>
+            <span class="user-role">{{ user.role }}</span>
+            <button mat-icon-button (click)="logout()" title="Logout">
+                <mat-icon>logout</mat-icon>
+            </button>
+        </div>
+        <ng-template #loginSection>
+            <a routerLink="/login" class="login-link">Login</a>
+        </ng-template>
+    </div>
 </div>

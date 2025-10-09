@@ -8,7 +8,11 @@ import { TournamentsComponent } from './tournaments/tournaments.component';
 import { StageListBansFullComponent } from './stage-list-bans-full/stage-list-bans-full.component';
 import { PlayerProfileComponent } from './player-profile/player-profile.component';
 import { StreamingComponent } from './streaming/streaming.component';
-
+import { CompetitionViewComponent } from './competition-view/competition-view.component';
+import { CompetitionAdminComponent } from './competition-admin/competition-admin.component';
+import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
+import { AdminGuard } from './guards/auth.guard';
+import { Permission } from '../models/user';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,6 +23,16 @@ const routes: Routes = [
   { path: 'stage-list-bans-full', component: StageListBansFullComponent},
   { path: 'player/:id', component: PlayerProfileComponent},
   { path: 'streaming', component: StreamingComponent},
+  { path: 'competition', component: CompetitionViewComponent},
+  { 
+    path: 'competition-admin', 
+    component: CompetitionAdminComponent,
+    canActivate: [AdminGuard],
+    data: { 
+      permissions: [Permission.VIEW_ADMIN_PANEL] 
+    }
+  },
+  { path: 'unauthorized', component: UnauthorizedComponent },
 ];
 
 @NgModule({

@@ -38,6 +38,14 @@
       </app-menu-card>
       
       <app-menu-card 
+        [headerText]="'Season 6 Competition'" 
+        [infoText]="'Follow the Three Houses competition and view standings!'"
+        [url]="'competition'"
+        [sidebarStyle]="true"
+        (menuCardClicked)="closeSidebarOnMobile()">
+      </app-menu-card>
+      
+      <app-menu-card 
         [headerText]="'Power Rankings'" 
         [infoText]="'See the top SEMO Smash players ranked by skill!'"
         [url]="'power-rankings'"

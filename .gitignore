@@ -41,6 +41,12 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Environment variables
+.env
+.env.local
+.env.production
+.env.*.local
+
 # images because they big
 /src/assets/
 .firebase/hosting.ZGlzdC9jYXBlLXNtYXNo.cache
