@@ -36,6 +36,14 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
   isImporting = false;
   selectedTournamentForViewing: string | null = null;
   
+  // Player Filtering
+  playerFilters = {
+    minEvents: 0,
+    maxEvents: null as number | null,
+    showAssigned: true,
+    showUnassigned: true
+  };
+  
   // Import Status
   importStatus: { type: 'success' | 'error' | 'warning', message: string, details?: string[] } | null = null;
   
@@ -79,6 +87,9 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     skillRating: number;
     confidence: number;
     displayRating: number;
+    top25Count?: number; // Number of tournaments where player finished in top 25%
+    consistencyRating?: number; // 0-100 rating based on performance consistency
+    totalEntrants?: number[]; // Track tournament sizes for percentage calculations
   }> = new Map();
 
   // Previous Tournament Import Management
@@ -150,6 +161,69 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadCurrentRules();
     this.loadRecentImports();
+    this.loadPersistedTournamentData();
+  }
+
+  // Tournament Data Persistence
+  private readonly STORAGE_KEY_TOURNAMENTS = 'cape-smash-rankings-tournaments';
+  private readonly STORAGE_KEY_PLAYERS_DATA = 'cape-smash-rankings-players';
+
+  /**
+   * Load persisted tournament data from localStorage
+   */
+  private loadPersistedTournamentData(): void {
+    try {
+      // Load tournaments
+      const tournamentsJson = localStorage.getItem(this.STORAGE_KEY_TOURNAMENTS);
+      if (tournamentsJson) {
+        const tournaments = JSON.parse(tournamentsJson) as TournamentData[];
+        this.rankingsTournaments = tournaments.map(t => ({
+          ...t,
+          importedAt: new Date(t.importedAt) // Convert back to Date object
+        }));
+        console.log(`📥 Loaded ${this.rankingsTournaments.length} persisted tournaments from localStorage`);
+      }
+
+      // Load player rankings data
+      const playersJson = localStorage.getItem(this.STORAGE_KEY_PLAYERS_DATA);
+      if (playersJson) {
+        const playersArray = JSON.parse(playersJson);
+        this.rankingsPlayersData = new Map(playersArray);
+        console.log(`📥 Loaded ${this.rankingsPlayersData.size} persisted player records from localStorage`);
+      }
+    } catch (error) {
+      console.error('❌ Error loading persisted tournament data:', error);
+      // Reset to empty state if loading fails
+      this.rankingsTournaments = [];
+      this.rankingsPlayersData = new Map();
+    }
+  }
+
+  /**
+   * Save tournament data to localStorage
+   */
+  private savePersistedTournamentData(): void {
+    try {
+      // Save tournaments
+      localStorage.setItem(this.STORAGE_KEY_TOURNAMENTS, JSON.stringify(this.rankingsTournaments));
+      
+      // Save player rankings data (convert Map to array for JSON serialization)
+      const playersArray = Array.from(this.rankingsPlayersData.entries());
+      localStorage.setItem(this.STORAGE_KEY_PLAYERS_DATA, JSON.stringify(playersArray));
+      
+      console.log(`💾 Saved ${this.rankingsTournaments.length} tournaments and ${this.rankingsPlayersData.size} player records to localStorage`);
+    } catch (error) {
+      console.error('❌ Error saving tournament data to localStorage:', error);
+    }
+  }
+
+  /**
+   * Clear all persisted data
+   */
+  private clearPersistedData(): void {
+    localStorage.removeItem(this.STORAGE_KEY_TOURNAMENTS);
+    localStorage.removeItem(this.STORAGE_KEY_PLAYERS_DATA);
+    console.log('🗑️ Cleared all persisted tournament data');
   }
 
   setActiveTab(tab: string): void {
@@ -417,7 +491,50 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
   }
 
   getImportedPlayers(): ImportedPlayer[] {
+    return this.getFilteredImportedPlayers();
+  }
+
+  getFilteredImportedPlayers(): ImportedPlayer[] {
+    const allPlayers = this.competitionService.getImportedPlayers();
+    
+    return allPlayers.filter(player => {
+      // Filter by number of events attended
+      const eventCount = player.tournaments.length;
+      if (eventCount < this.playerFilters.minEvents) return false;
+      if (this.playerFilters.maxEvents !== null && eventCount > this.playerFilters.maxEvents) return false;
+      
+      // Filter by assignment status
+      if (player.isAssigned && !this.playerFilters.showAssigned) return false;
+      if (!player.isAssigned && !this.playerFilters.showUnassigned) return false;
+      
+      return true;
+    });
+  }
+
+  getAllImportedPlayers(): ImportedPlayer[] {
     return this.competitionService.getImportedPlayers();
+  }
+
+  getMaxEventCount(): number {
+    const allPlayers = this.competitionService.getImportedPlayers();
+    if (allPlayers.length === 0) return 0;
+    return Math.max(...allPlayers.map(p => p.tournaments.length));
+  }
+
+  resetPlayerFilters(): void {
+    this.playerFilters = {
+      minEvents: 0,
+      maxEvents: null,
+      showAssigned: true,
+      showUnassigned: true
+    };
+  }
+
+  hasActiveFilters(): boolean {
+    return this.playerFilters.minEvents > 0 || 
+           this.playerFilters.maxEvents !== null || 
+           !this.playerFilters.showAssigned || 
+           !this.playerFilters.showUnassigned;
   }
 
   /**
@@ -449,7 +566,7 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
   }
 
   getUnassignedImportedPlayers(): ImportedPlayer[] {
-    return this.competitionService.getUnassignedImportedPlayers();
+    return this.getFilteredImportedPlayers().filter(p => !p.isAssigned);
   }
 
   saveRecentImports(): void {
@@ -1152,11 +1269,15 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     this.rankingsTournaments.push(tournamentData);
     this.updateRankingsPlayerData(tournamentData);
     this.recalculateRankings();
+    
+    // Save to localStorage
+    this.savePersistedTournamentData();
 
     this.setRankingsImportStatus('success', 'Tournament imported successfully!', [
       `${tournamentData.playerCount} players added`,
       `${tournamentData.events.length} events imported`,
-      'TrueSkill ratings updated'
+      'Performance rankings updated',
+      'Data saved locally'
     ]);
 
     // Clear form
@@ -1174,6 +1295,10 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
 
     this.rankingsTournaments = [];
     this.rankingsPlayersData.clear();
+    
+    // Clear persisted data
+    this.clearPersistedData();
+    
     this.setRankingsImportStatus('success', 'All rankings data cleared');
   }
 
@@ -1186,6 +1311,7 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     startAt: Date;
     numEntrants: number;
     matches?: any[];
+    events?: any[]; // Add events to the transformed object
     topPlacements?: Array<{playerName: string}>;
   }> {
     return this.rankingsTournaments.map(tournament => ({
@@ -1194,6 +1320,7 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
       startAt: new Date(tournament.importedAt),
       numEntrants: tournament.playerCount,
       matches: tournament.headToHeadMatrix,
+      events: tournament.events, // Include the events with sets data
       topPlacements: tournament.events[0]?.placement?.slice(0, 3).map(p => ({
         playerName: p.playerTag
       })) || []
@@ -1218,8 +1345,43 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
    * Get total number of matches across all tournaments
    */
   getTotalMatches(): number {
-    return this.rankingsTournaments.reduce((total, tournament) => 
-      total + (tournament.headToHeadMatrix?.length || 0), 0);
+    console.log('🎯 Getting total matches across all tournaments:', this.rankingsTournaments);
+    const total = this.rankingsTournaments.reduce((total, tournamentData) => {
+      // Count all sets from all events in each tournament
+      const tournamentSets = tournamentData.events?.reduce((eventTotal, event) => 
+        eventTotal + (event.sets?.length || 0), 0) || 0;
+      console.log(`📊 Tournament ${tournamentData.tournament?.name || 'Unknown'} contributes ${tournamentSets} matches`);
+      return total + tournamentSets;
+    }, 0);
+    console.log(`🎉 Total matches across all tournaments: ${total}`);
+    return total;
+  }
+
+  /**
+   * Get match count for a specific tournament
+   */
+  getTournamentMatchCount(tournamentData: any): number {
+    console.log('🎯 Getting match count for tournament:', tournamentData);
+    const matchCount = tournamentData.events?.reduce((total: number, event: any) => 
+      total + (event.sets?.length || 0), 0) || 0;
+    console.log(`📊 Tournament ${tournamentData.name || tournamentData.tournament?.name || 'Unknown'} has ${matchCount} total matches across ${tournamentData.events?.length || 0} events`);
+    
+    // If no matches found, log the structure for debugging
+    if (matchCount === 0) {
+      console.log('🐛 No matches found. Tournament structure:', {
+        hasEvents: !!tournamentData.events,
+        eventsLength: tournamentData.events?.length,
+        firstEvent: tournamentData.events?.[0],
+        eventsStructure: tournamentData.events?.map((e: any) => ({
+          id: e.id,
+          name: e.name,
+          setsLength: e.sets?.length,
+          hasSetsProp: 'sets' in e
+        }))
+      });
+    }
+    
+    return matchCount;
   }
 
   /**
@@ -1272,6 +1434,9 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
       // Normalize ratings and calculate confidence
       this.normalizeRatings();
 
+      // Save updated data to localStorage
+      this.savePersistedTournamentData();
+
       this.setRankingsImportStatus('success', 'Rankings recalculated successfully');
     } catch (error) {
       console.error('Error recalculating rankings:', error);
@@ -1292,6 +1457,9 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     // Recalculate everything
     this.recalculateRankings();
     
+    // Save updated data to localStorage
+    this.savePersistedTournamentData();
+    
     this.setRankingsImportStatus('success', 'Tournament removed and rankings updated');
   }
 
@@ -1305,18 +1473,75 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     tournaments: number;
     avgPlacement: number;
     bestPlacement: number;
+    top25Rate: number;
+    consistencyRating: number;
   }> {
-    const players = Array.from(this.rankingsPlayersData.entries()).map(([name, data]) => ({
-      playerName: name,
-      displayRating: data.displayRating,
-      confidence: data.confidence,
-      tournaments: data.tournaments,
-      avgPlacement: data.placements.length > 0 ? 
-        data.placements.reduce((sum, p) => sum + p, 0) / data.placements.length : 0,
-      bestPlacement: data.placements.length > 0 ? Math.min(...data.placements) : 0
-    }));
+    const players = Array.from(this.rankingsPlayersData.entries()).map(([name, data]) => {
+      const avgPlacement = data.placements.length > 0 ? 
+        data.placements.reduce((sum, p) => sum + p, 0) / data.placements.length : 0;
+      const bestPlacement = data.placements.length > 0 ? Math.min(...data.placements) : 0;
+      
+      // Calculate top 25% rate from stored data
+      const top25Rate = data.top25Count !== undefined && data.tournaments > 0 ? 
+        data.top25Count / data.tournaments : 0;
+      
+      // Use stored consistency rating or calculate from placement percentile
+      const consistencyRating = data.consistencyRating !== undefined ? 
+        data.consistencyRating : Math.max(0, 100 - (avgPlacement * 2)); // Simple fallback
+      
+      return {
+        playerName: name,
+        displayRating: data.displayRating,
+        confidence: data.confidence,
+        tournaments: data.tournaments,
+        avgPlacement,
+        bestPlacement,
+        top25Rate,
+        consistencyRating
+      };
+    });
 
-    return players.sort((a, b) => b.displayRating - a.displayRating);
+    // Sort by top 25% rate first, then by consistency rating
+    return players.sort((a, b) => {
+      if (a.top25Rate !== b.top25Rate) {
+        return b.top25Rate - a.top25Rate;
+      }
+      return b.consistencyRating - a.consistencyRating;
+    });
+  }
+
+  /**
+   * Get tournament-style ranking for a player at a given index
+   * Handles tied rankings properly (e.g., if two players are tied for 3rd, both show "3rd", next player shows "5th")
+   */
+  getTournamentRank(players: any[], currentIndex: number): string {
+    const currentPlayer = players[currentIndex];
+    
+    // Count how many players have strictly better performance
+    let rank = 1;
+    for (let i = 0; i < players.length; i++) {
+      const otherPlayer = players[i];
+      if (otherPlayer.top25Rate > currentPlayer.top25Rate || 
+          (otherPlayer.top25Rate === currentPlayer.top25Rate && 
+           otherPlayer.consistencyRating > currentPlayer.consistencyRating)) {
+        rank++;
+      }
+    }
+    
+    return this.formatOrdinal(rank);
+  }
+
+  /**
+   * Format number as ordinal (1st, 2nd, 3rd, 4th, etc.)
+   */
+  private formatOrdinal(num: number): string {
+    const j = num % 10;
+    const k = num % 100;
+    
+    if (j === 1 && k !== 11) return num + 'st';
+    if (j === 2 && k !== 12) return num + 'nd';
+    if (j === 3 && k !== 13) return num + 'rd';
+    return num + 'th';
   }
 
   /**
@@ -1338,7 +1563,10 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
           matches: 0,
           skillRating: 25.0, // Default TrueSkill rating
           confidence: 0.5, // Default confidence
-          displayRating: 25.0
+          displayRating: 25.0,
+          top25Count: 0,
+          consistencyRating: 50,
+          totalEntrants: []
         };
         this.rankingsPlayersData.set(player.tag, playerData);
       }
@@ -1346,7 +1574,26 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
       playerData.tournaments++;
       // Use the player's placement from their events or a default based on index
       const placement = player.events[0]?.placement || (index + 1);
+      const totalEntrants = player.events[0]?.totalEntrants || tournament.playerCount;
+      
       playerData.placements.push(placement);
+      playerData.totalEntrants = playerData.totalEntrants || [];
+      playerData.totalEntrants.push(totalEntrants);
+      
+      // Calculate if this was a top 25% finish
+      const top25Threshold = Math.ceil(totalEntrants * 0.25);
+      if (placement <= top25Threshold) {
+        playerData.top25Count = (playerData.top25Count || 0) + 1;
+      }
+      
+      // Update consistency rating based on placement percentile
+      const placementPercentile = ((totalEntrants - placement + 1) / totalEntrants);
+      const newConsistencyScore = placementPercentile * 100;
+      
+      // Average with existing consistency rating
+      const currentRating = playerData.consistencyRating || 50;
+      const tournamentCount = playerData.tournaments;
+      playerData.consistencyRating = (currentRating * (tournamentCount - 1) + newConsistencyScore) / tournamentCount;
     });
 
     // Also process any placement data that exists in events
@@ -1362,13 +1609,36 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
             matches: 0,
             skillRating: 25.0,
             confidence: 0.5,
-            displayRating: 25.0
+            displayRating: 25.0,
+            top25Count: 0,
+            consistencyRating: 50,
+            totalEntrants: []
           };
           this.rankingsPlayersData.set(placement.playerTag, playerData);
         }
 
         playerData.tournaments++;
         playerData.placements.push(placement.placement);
+        
+        // Track tournament size and calculate top 25% performance
+        const totalEntrants = event.numEntrants;
+        playerData.totalEntrants = playerData.totalEntrants || [];
+        playerData.totalEntrants.push(totalEntrants);
+        
+        // Calculate if this was a top 25% finish
+        const top25Threshold = Math.ceil(totalEntrants * 0.25);
+        if (placement.placement <= top25Threshold) {
+          playerData.top25Count = (playerData.top25Count || 0) + 1;
+        }
+        
+        // Update consistency rating based on placement percentile
+        const placementPercentile = ((totalEntrants - placement.placement + 1) / totalEntrants);
+        const newConsistencyScore = placementPercentile * 100;
+        
+        // Average with existing consistency rating
+        const currentRating = playerData.consistencyRating || 50;
+        const tournamentCount = playerData.tournaments;
+        playerData.consistencyRating = (currentRating * (tournamentCount - 1) + newConsistencyScore) / tournamentCount;
       });
     });
   }

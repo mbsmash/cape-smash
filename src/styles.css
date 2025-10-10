@@ -1,5 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
+/* Import custom fonts */
+@import url('./assets/fonts/fonts.css');
+
 * {
   margin: 0;
   padding: 0;
@@ -16,8 +19,67 @@ html, body {
 body { 
   margin: 0; 
   padding: 0;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: var(--font-body, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif);
   background-color: #1a1a1a;
+}
+
+/* Global font utilities */
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.font-ui {
+  font-family: var(--font-ui);
+}
+
+/* Enhanced typography for competitive gaming feel */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.competitive-title {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.ui-text {
+  font-family: var(--font-ui);
+  font-weight: 600;
+}
+
+/* Plantin-specific utility classes */
+.plantin-light {
+  font-family: 'Plantin', serif;
+  font-weight: 300;
+}
+
+.plantin-regular {
+  font-family: 'Plantin', serif;
+  font-weight: 400;
+}
+
+.plantin-italic {
+  font-family: 'Plantin', serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.plantin-semibold {
+  font-family: 'Plantin', serif;
+  font-weight: 600;
+}
+
+.plantin-bold-condensed {
+  font-family: 'Plantin', serif;
+  font-weight: 700;
 }
 
 body.hide-top-nav app-nav {

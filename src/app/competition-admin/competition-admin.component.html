@@ -97,7 +97,7 @@
       <div class="imported-players-summary">
         <div class="stats-grid">
           <div class="stat-card">
-            <span class="stat-value">{{ getImportedPlayers().length }}</span>
+            <span class="stat-value">{{ getAllImportedPlayers().length }}</span>
             <span class="stat-label">Total Imported</span>
           </div>
           <div class="stat-card">
@@ -107,6 +107,81 @@
           <div class="stat-card">
             <span class="stat-value">{{ getImportedPlayers().length - getUnassignedImportedPlayers().length }}</span>
             <span class="stat-label">Assigned</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value">{{ getImportedPlayers().length }}</span>
+            <span class="stat-label">Showing</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Player Filters -->
+      <div class="player-filters">
+        <div class="filter-header">
+          <h3>Filter Players</h3>
+          <div class="filter-status" *ngIf="hasActiveFilters()">
+            <span class="active-filter-badge">🔍 Filters Active</span>
+          </div>
+        </div>
+        <div class="filter-row">
+          <div class="filter-group">
+            <label>Events Attended:</label>
+            <div class="filter-range">
+              <div class="range-input">
+                <label for="minEvents">Min:</label>
+                <input 
+                  id="minEvents"
+                  type="number" 
+                  [(ngModel)]="playerFilters.minEvents"
+                  min="0" 
+                  [max]="getMaxEventCount()"
+                  class="form-control small"
+                  placeholder="0"
+                >
+              </div>
+              <div class="range-input">
+                <label for="maxEvents">Max:</label>
+                <input 
+                  id="maxEvents"
+                  type="number" 
+                  [(ngModel)]="playerFilters.maxEvents"
+                  [min]="playerFilters.minEvents" 
+                  [max]="getMaxEventCount()"
+                  class="form-control small"
+                  placeholder="No limit"
+                >
+              </div>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <label>Assignment Status:</label>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input 
+                  type="checkbox" 
+                  [(ngModel)]="playerFilters.showAssigned"
+                >
+                Show Assigned
+              </label>
+              <label class="checkbox-label">
+                <input 
+                  type="checkbox" 
+                  [(ngModel)]="playerFilters.showUnassigned"
+                >
+                Show Unassigned
+              </label>
+            </div>
+          </div>
+          
+          <div class="filter-actions">
+            <button 
+              class="btn btn-secondary btn-small"
+              (click)="resetPlayerFilters()"
+              title="Reset all filters"
+            >
+              🔄 Reset Filters
+            </button>
           </div>
         </div>
       </div>
@@ -535,8 +610,8 @@
     <div class="section">
       <h2>Rankings Data Management</h2>
       <p class="section-description">
-        Import tournament results to build training data for the rankings algorithm. 
-        Player placements and head-to-head records are tracked to calculate TrueSkill ratings.
+        Import tournament results to build training data for player performance analysis. 
+        Player placements are tracked to calculate Top 25% rates and consistency ratings.
       </p>
 
       <!-- Tournament Import Form -->
@@ -638,7 +713,7 @@
                   <div class="tournament-details">
                     <span class="tournament-date">{{ tournament.startAt | date:'shortDate' }}</span>
                     <span class="tournament-entrants">{{ tournament.numEntrants }} entrants</span>
-                    <span class="tournament-matches">{{ tournament.matches?.length || 0 }} matches</span>
+                    <span class="tournament-matches">{{ getTournamentMatchCount(tournament) }} matches</span>
                   </div>
                 </div>
                 <div class="tournament-actions">
@@ -659,15 +734,15 @@
 
         <!-- Player Rankings -->
         <div class="current-rankings" *ngIf="getRankingsPlayers().length > 0">
-          <h4>Current TrueSkill Rankings</h4>
+          <h4>Current Player Performance Rankings</h4>
           <div class="rankings-table-container">
             <table class="rankings-table">
               <thead>
                 <tr>
                   <th>Rank</th>
                   <th>Player</th>
-                  <th>TrueSkill Rating</th>
-                  <th>Confidence</th>
+                  <th>Top 25% Rate</th>
+                  <th>Consistency Rating</th>
                   <th>Tournaments</th>
                   <th>Avg. Placement</th>
                   <th>Best Placement</th>
@@ -675,14 +750,14 @@
               </thead>
               <tbody>
                 <tr *ngFor="let player of getRankedPlayers(); let i = index" 
-                    [class.high-skill]="player.displayRating > 30">
-                  <td><strong>{{ i + 1 }}</strong></td>
+                    [class.high-skill]="player.top25Rate > 0.5">
+                  <td><strong>{{ getTournamentRank(getRankedPlayers(), i) }}</strong></td>
                   <td class="player-name">{{ player.playerName }}</td>
-                  <td class="rating-value">{{ player.displayRating | number:'1.1-1' }}</td>
+                  <td class="rating-value">{{ (player.top25Rate * 100) | number:'1.0-0' }}%</td>
                   <td>
                     <div class="confidence-bar">
-                      <div class="confidence-fill" [style.width.%]="player.confidence * 100"></div>
-                      <span>{{ (player.confidence * 100) | number:'1.0-0' }}%</span>
+                      <div class="confidence-fill" [style.width.%]="player.consistencyRating"></div>
+                      <span>{{ player.consistencyRating | number:'1.0-0' }}/100</span>
                     </div>
                   </td>
                   <td>{{ player.tournaments }}</td>
@@ -702,125 +777,7 @@
         <p>Import your first tournament to start building training data for the rankings algorithm.</p>
       </div>
     </div>
-  </div>      <!-- Previous Tournament Events Import -->
-      <div class="previous-season-import-section">
-        <h3>Import Previous Tournament Events</h3>
-        <p class="section-description">
-          Import specific tournaments to establish baseline player skill ratings for house balancing. 
-          Select tournaments that represent previous competitive play to help ensure fair distribution when assigning players to houses.
-        </p>
-
-        <div class="tournament-selection">
-          <div class="form-row">
-            <div class="form-group">
-              <label for="baselineTournamentSelect">Select Tournament for Baseline Data:</label>
-              <select 
-                id="baselineTournamentSelect"
-                [(ngModel)]="selectedBaselineTournament"
-                class="form-control"
-                (change)="onBaselineTournamentSelect()">
-                <option value="">Choose from available tournaments...</option>
-                <option *ngFor="let tournament of getAvailableBaselineTournaments()" [value]="tournament.tournament.slug">
-                  {{ tournament.tournament.name }} ({{ tournament.playerCount }} players, {{ tournament.importedAt | date:'shortDate' }})
-                </option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="baselineSlug">Or Enter Start.gg Slug:</label>
-              <input 
-                type="text"
-                id="baselineSlug"
-                [(ngModel)]="manualBaselineSlug"
-                class="form-control"
-                placeholder="e.g., cape-cod-clash-2024"
-                (keyup.enter)="importBaselineTournament()">
-              <small class="form-help">Enter tournament slug to import as baseline data</small>
-            </div>
-          </div>
-
-          <div class="import-options">
-            <h4>Import Options</h4>
-            <div class="checkbox-group">
-              <label class="checkbox-label">
-                <input 
-                  type="checkbox" 
-                  [(ngModel)]="baselineImportOptions.calculateSkillRatings">
-                Calculate Skill Ratings from Results
-              </label>
-              <label class="checkbox-label">
-                <input 
-                  type="checkbox" 
-                  [(ngModel)]="baselineImportOptions.mergeWithExistingData">
-                Merge with Existing Rankings Data
-              </label>
-              <label class="checkbox-label">
-                <input 
-                  type="checkbox" 
-                  [(ngModel)]="baselineImportOptions.setAsBaseline">
-                Mark as Baseline Tournament
-              </label>
-            </div>
-          </div>
-
-          <div class="form-actions">
-            <button 
-              type="button" 
-              class="btn btn-primary" 
-              (click)="importBaselineTournament()"
-              [disabled]="!selectedBaselineTournament && !manualBaselineSlug">
-              <span>🏆</span> Import as Baseline Data
-            </button>
-            <button 
-              type="button" 
-              class="btn btn-secondary" 
-              (click)="previewBaselineImport()"
-              [disabled]="!selectedBaselineTournament && !manualBaselineSlug">
-              <span>👁️</span> Preview Import
-            </button>
-          </div>
-        </div>
-
-        <!-- Import Preview -->
-        <div class="import-preview" *ngIf="baselineImportPreview">
-          <h4>Import Preview</h4>
-          <div class="preview-summary">
-            <div class="preview-stats">
-              <div class="preview-stat">
-                <span class="stat-value">{{ baselineImportPreview.playerCount }}</span>
-                <span class="stat-label">Players</span>
-              </div>
-              <div class="preview-stat">
-                <span class="stat-value">{{ baselineImportPreview.eventCount }}</span>
-                <span class="stat-label">Events</span>
-              </div>
-              <div class="preview-stat">
-                <span class="stat-value">{{ baselineImportPreview.estimatedMatches }}</span>
-                <span class="stat-label">Estimated Matches</span>
-              </div>
-              <div class="preview-stat">
-                <span class="stat-value">{{ baselineImportPreview.newPlayers }}</span>
-                <span class="stat-label">New Players</span>
-              </div>
-            </div>
-            <div class="preview-events">
-              <h5>Tournament Details:</h5>
-              <div class="tournament-preview-card">
-                <div class="tournament-preview-name">{{ baselineImportPreview.tournamentName }}</div>
-                <div class="tournament-preview-details">
-                  <span>{{ baselineImportPreview.date | date:'fullDate' }}</span>
-                  <span>{{ baselineImportPreview.playerCount }} entrants</span>
-                </div>
-                <div class="tournament-preview-description">
-                  This tournament will be used to establish baseline skill ratings for {{ baselineImportPreview.newPlayers }} new players
-                  and update ratings for existing players.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-  <!-- Import Status -->
+  </div>
 
   <!-- Rules Tab -->
   <div class="tab-content" *ngIf="activeTab === 'rules'">

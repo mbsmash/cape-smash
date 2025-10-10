@@ -23,7 +23,8 @@ const routes: Routes = [
   { path: 'stage-list-bans-full', component: StageListBansFullComponent},
   { path: 'player/:id', component: PlayerProfileComponent},
   { path: 'streaming', component: StreamingComponent},
-  { path: 'competition', component: CompetitionViewComponent},
+  { path: 'season-6', component: CompetitionViewComponent},
+  { path: 'competition', redirectTo: '/season-6', pathMatch: 'full' }, // Redirect old URL
   { 
     path: 'competition-admin', 
     component: CompetitionAdminComponent,

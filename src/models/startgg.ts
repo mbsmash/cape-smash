@@ -8,6 +8,7 @@ export interface GgPlayer {
   id: number;
   tag: string;
   userId?: number; // start.gg user ID for player identification
+  placement?: number; // Tournament placement from bracket
 }
 
 export interface GgCharacter {
@@ -110,6 +111,9 @@ export interface PerformanceStats {
   averagePlacement: number;
   bestPlacement: number;
   worstPlacement: number;
+  top25Rate: number; // Percentage of tournaments where player finished in top 25%
+  consistencyRating: number; // Simple rating based on consistency (0-100)
+  tournamentCount: number; // Number of tournaments attended
 }
 
 export interface HeadToHeadRecord {
