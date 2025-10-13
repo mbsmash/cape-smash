@@ -66,7 +66,7 @@
 }
 
 /* Responsive adjustments for smaller laptop screens */
-@media screen and (max-width: 1400px) and (min-width: 769px) {
+@media screen and (max-width: 1400px) and (min-width: 768px) {
   .sidebar-container {
     width: 250px; /* Reduce main sidebar width */
   }
@@ -76,7 +76,7 @@
   }
 }
 
-@media screen and (max-width: 1200px) and (min-width: 769px) {
+@media screen and (max-width: 1200px) and (min-width: 768px) {
   .sidebar-container {
     width: 200px; /* Further reduce main sidebar width */
   }
@@ -208,4 +208,13 @@
     padding: 0;
     min-height: 100vh;
   }
+}
+
+/* Debugging styles */
+.sidebar-debug-test {
+  background: red;
+  color: white;
+  padding: 20px;
+  margin: 10px;
+  font-weight: bold;
 }

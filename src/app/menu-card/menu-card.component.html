@@ -1,6 +1,7 @@
 <div class="menu-card" (click)="onClick()" [class.sidebar-style]="sidebarStyle">
-  <mat-card *ngIf="!sidebarStyle" [style.backgroundImage]="'url(' + backgroundImage + ')'" [class.rip-theme]="isRip" [class.disabled-theme]="isDisabled">
-    <mat-card-content>
+  <!-- Basic card style -->
+  <div *ngIf="!sidebarStyle" class="basic-card" [class.rip-theme]="isRip" [class.disabled-theme]="isDisabled">
+    <div class="card-content">
       <p class="menu-card__header" [class.rip-header]="isRip" [class.disabled-header]="isDisabled">{{headerText}}</p>
       <p class="menu-card__info" [class.rip-info]="isRip" [class.disabled-info]="isDisabled">{{infoText}}</p>
       <div *ngIf="isRip" class="rip-overlay">
@@ -12,8 +13,8 @@
         <div class="disabled-text">{{disabledStatusText}}</div>
         <div class="disabled-message">{{disabledMessage}}</div>
       </div>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </div>
   
   <!-- Sidebar style -->
   <div *ngIf="sidebarStyle" 

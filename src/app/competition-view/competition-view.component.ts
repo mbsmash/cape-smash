@@ -1,10 +1,11 @@
 import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CompetitionService } from '../services/competition.service';
 import { AuthService } from '../services/auth.service';
+import { FirebaseService } from '../services/firebase.service';
 import { CompetitionSeason, House, CompetitionEvent, PlayerCompetitionStats } from '../../models/competition';
 
 export interface PollOption {
@@ -43,6 +44,7 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
   userSessionId: string = '';
   pollCountdown: string = '';
   private countdownInterval: any;
+  private pollSubscription: Subscription | null = null;
   
   // Secret portal variables
   private keySequence: string = '';
@@ -56,6 +58,7 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
   constructor(
     private competitionService: CompetitionService,
     private authService: AuthService,
+    private firebaseService: FirebaseService,
     private dialog: MatDialog,
     private router: Router,
     private snackBar: MatSnackBar
@@ -76,6 +79,9 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
     }
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
+    }
+    if (this.pollSubscription) {
+      this.pollSubscription.unsubscribe();
     }
   }
 
@@ -210,17 +216,45 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
     return 'session_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
   }
 
-  private loadHouseNamePoll() {
-    const savedPoll = localStorage.getItem('houseNamePoll');
-    if (savedPoll) {
-      this.houseNamePoll = JSON.parse(savedPoll);
-      // Ensure we have all 9 house options (in case new ones were added)
-      this.ensureAllHouseOptions();
-    } else {
-      this.createDefaultPoll();
+  private async loadHouseNamePoll() {
+    try {
+      // Try to load poll from Firebase first
+      const pollData = await this.firebaseService.getPoll('house-names-2025');
+      
+      if (pollData) {
+        // Convert Firebase data structure to our poll format
+        this.houseNamePoll = {
+          id: pollData.id,
+          title: pollData.title,
+          description: pollData.description,
+          isActive: pollData.isActive,
+          maxSelections: pollData.maxSelections,
+          endDate: pollData.endDate ? new Date(pollData.endDate) : undefined,
+          userVotes: [],
+          options: Object.keys(pollData.options || {}).map(optionId => ({
+            id: optionId,
+            name: pollData.options[optionId].name,
+            votes: pollData.options[optionId].votes || 0,
+            emblem: pollData.options[optionId].emblem,
+            color: pollData.options[optionId].color
+          }))
+        };
+      } else {
+        // Create default poll if none exists
+        await this.createDefaultPoll();
+      }
+      
+      // Subscribe to real-time updates
+      this.subscribeToPollChanges();
+      
+      // Check if user has already voted
+      await this.checkUserVoteStatus();
+      
+    } catch (error) {
+      console.error('Error loading poll from Firebase:', error);
+      // Fallback to localStorage for offline functionality
+      this.loadPollFromLocalStorage();
     }
-    
-    this.checkUserVoteStatus();
   }
 
   private ensureAllHouseOptions() {
@@ -256,7 +290,7 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
     this.savePoll();
   }
 
-  private createDefaultPoll() {
+  private async createDefaultPoll() {
     this.houseNamePoll = {
       id: 'house-names-2025',
       title: 'Choose the Three House Names for Season 6!',
@@ -331,15 +365,25 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    this.savePoll();
+    await this.savePoll();
   }
 
-  private checkUserVoteStatus() {
+  private async checkUserVoteStatus() {
     if (this.houseNamePoll) {
-      const userVotes = localStorage.getItem(`poll_votes_${this.houseNamePoll.id}_${this.userSessionId}`);
-      this.hasVoted = !!userVotes;
-      if (userVotes) {
-        this.houseNamePoll.userVotes = JSON.parse(userVotes);
+      try {
+        const userVotes = await this.firebaseService.getUserVotes(this.houseNamePoll.id, this.userSessionId);
+        this.hasVoted = !!userVotes;
+        if (userVotes) {
+          this.houseNamePoll.userVotes = userVotes;
+        }
+      } catch (error) {
+        console.error('Error checking vote status:', error);
+        // Fallback to localStorage
+        const localVotes = localStorage.getItem(`poll_votes_${this.houseNamePoll.id}_${this.userSessionId}`);
+        this.hasVoted = !!localVotes;
+        if (localVotes) {
+          this.houseNamePoll.userVotes = JSON.parse(localVotes);
+        }
       }
     }
   }
@@ -359,24 +403,57 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
     this.houseNamePoll.userVotes = currentVotes;
   }
 
-  submitPollVotes() {
+  async submitPollVotes() {
     if (!this.houseNamePoll || this.hasVoted || this.houseNamePoll.userVotes.length === 0) return;
 
-    this.houseNamePoll.userVotes.forEach(optionId => {
-      const option = this.houseNamePoll!.options.find(opt => opt.id === optionId);
-      if (option) {
-        option.votes++;
-      }
-    });
+    try {
+      // Submit votes to Firebase
+      await this.firebaseService.submitVote(
+        this.houseNamePoll.id, 
+        this.userSessionId, 
+        this.houseNamePoll.userVotes
+      );
 
-    localStorage.setItem(
-      `poll_votes_${this.houseNamePoll.id}_${this.userSessionId}`, 
-      JSON.stringify(this.houseNamePoll.userVotes)
-    );
+      // Update local state
+      this.hasVoted = true;
+      this.showPollResults = true;
 
-    this.hasVoted = true;
-    this.showPollResults = true;
-    this.savePoll();
+      // Also save to localStorage as backup
+      localStorage.setItem(
+        `poll_votes_${this.houseNamePoll.id}_${this.userSessionId}`, 
+        JSON.stringify(this.houseNamePoll.userVotes)
+      );
+
+      // Show success message
+      this.snackBar.open('Your votes have been submitted successfully!', 'Close', {
+        duration: 3000,
+        panelClass: ['success-snackbar']
+      });
+
+    } catch (error) {
+      console.error('Error submitting votes:', error);
+      
+      // Fallback to local storage for offline functionality
+      this.houseNamePoll.userVotes.forEach(optionId => {
+        const option = this.houseNamePoll!.options.find(opt => opt.id === optionId);
+        if (option) {
+          option.votes++;
+        }
+      });
+
+      localStorage.setItem(
+        `poll_votes_${this.houseNamePoll.id}_${this.userSessionId}`, 
+        JSON.stringify(this.houseNamePoll.userVotes)
+      );
+
+      this.hasVoted = true;
+      this.showPollResults = true;
+      
+      this.snackBar.open('Votes saved locally. Will sync when connection is restored.', 'Close', {
+        duration: 5000,
+        panelClass: ['warning-snackbar']
+      });
+    }
   }
 
   togglePollResults() {
@@ -407,9 +484,40 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  private savePoll() {
+  private async savePoll() {
     if (this.houseNamePoll) {
-      localStorage.setItem('houseNamePoll', JSON.stringify(this.houseNamePoll));
+      try {
+        // Convert poll data to Firebase format
+        const firebasePollData: any = {
+          id: this.houseNamePoll.id,
+          title: this.houseNamePoll.title,
+          description: this.houseNamePoll.description,
+          isActive: this.houseNamePoll.isActive,
+          maxSelections: this.houseNamePoll.maxSelections,
+          endDate: this.houseNamePoll.endDate?.toISOString(),
+          options: {}
+        };
+
+        // Convert options array to object for Firebase
+        this.houseNamePoll.options.forEach(option => {
+          firebasePollData.options[option.id] = {
+            name: option.name,
+            votes: option.votes || 0,
+            emblem: option.emblem,
+            color: option.color
+          };
+        });
+
+        await this.firebaseService.savePoll(this.houseNamePoll.id, firebasePollData);
+        
+        // Also save to localStorage as backup
+        localStorage.setItem('houseNamePoll', JSON.stringify(this.houseNamePoll));
+        
+      } catch (error) {
+        console.error('Error saving poll to Firebase:', error);
+        // Fallback to localStorage only
+        localStorage.setItem('houseNamePoll', JSON.stringify(this.houseNamePoll));
+      }
     }
   }
 
@@ -462,5 +570,105 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
     if (!this.houseNamePoll) return '';
     const option = this.houseNamePoll.options.find(opt => opt.id === optionId);
     return option ? option.emblem || '' : '';
+  }
+
+  private subscribeToPollChanges() {
+    if (this.pollSubscription) {
+      this.pollSubscription.unsubscribe();
+    }
+    
+    this.pollSubscription = this.firebaseService.listenToPollChanges('house-names-2025')
+      .subscribe({
+        next: (pollData) => {
+          if (pollData && this.houseNamePoll) {
+            // Update vote counts from Firebase
+            this.houseNamePoll.options.forEach(option => {
+              if (pollData.options && pollData.options[option.id]) {
+                option.votes = pollData.options[option.id].votes || 0;
+              }
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error listening to poll changes:', error);
+        }
+      });
+  }
+
+  private loadPollFromLocalStorage() {
+    const savedPoll = localStorage.getItem('houseNamePoll');
+    if (savedPoll) {
+      this.houseNamePoll = JSON.parse(savedPoll);
+      this.ensureAllHouseOptions();
+    } else {
+      this.createDefaultPoll();
+    }
+    this.checkUserVoteStatus();
+  }
+
+  // Admin method to reset poll (can be called from console for testing)
+  async resetPoll() {
+    if (this.houseNamePoll) {
+      try {
+        // Reset all vote counts to 0
+        this.houseNamePoll.options.forEach(option => {
+          option.votes = 0;
+        });
+
+        // Clear user votes
+        this.houseNamePoll.userVotes = [];
+        this.hasVoted = false;
+        this.showPollResults = false;
+
+        // Save the reset poll to Firebase
+        await this.savePoll();
+
+        // Clear local storage
+        localStorage.removeItem(`poll_votes_${this.houseNamePoll.id}_${this.userSessionId}`);
+        localStorage.removeItem('houseNamePoll');
+
+        console.log('Poll has been reset successfully');
+        
+        this.snackBar.open('Poll has been reset successfully', 'Close', {
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        });
+
+      } catch (error) {
+        console.error('Error resetting poll:', error);
+        this.snackBar.open('Error resetting poll', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+      }
+    }
+  }
+
+  // Method to sync local votes to Firebase (for offline-to-online scenarios)
+  async syncLocalVotesToFirebase() {
+    if (!this.houseNamePoll) return;
+
+    try {
+      const localVotes = localStorage.getItem(`poll_votes_${this.houseNamePoll.id}_${this.userSessionId}`);
+      
+      if (localVotes && !this.hasVoted) {
+        const votes = JSON.parse(localVotes);
+        
+        // Check if these votes are already recorded in Firebase
+        const firebaseVotes = await this.firebaseService.getUserVotes(this.houseNamePoll.id, this.userSessionId);
+        
+        if (!firebaseVotes) {
+          // Submit the local votes to Firebase
+          await this.firebaseService.submitVote(this.houseNamePoll.id, this.userSessionId, votes);
+          
+          this.hasVoted = true;
+          this.houseNamePoll.userVotes = votes;
+          
+          console.log('Local votes synced to Firebase successfully');
+        }
+      }
+    } catch (error) {
+      console.error('Error syncing local votes to Firebase:', error);
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
@@ -6,7 +6,7 @@ import { NavigationEnd, Router } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'cape-smash';
   sidebarHiddenOnMobile = true;
 
@@ -22,12 +22,15 @@ export class AppComponent {
     });
   }
 
-  toggleSidebar() {
+  ngOnInit() {
+  }
+
+  toggleSidebar(): void {
     this.sidebarHiddenOnMobile = !this.sidebarHiddenOnMobile;
   }
 
-  closeSidebarOnMobile() {
-    if (window.innerWidth <= 768 && !this.sidebarHiddenOnMobile) {
+  closeSidebarOnMobile(): void {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
       this.sidebarHiddenOnMobile = true;
     }
   }
