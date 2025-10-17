@@ -25,50 +25,95 @@
 
   <!-- Tab Navigation -->
   <div class="tab-navigation">
+    <!-- New Restructured Tabs -->
     <button 
-      class="tab-button" 
+      class="tab-button new-tab" 
+      [class.active]="activeTab === 'manage-houses'"
+      (click)="setActiveTab('manage-houses')"
+    >
+      Manage Houses
+    </button>
+    <button 
+      class="tab-button new-tab" 
+      [class.active]="activeTab === 'manage-season'"
+      (click)="setActiveTab('manage-season')"
+    >
+      Manage Current Season
+    </button>
+    <button 
+      class="tab-button new-tab" 
+      [class.active]="activeTab === 'import-tournaments'"
+      (click)="setActiveTab('import-tournaments')"
+    >
+      Import Tournaments
+    </button>
+    <button 
+      class="tab-button new-tab" 
+      [class.active]="activeTab === 'manage-players'"
+      (click)="setActiveTab('manage-players')"
+    >
+      Manage Players
+    </button>
+    <button 
+      class="tab-button new-tab" 
+      [class.active]="activeTab === 'house-sorting'"
+      (click)="setActiveTab('house-sorting')"
+    >
+      House Sorting
+    </button>
+    
+    <!-- Existing Tabs (to be gradually removed) -->
+    <button 
+      class="tab-button legacy-tab" 
       [class.active]="activeTab === 'assignments'"
       (click)="setActiveTab('assignments')"
     >
       Player Assignments
     </button>
     <button 
-      class="tab-button" 
+      class="tab-button legacy-tab" 
       [class.active]="activeTab === 'events'"
       (click)="setActiveTab('events')"
     >
       Manage Events
     </button>
     <button 
-      class="tab-button" 
+      class="tab-button legacy-tab" 
       [class.active]="activeTab === 'startgg'"
       (click)="setActiveTab('startgg')"
     >
       Import Tournaments
     </button>
     <button 
-      class="tab-button" 
+      class="tab-button legacy-tab" 
       [class.active]="activeTab === 'analytics'"
       (click)="setActiveTab('analytics')"
     >
       Tournament Analytics
     </button>
     <button 
-      class="tab-button" 
+      class="tab-button legacy-tab" 
       [class.active]="activeTab === 'houses'"
       (click)="setActiveTab('houses')"
     >
       Manage Houses
     </button>
     <button 
-      class="tab-button" 
+      class="tab-button legacy-tab" 
+      [class.active]="activeTab === 'sorting'"
+      (click)="setActiveTab('sorting')"
+    >
+      House Sorting
+    </button>
+    <button 
+      class="tab-button legacy-tab" 
       [class.active]="activeTab === 'rankings'"
       (click)="setActiveTab('rankings')"
     >
       Rankings Data
     </button>
     <button 
-      class="tab-button" 
+      class="tab-button legacy-tab" 
       [class.active]="activeTab === 'rules'"
       (click)="setActiveTab('rules')"
     >
@@ -76,6 +121,378 @@
     </button>
   </div>
 
+  <!-- New Restructured Tab Contents -->
+  
+  <!-- Manage Houses Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'manage-houses'">
+    <!-- Season Overview -->
+    <div class="section">
+      <h2>🏆 {{ season.name }} - House Overview</h2>
+      <div class="season-overview">
+        <div class="overview-stats">
+          <div class="stat-item">
+            <span class="stat-label">Total Players:</span>
+            <span class="stat-value">{{ getAssignedPlayersCount() }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Unassigned Players:</span>
+            <span class="stat-value">{{ getUnassignedPlayersCount() }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Total Events:</span>
+            <span class="stat-value">{{ season.events.length }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Active Houses:</span>
+            <span class="stat-value">{{ season.houses.length }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- House Competition Standings -->
+    <div class="section">
+      <h2>🏅 Current House Standings</h2>
+      <div class="house-standings">
+        <div class="standings-table">
+          <div class="standings-header">
+            <div class="rank-col">Rank</div>
+            <div class="house-col">House</div>
+            <div class="score-col">Score</div>
+            <div class="players-col">Players</div>
+            <div class="avg-rating-col">Avg Rating</div>
+            <div class="actions-col">Actions</div>
+          </div>
+          <div class="standings-row" 
+               *ngFor="let house of getSortedHousesByScore(); let i = index"
+               [style.border-left-color]="house.color">
+            <div class="rank-col">
+              <span class="rank-number" [class]="getRankClass(i)">{{ i + 1 }}</span>
+            </div>
+            <div class="house-col">
+              <div class="house-info">
+                <span class="house-emblem">{{ house.emblem }}</span>
+                <div class="house-details">
+                  <span class="house-name">{{ house.displayName }}</span>
+                  <span class="house-description">{{ house.description }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="score-col">
+              <span class="score-value">{{ house.points }}</span>
+              <span class="score-label">points</span>
+            </div>
+            <div class="players-col">
+              <span class="player-count">{{ getHousePlayerCount(house.id) }}</span>
+              <span class="player-label">players</span>
+            </div>
+            <div class="avg-rating-col">
+              <span class="rating-value">{{ getHouseAverageRating(house.id) | number:'1.0-0' }}</span>
+              <span class="rating-label">avg</span>
+            </div>
+            <div class="actions-col">
+              <button class="btn btn-small btn-secondary" 
+                      (click)="viewHouseDetails(house.id)">
+                View Details
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- House Management -->
+    <div class="section">
+      <h2>🏠 House Rosters & Management</h2>
+      <div class="houses-management">
+        <div class="house-card" 
+             *ngFor="let house of season.houses"
+             [style.border-color]="house.color">
+          
+          <!-- House Header -->
+          <div class="house-card-header" [style.background-color]="house.color + '20'">
+            <div class="house-title-section">
+              <div class="house-main-info">
+                <span class="house-emblem large">{{ house.emblem }}</span>
+                <div class="house-name-group">
+                  <h3 class="house-name">{{ house.displayName }}</h3>
+                  <p class="house-description">{{ house.description }}</p>
+                </div>
+              </div>
+              <div class="house-stats-summary">
+                <div class="stat-badge">
+                  <span class="stat-number">{{ house.points }}</span>
+                  <span class="stat-text">Points</span>
+                </div>
+                <div class="stat-badge">
+                  <span class="stat-number">{{ getHousePlayerCount(house.id) }}</span>
+                  <span class="stat-text">Players</span>
+                </div>
+                <div class="stat-badge">
+                  <span class="stat-number">{{ getHouseAverageRating(house.id) | number:'1.0-0' }}</span>
+                  <span class="stat-text">Avg Rating</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- House Roster -->
+          <div class="house-roster">
+            <div class="roster-header">
+              <h4>House Roster</h4>
+              <div class="roster-actions">
+                <button class="btn btn-small btn-secondary" 
+                        (click)="toggleAddPlayerMode(house.id)">
+                  <span *ngIf="!isAddingPlayerToHouse(house.id)">+ Add Player</span>
+                  <span *ngIf="isAddingPlayerToHouse(house.id)">Cancel</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Add Player Form -->
+            <div class="add-player-form" *ngIf="isAddingPlayerToHouse(house.id)">
+              <div class="form-row">
+                <div class="form-group">
+                  <select [(ngModel)]="selectedPlayerForHouse[house.id]" 
+                          class="form-control"
+                          [attr.aria-label]="'Select player to add to ' + house.displayName"
+                          title="Select a player to add to this house">
+                    <option [value]="undefined">Select a player to add...</option>
+                    <option *ngFor="let player of getUnassignedPlayers()" 
+                            [value]="player.id">
+                      {{ player.tag }} ({{ getPlayerRating(player) | number:'1.0-0' }} rating, {{ player.tournaments.length }} tournaments)
+                    </option>
+                  </select>
+                </div>
+                <div class="form-actions">
+                  <button class="btn btn-small btn-primary" 
+                          [disabled]="!selectedPlayerForHouse[house.id]"
+                          (click)="selectedPlayerForHouse[house.id] && addPlayerToHouse(house.id, selectedPlayerForHouse[house.id]!)">
+                    Add Player
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Current Players -->
+            <div class="current-players" *ngIf="getHousePlayers(house.id).length > 0; else noPlayersMessage">
+              <div class="player-row" 
+                   *ngFor="let player of getHousePlayers(house.id); trackBy: trackByPlayerId">
+                <div class="player-info">
+                  <div class="player-basic">
+                    <span class="player-name">{{ player.tag }}</span>
+                    <span class="player-rating">{{ getPlayerRating(player) | number:'1.0-0' }}</span>
+                  </div>
+                  <div class="player-details">
+                    <span class="tournament-count">{{ player.tournaments.length }} tournaments</span>
+                    <span class="join-date">Added: {{ player.firstImported | date:'MMM d, y' }}</span>
+                    <span class="last-seen">Last seen: {{ player.lastSeen | date:'MMM d, y' }}</span>
+                  </div>
+                </div>
+                <div class="player-actions">
+                  <button class="btn btn-small btn-info" 
+                          (click)="viewPlayerStats(player)"
+                          title="View player statistics">
+                    📊 Stats
+                  </button>
+                  <button class="btn btn-small btn-warning" 
+                          (click)="movePlayerToHouse(player.id)"
+                          title="Move to different house">
+                    🔄 Move
+                  </button>
+                  <button class="btn btn-small btn-danger" 
+                          (click)="removePlayerFromHouse(player.id)"
+                          title="Remove from house">
+                    ❌ Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <ng-template #noPlayersMessage>
+              <div class="no-players-message">
+                <div class="empty-roster">
+                  <span class="empty-icon">👥</span>
+                  <p>No players assigned to this house yet.</p>
+                  <button class="btn btn-primary" 
+                          (click)="toggleAddPlayerMode(house.id)"
+                          *ngIf="getUnassignedPlayers().length > 0">
+                    Add First Player
+                  </button>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manage Current Season Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'manage-season'">
+    <div class="placeholder-content">
+      <div class="placeholder-header">
+        <h2>🏆 Manage Current Season</h2>
+        <p>Coming soon - This will contain season management functionality</p>
+      </div>
+      <div class="placeholder-body">
+        <div class="placeholder-card">
+          <h3>Planned Features:</h3>
+          <ul>
+            <li>Season settings and configuration</li>
+            <li>Event management and scoring</li>
+            <li>Season rules and formulas</li>
+            <li>Season progress tracking</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Tournaments Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'import-tournaments'">
+    <div class="placeholder-content">
+      <div class="placeholder-header">
+        <h2>📥 Import Tournaments</h2>
+        <p>Coming soon - This will contain tournament import functionality</p>
+      </div>
+      <div class="placeholder-body">
+        <div class="placeholder-card">
+          <h3>Planned Features:</h3>
+          <ul>
+            <li>Import tournaments from Start.gg</li>
+            <li>Tournament data management</li>
+            <li>Match and set processing</li>
+            <li>Player performance tracking</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manage Players Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'manage-players'">
+    <div class="section">
+      <h2>👥 Manage Players</h2>
+      <div class="stats-overview">
+        <div class="stat-card">
+          <div class="stat-value">{{ season.importedPlayers.length }}</div>
+          <div class="stat-label">Total Players</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">{{ getAssignedPlayersCount() }}</div>
+          <div class="stat-label">Assigned</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">{{ getUnassignedPlayersCount() }}</div>
+          <div class="stat-label">Unassigned</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section">
+      <h2>⚡ Quick Actions</h2>
+      <div class="quick-actions">
+        <div class="action-group">
+          <h4>Player Management</h4>
+          <div class="action-buttons">
+            <button class="btn btn-secondary" 
+                    (click)="autoBalanceHouses()"
+                    [disabled]="getUnassignedPlayers().length === 0">
+              🎯 Auto-Balance Houses
+            </button>
+            <button class="btn btn-secondary" 
+                    (click)="shuffleUnassigned()"
+                    [disabled]="getUnassignedPlayers().length === 0">
+              🔀 Shuffle Unassigned
+            </button>
+            <button class="btn btn-warning" 
+                    (click)="clearAllAssignments()"
+                    [disabled]="getAssignedPlayersCount() === 0">
+              🗑️ Clear All Assignments
+            </button>
+          </div>
+        </div>
+        
+        <div class="action-group">
+          <h4>Data Management</h4>
+          <div class="action-buttons">
+            <button class="btn btn-info" 
+                    (click)="exportHouseData()">
+              📤 Export House Data
+            </button>
+            <button class="btn btn-success" 
+                    (click)="generateHouseReport()">
+              📊 Generate Report
+            </button>
+            <button class="btn btn-primary" 
+                    (click)="setActiveTab('import-tournaments')"
+                    *ngIf="season.importedPlayers.length === 0">
+              📥 Import Players
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Unassigned Players (if any) -->
+    <div class="section" *ngIf="getUnassignedPlayers().length > 0">
+      <h2>🏷️ Unassigned Players ({{ getUnassignedPlayers().length }})</h2>
+      <div class="unassigned-players-grid">
+        <div class="unassigned-player-card" 
+             *ngFor="let player of getUnassignedPlayers(); trackBy: trackByPlayerId">
+          <div class="player-summary">
+            <div class="player-name">{{ player.tag }}</div>
+            <div class="player-stats">
+              <span class="rating">{{ getPlayerRating(player) | number:'1.0-0' }} rating</span>
+              <span class="tournaments">{{ player.tournaments.length }} tournaments</span>
+            </div>
+          </div>
+          <div class="assignment-controls">
+            <select [(ngModel)]="player.tempHouseId" 
+                    class="house-select-compact"
+                    [attr.aria-label]="'Select house for ' + player.tag"
+                    title="Select house for this player">
+              <option [value]="undefined">Choose house...</option>
+              <option *ngFor="let house of season.houses" [value]="house.id">
+                {{ house.emblem }} {{ house.displayName }}
+              </option>
+            </select>
+            <button class="btn btn-small btn-primary" 
+                    [disabled]="!player.tempHouseId"
+                    (click)="assignPlayerToHouse(player.id, player.tempHouseId!)">
+              Assign
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- House Sorting Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'house-sorting'">
+    <div class="placeholder-content">
+      <div class="placeholder-header">
+        <h2>⚖️ House Sorting</h2>
+        <p>Coming soon - This will contain house sorting functionality</p>
+      </div>
+      <div class="placeholder-body">
+        <div class="placeholder-card">
+          <h3>Planned Features:</h3>
+          <ul>
+            <li>Smart player-to-house assignments</li>
+            <li>Balance recommendations</li>
+            <li>Auto-balancing algorithms</li>
+            <li>Sorting history and tracking</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legacy Tab Contents -->
+  
   <!-- Player Assignments Tab -->
   <div class="tab-content" *ngIf="activeTab === 'assignments'">
     <!-- Tournament viewing notification -->
@@ -600,6 +1017,241 @@
           <p><strong>Auto-Balance:</strong> Automatically distribute unassigned players to balance skill levels across houses.</p>
           <p><strong>Shuffle:</strong> Randomly reorder unassigned players to help with manual assignment.</p>
           <p><strong>Clear All:</strong> Remove all player assignments and start fresh.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- House Sorting Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'sorting'">
+    <div class="section">
+      <h2>🎯 House Sorting</h2>
+      <p class="section-description">
+        Sort new competitors into houses while maintaining balance. The system considers skill levels and existing house compositions.
+      </p>
+
+      <!-- Player Search -->
+      <div class="sorting-search-section">
+        <h3>Find Player to Sort</h3>
+        <div class="search-form">
+          <div class="form-group">
+            <label for="playerSearch">Search by Player Tag:</label>
+            <div class="search-input-group">
+              <input 
+                type="text"
+                id="playerSearch"
+                [(ngModel)]="sortingSearchQuery"
+                class="form-control"
+                placeholder="Enter player tag..."
+                (input)="onPlayerSearchInput()"
+                (keyup.enter)="searchForPlayer()">
+              <button 
+                type="button" 
+                class="btn btn-primary search-btn" 
+                (click)="searchForPlayer()"
+                [disabled]="!sortingSearchQuery.trim()"
+                title="Search for player">
+                🔍 Search
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search Results -->
+        <div class="search-results" *ngIf="sortingSearchResults.length > 0">
+          <h4>Search Results</h4>
+          <div class="search-results-list">
+            <div class="search-result-item" *ngFor="let player of sortingSearchResults">
+              <div class="player-info">
+                <span class="player-name">{{ player.tag }}</span>
+                <span class="player-rating" *ngIf="getPlayerRating(player) > 0">
+                  Rating: {{ getPlayerRating(player) | number:'1.0-0' }}
+                </span>
+                <span class="player-tournaments">{{ player.tournaments.length }} tournaments</span>
+                <span class="player-status" 
+                      [class.assigned]="player.isAssigned"
+                      [class.unassigned]="!player.isAssigned">
+                  {{ player.isAssigned ? 'Already Assigned' : 'Unassigned' }}
+                </span>
+              </div>
+              <div class="player-actions" *ngIf="!player.isAssigned">
+                <button class="btn btn-small btn-primary" 
+                        (click)="selectPlayerForSorting(player)">
+                  Select for Sorting
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- No Results -->
+        <div class="no-search-results" *ngIf="sortingSearchPerformed && sortingSearchResults.length === 0">
+          <div class="info-message">
+            <span class="info-icon">ℹ️</span>
+            <p>No players found matching "{{ sortingSearchQuery }}". Make sure the player has been imported from tournaments.</p>
+            <button class="btn btn-secondary" (click)="setActiveTab('startgg')">
+              Import Tournaments
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selected Player for Sorting -->
+      <div class="selected-player-section" *ngIf="selectedPlayerForSorting">
+        <h3>Player Selected for Sorting</h3>
+        <div class="selected-player-card">
+          <div class="player-details">
+            <h4>{{ selectedPlayerForSorting.tag }}</h4>
+            <div class="player-stats">
+              <div class="stat">
+                <span class="stat-label">Skill Rating:</span>
+                <span class="stat-value">{{ getPlayerRating(selectedPlayerForSorting) | number:'1.0-0' }}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Tournaments:</span>
+                <span class="stat-value">{{ selectedPlayerForSorting.tournaments.length }}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">High Level Player:</span>
+                <span class="stat-value" [class.high-level]="isHighLevelPlayer(selectedPlayerForSorting)">
+                  {{ isHighLevelPlayer(selectedPlayerForSorting) ? 'Yes' : 'No' }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="sorting-actions">
+            <button class="btn btn-secondary" (click)="clearSelectedPlayer()">
+              Cancel
+            </button>
+            <button class="btn btn-primary" (click)="performSmartSorting()">
+              🎯 Smart Sort
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- House Balance Preview -->
+      <div class="balance-preview-section" *ngIf="selectedPlayerForSorting && sortingRecommendation">
+        <h3>Sorting Recommendation</h3>
+        <div class="recommendation-card">
+          <div class="recommended-house">
+            <h4>Recommended: {{ sortingRecommendation.recommendedHouse.emblem }} {{ sortingRecommendation.recommendedHouse.displayName }}</h4>
+            <p class="recommendation-reason">{{ sortingRecommendation.reason }}</p>
+          </div>
+          
+          <div class="balance-impact">
+            <h5>Impact on House Balance:</h5>
+            <div class="house-balance-grid">
+              <div class="house-balance-item" *ngFor="let house of sortingRecommendation.balancePreview">
+                <div class="house-info">
+                  <span class="house-emblem">{{ house.emblem }}</span>
+                  <span class="house-name">{{ house.name }}</span>
+                </div>
+                <div class="balance-metrics">
+                  <div class="metric">
+                    <span class="metric-label">Players:</span>
+                    <span class="metric-value" 
+                          [class.recommended]="house.id === sortingRecommendation.recommendedHouse.id">
+                      {{ house.currentPlayers }} → {{ house.projectedPlayers }}
+                    </span>
+                  </div>
+                  <div class="metric">
+                    <span class="metric-label">Avg Rating:</span>
+                    <span class="metric-value"
+                          [class.recommended]="house.id === sortingRecommendation.recommendedHouse.id">
+                      {{ house.currentRating | number:'1.0-0' }} → {{ house.projectedRating | number:'1.0-0' }}
+                    </span>
+                  </div>
+                  <div class="metric">
+                    <span class="metric-label">Balance Score:</span>
+                    <span class="metric-value"
+                          [class.recommended]="house.id === sortingRecommendation.recommendedHouse.id">
+                      {{ house.balanceScore | number:'1.1-1' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="confirmation-actions">
+            <button class="btn btn-danger" (click)="clearSortingRecommendation()">
+              Cancel Sorting
+            </button>
+            <button class="btn btn-success" (click)="confirmSorting()">
+              ✅ Confirm Sorting
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current House Status -->
+      <div class="current-status-section">
+        <h3>Current House Status</h3>
+        <div class="status-cards">
+          <div class="status-card" *ngFor="let house of season.houses" 
+               [style.border-color]="house.color">
+            <div class="house-header">
+              <span class="house-emblem">{{ house.emblem }}</span>
+              <span class="house-name">{{ house.displayName }}</span>
+            </div>
+            <div class="house-metrics">
+              <div class="metric-row">
+                <span class="metric-label">Players:</span>
+                <span class="metric-value">{{ getHousePlayerCount(house.id) }}</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Avg Rating:</span>
+                <span class="metric-value">{{ getHouseAverageRating(house.id) | number:'1.0-0' }}</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">High Level Players:</span>
+                <span class="metric-value">{{ getHighLevelPlayerCount(house.id) }}</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Balance Score:</span>
+                <span class="metric-value">{{ getHouseBalanceScore(house.id) | number:'1.1-1' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sorting History -->
+      <div class="sorting-history-section" *ngIf="recentSortings.length > 0">
+        <h3>Recent Sortings</h3>
+        <div class="sorting-history-list">
+          <div class="sorting-history-item" *ngFor="let sorting of recentSortings | slice:0:10">
+            <div class="sorting-info">
+              <span class="player-name">{{ sorting.playerName }}</span>
+              <span class="sorted-to">→ {{ sorting.houseEmblem }} {{ sorting.houseName }}</span>
+              <span class="sorting-date">{{ sorting.sortedAt | date:'short' }}</span>
+            </div>
+            <div class="sorting-reason">
+              <small>{{ sorting.reason }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bulk Sorting Options -->
+      <div class="bulk-sorting-section" *ngIf="getUnassignedPlayers().length > 0">
+        <h3>Bulk Sorting Options</h3>
+        <div class="bulk-actions">
+          <button class="btn btn-secondary" (click)="sortAllUnassigned()">
+            🎯 Sort All Unassigned Players
+          </button>
+          <button class="btn btn-secondary" (click)="sortBySkillLevel()">
+            📊 Sort by Skill Level
+          </button>
+          <button class="btn btn-secondary" (click)="randomSort()">
+            🎲 Random Sort
+          </button>
+        </div>
+        <div class="bulk-description">
+          <p><strong>Sort All:</strong> Automatically sort all unassigned players using smart balancing algorithm.</p>
+          <p><strong>By Skill:</strong> Sort players prioritizing skill balance across houses.</p>
+          <p><strong>Random:</strong> Randomly distribute players while maintaining basic balance.</p>
         </div>
       </div>
     </div>

@@ -32,7 +32,7 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
   startggImportForm: FormGroup;
   
   // UI State
-  activeTab = 'assignments';
+  activeTab = 'manage-houses';
   isImporting = false;
   selectedTournamentForViewing: string | null = null;
   
@@ -109,6 +109,37 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     date: Date;
   } | null = null;
   
+  // House Sorting Properties
+  sortingSearchQuery: string = '';
+  sortingSearchResults: ImportedPlayer[] = [];
+  sortingSearchPerformed: boolean = false;
+  selectedPlayerForSorting: ImportedPlayer | null = null;
+  sortingRecommendation: {
+    recommendedHouse: House;
+    reason: string;
+    balancePreview: Array<{
+      id: number;
+      name: string;
+      emblem: string;
+      currentPlayers: number;
+      projectedPlayers: number;
+      currentRating: number;
+      projectedRating: number;
+      balanceScore: number;
+    }>;
+  } | null = null;
+  recentSortings: Array<{
+    playerName: string;
+    houseName: string;
+    houseEmblem: string;
+    sortedAt: Date;
+    reason: string;
+  }> = [];
+
+  // House Management Properties
+  selectedPlayerForHouse: { [houseId: number]: number | undefined } = {};
+  addingPlayerToHouseId: number | null = null;
+
   constructor(
     private competitionService: CompetitionService,
     private authService: AuthService,
@@ -382,6 +413,19 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
 
   goBackToCompetition(): void {
     this.logout(); // This will also log out the user
+  }
+
+  // Helper methods for template calculations
+  getAssignedPlayersCount(): number {
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return 0;
+    return season.importedPlayers.filter(p => p.isAssigned).length;
+  }
+
+  getUnassignedPlayersCount(): number {
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return 0;
+    return season.importedPlayers.filter(p => !p.isAssigned).length;
   }
 
   // ===== START.GG IMPORT METHODS =====
@@ -1848,5 +1892,596 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     this.selectedBaselineTournament = '';
     this.manualBaselineSlug = '';
     this.baselineImportPreview = null;
+  }
+
+  // House Sorting Methods
+  
+  onPlayerSearchInput(): void {
+    if (this.sortingSearchQuery.trim().length === 0) {
+      this.sortingSearchResults = [];
+      this.sortingSearchPerformed = false;
+    }
+  }
+
+  searchForPlayer(): void {
+    const query = this.sortingSearchQuery.trim().toLowerCase();
+    if (!query) return;
+
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return;
+
+    this.sortingSearchResults = season.importedPlayers.filter(player =>
+      player.tag.toLowerCase().includes(query)
+    );
+    this.sortingSearchPerformed = true;
+  }
+
+  selectPlayerForSorting(player: ImportedPlayer): void {
+    this.selectedPlayerForSorting = player;
+    this.sortingRecommendation = null;
+  }
+
+  clearSelectedPlayer(): void {
+    this.selectedPlayerForSorting = null;
+    this.sortingRecommendation = null;
+  }
+
+  isHighLevelPlayer(player: ImportedPlayer): boolean {
+    const rating = this.getPlayerRating(player);
+    // Consider high level if rating > 1500 or if player has many tournaments
+    return rating > 1500 || player.tournaments.length >= 5;
+  }
+
+  performSmartSorting(): void {
+    if (!this.selectedPlayerForSorting) return;
+
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return;
+
+    const recommendation = this.calculateBestHouseForPlayer(this.selectedPlayerForSorting, season);
+    this.sortingRecommendation = recommendation;
+  }
+
+  private calculateBestHouseForPlayer(player: ImportedPlayer, season: CompetitionSeason): {
+    recommendedHouse: House;
+    reason: string;
+    balancePreview: Array<{
+      id: number;
+      name: string;
+      emblem: string;
+      currentPlayers: number;
+      projectedPlayers: number;
+      currentRating: number;
+      projectedRating: number;
+      balanceScore: number;
+    }>;
+  } {
+    const playerRating = this.getPlayerRating(player);
+    const isHighLevel = this.isHighLevelPlayer(player);
+    
+    const houseAnalysis = season.houses.map(house => {
+      const currentPlayers = this.getHousePlayerCount(house.id);
+      const currentRating = this.getHouseAverageRating(house.id);
+      const highLevelCount = this.getHighLevelPlayerCount(house.id);
+      
+      // Calculate projected stats if this player joins
+      const projectedPlayers = currentPlayers + 1;
+      const projectedRating = currentPlayers === 0 
+        ? playerRating 
+        : (currentRating * currentPlayers + playerRating) / projectedPlayers;
+      
+      // Calculate balance score (lower is better)
+      const playerCountBalance = Math.abs(projectedPlayers - (season.importedPlayers.filter(p => p.isAssigned).length + 1) / 3);
+      const ratingBalance = Math.abs(projectedRating - 1200); // 1200 is assumed average
+      const highLevelBalance = isHighLevel ? highLevelCount + 1 : highLevelCount;
+      
+      const balanceScore = playerCountBalance * 0.4 + (ratingBalance / 100) * 0.4 + highLevelBalance * 0.2;
+      
+      return {
+        house,
+        currentPlayers,
+        projectedPlayers,
+        currentRating,
+        projectedRating,
+        balanceScore,
+        highLevelCount
+      };
+    });
+
+    // Find house with best balance score
+    const bestHouse = houseAnalysis.reduce((best, current) => 
+      current.balanceScore < best.balanceScore ? current : best
+    );
+
+    // Generate reason
+    let reason = '';
+    if (bestHouse.currentPlayers < houseAnalysis[0].currentPlayers && bestHouse.currentPlayers < houseAnalysis[1].currentPlayers) {
+      reason = 'Balances player count across houses';
+    } else if (isHighLevel && bestHouse.highLevelCount < 2) {
+      reason = 'Distributes high-level players evenly';
+    } else if (Math.abs(bestHouse.projectedRating - 1200) < 100) {
+      reason = 'Maintains balanced skill levels';
+    } else {
+      reason = 'Optimizes overall house balance';
+    }
+
+    return {
+      recommendedHouse: bestHouse.house,
+      reason,
+      balancePreview: houseAnalysis.map(analysis => ({
+        id: analysis.house.id,
+        name: analysis.house.displayName,
+        emblem: analysis.house.emblem,
+        currentPlayers: analysis.currentPlayers,
+        projectedPlayers: analysis.projectedPlayers,
+        currentRating: analysis.currentRating,
+        projectedRating: analysis.projectedRating,
+        balanceScore: analysis.balanceScore
+      }))
+    };
+  }
+
+  confirmSorting(): void {
+    if (!this.selectedPlayerForSorting || !this.sortingRecommendation) return;
+
+    // Assign player to recommended house
+    this.assignPlayerToHouse(this.selectedPlayerForSorting.id, this.sortingRecommendation.recommendedHouse.id);
+
+    // Add to recent sortings
+    this.recentSortings.unshift({
+      playerName: this.selectedPlayerForSorting.tag,
+      houseName: this.sortingRecommendation.recommendedHouse.displayName,
+      houseEmblem: this.sortingRecommendation.recommendedHouse.emblem,
+      sortedAt: new Date(),
+      reason: this.sortingRecommendation.reason
+    });
+
+    // Keep only last 20 sortings
+    this.recentSortings = this.recentSortings.slice(0, 20);
+
+    // Clear sorting state
+    this.clearSelectedPlayer();
+    this.sortingSearchQuery = '';
+    this.sortingSearchResults = [];
+    this.sortingSearchPerformed = false;
+  }
+
+  clearSortingRecommendation(): void {
+    this.sortingRecommendation = null;
+  }
+
+  getHighLevelPlayerCount(houseId: number): number {
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return 0;
+
+    return season.importedPlayers
+      .filter(player => player.isAssigned && player.assignedHouseId === houseId)
+      .filter(player => this.isHighLevelPlayer(player))
+      .length;
+  }
+
+  getHouseBalanceScore(houseId: number): number {
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return 0;
+
+    const playerCount = this.getHousePlayerCount(houseId);
+    const averageRating = this.getHouseAverageRating(houseId);
+    const highLevelCount = this.getHighLevelPlayerCount(houseId);
+    
+    const totalAssignedPlayers = season.importedPlayers.filter(p => p.isAssigned).length;
+    const targetPlayersPerHouse = totalAssignedPlayers / 3;
+    
+    const playerCountBalance = Math.abs(playerCount - targetPlayersPerHouse);
+    const ratingBalance = Math.abs(averageRating - 1200) / 100;
+    
+    return playerCountBalance * 0.5 + ratingBalance * 0.3 + highLevelCount * 0.2;
+  }
+
+  sortAllUnassigned(): void {
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return;
+
+    const unassignedPlayers = this.getUnassignedPlayers();
+    
+    // Sort players by skill level (highest first) for better balance
+    unassignedPlayers.sort((a, b) => this.getPlayerRating(b) - this.getPlayerRating(a));
+
+    for (const player of unassignedPlayers) {
+      const recommendation = this.calculateBestHouseForPlayer(player, season);
+      this.assignPlayerToHouse(player.id, recommendation.recommendedHouse.id);
+      
+      // Add to recent sortings
+      this.recentSortings.unshift({
+        playerName: player.tag,
+        houseName: recommendation.recommendedHouse.displayName,
+        houseEmblem: recommendation.recommendedHouse.emblem,
+        sortedAt: new Date(),
+        reason: 'Bulk sort - ' + recommendation.reason
+      });
+    }
+
+    // Keep only last 20 sortings
+    this.recentSortings = this.recentSortings.slice(0, 20);
+  }
+
+  sortBySkillLevel(): void {
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return;
+
+    const unassignedPlayers = this.getUnassignedPlayers();
+    
+    // Sort by skill level
+    unassignedPlayers.sort((a, b) => this.getPlayerRating(b) - this.getPlayerRating(a));
+
+    // Distribute in round-robin fashion to balance skill
+    const houses = [...season.houses];
+    let houseIndex = 0;
+
+    for (const player of unassignedPlayers) {
+      this.assignPlayerToHouse(player.id, houses[houseIndex].id);
+      
+      this.recentSortings.unshift({
+        playerName: player.tag,
+        houseName: houses[houseIndex].displayName,
+        houseEmblem: houses[houseIndex].emblem,
+        sortedAt: new Date(),
+        reason: 'Skill-based distribution'
+      });
+
+      houseIndex = (houseIndex + 1) % houses.length;
+    }
+
+    // Keep only last 20 sortings
+    this.recentSortings = this.recentSortings.slice(0, 20);
+  }
+
+  randomSort(): void {
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return;
+
+    const unassignedPlayers = this.getUnassignedPlayers();
+    
+    // Shuffle players array
+    for (let i = unassignedPlayers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [unassignedPlayers[i], unassignedPlayers[j]] = [unassignedPlayers[j], unassignedPlayers[i]];
+    }
+
+    // Distribute to houses with basic balance check
+    for (const player of unassignedPlayers) {
+      // Find house with fewest players for basic balance
+      const houseCounts = season.houses.map(house => ({
+        house,
+        count: this.getHousePlayerCount(house.id)
+      }));
+      
+      houseCounts.sort((a, b) => a.count - b.count);
+      const targetHouse = houseCounts[0].house;
+
+      this.assignPlayerToHouse(player.id, targetHouse.id);
+      
+      this.recentSortings.unshift({
+        playerName: player.tag,
+        houseName: targetHouse.displayName,
+        houseEmblem: targetHouse.emblem,
+        sortedAt: new Date(),
+        reason: 'Random assignment with balance'
+      });
+    }
+
+    // Keep only last 20 sortings
+    this.recentSortings = this.recentSortings.slice(0, 20);
+  }
+
+  // ===== MANAGE HOUSES TAB METHODS =====
+
+  /**
+   * Get houses sorted by their current score (highest first)
+   */
+  getSortedHousesByScore(): House[] {
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return [];
+    
+    return [...season.houses].sort((a, b) => b.points - a.points);
+  }
+
+  /**
+   * Get CSS class for house ranking position
+   */
+  getRankClass(index: number): string {
+    switch (index) {
+      case 0: return 'first-place';
+      case 1: return 'second-place';
+      case 2: return 'third-place';
+      default: return 'other-place';
+    }
+  }
+
+  /**
+   * View detailed information about a house
+   */
+  viewHouseDetails(houseId: number): void {
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return;
+    
+    const house = season.houses.find(h => h.id === houseId);
+    if (!house) return;
+    
+    const players = this.getHousePlayers(houseId);
+    const avgRating = this.getHouseAverageRating(houseId);
+    
+    let details = `🏠 ${house.emblem} ${house.displayName}\n\n`;
+    details += `📊 Current Score: ${house.points} points\n`;
+    details += `👥 Total Players: ${players.length}\n`;
+    details += `⭐ Average Rating: ${avgRating.toFixed(1)}\n`;
+    details += `📝 Description: ${house.description}\n\n`;
+    
+    if (players.length > 0) {
+      details += `Players:\n`;
+      players.forEach((player, index) => {
+        const rating = this.getPlayerRating(player);
+        details += `${index + 1}. ${player.tag} (${rating.toFixed(1)} rating)\n`;
+      });
+    } else {
+      details += `No players assigned yet.`;
+    }
+    
+    alert(details);
+  }
+
+  /**
+   * Toggle add player mode for a specific house
+   */
+  toggleAddPlayerMode(houseId: number): void {
+    if (this.addingPlayerToHouseId === houseId) {
+      this.addingPlayerToHouseId = null;
+      this.selectedPlayerForHouse[houseId] = undefined;
+    } else {
+      this.addingPlayerToHouseId = houseId;
+      // Clear other house selections
+      Object.keys(this.selectedPlayerForHouse).forEach(key => {
+        if (parseInt(key) !== houseId) {
+          this.selectedPlayerForHouse[parseInt(key)] = undefined;
+        }
+      });
+    }
+  }
+
+  /**
+   * Check if currently adding a player to a specific house
+   */
+  isAddingPlayerToHouse(houseId: number): boolean {
+    return this.addingPlayerToHouseId === houseId;
+  }
+
+  /**
+   * Add a player to a specific house
+   */
+  addPlayerToHouse(houseId: number, playerId: number): void {
+    if (!playerId) return;
+    
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return;
+    
+    const player = season.importedPlayers.find(p => p.id === playerId);
+    const house = season.houses.find(h => h.id === houseId);
+    
+    if (!player || !house) {
+      alert('Player or house not found');
+      return;
+    }
+    
+    if (player.isAssigned) {
+      alert('Player is already assigned to a house');
+      return;
+    }
+    
+    // Determine if this is a high-level player based on rating
+    const playerRating = this.getPlayerRating(player);
+    const isHighLevel = playerRating > 30; // You can adjust this threshold
+    
+    this.competitionService.assignImportedPlayerToHouse(playerId, houseId, isHighLevel);
+    
+    // Clear the selection and exit add mode
+    this.selectedPlayerForHouse[houseId] = undefined;
+    this.addingPlayerToHouseId = null;
+    
+    // Update the observable
+    this.currentSeason$ = this.competitionService.getCurrentSeason();
+    
+    alert(`✅ ${player.tag} has been added to ${house.displayName}!`);
+  }
+
+  /**
+   * Track function for ngFor performance
+   */
+  trackByPlayerId(index: number, player: ImportedPlayer): number {
+    return player.id;
+  }
+
+  /**
+   * View detailed stats for a player
+   */
+  viewPlayerStats(player: ImportedPlayer): void {
+    const rating = this.getPlayerRating(player);
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return;
+    
+    const house = season.houses.find(h => h.id === player.assignedHouseId);
+    
+    let stats = `📊 Player Statistics: ${player.tag}\n\n`;
+    stats += `⭐ Skill Rating: ${rating.toFixed(1)}\n`;
+    stats += `🏠 House: ${house ? `${house.emblem} ${house.displayName}` : 'None'}\n`;
+    stats += `🏆 Tournaments: ${player.tournaments.length}\n`;
+    stats += `📅 First Imported: ${player.firstImported.toLocaleDateString()}\n`;
+    stats += `👀 Last Seen: ${player.lastSeen.toLocaleDateString()}\n\n`;
+    
+    if (player.tournaments.length > 0) {
+      stats += `Tournament History:\n`;
+      player.tournaments.forEach((tournamentSlug, index) => {
+        const tournament = this.recentImports.find(imp => imp.tournament.slug === tournamentSlug);
+        const name = tournament ? tournament.tournament.name : tournamentSlug;
+        stats += `${index + 1}. ${name}\n`;
+      });
+    }
+    
+    alert(stats);
+  }
+
+  /**
+   * Move a player to a different house
+   */
+  movePlayerToHouse(playerId: number): void {
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return;
+    
+    const player = season.importedPlayers.find(p => p.id === playerId);
+    if (!player) return;
+    
+    const currentHouse = season.houses.find(h => h.id === player.assignedHouseId);
+    const otherHouses = season.houses.filter(h => h.id !== player.assignedHouseId);
+    
+    if (otherHouses.length === 0) {
+      alert('No other houses available to move to');
+      return;
+    }
+    
+    let houseOptions = 'Select a house to move to:\n\n';
+    otherHouses.forEach((house, index) => {
+      const playerCount = this.getHousePlayerCount(house.id);
+      const avgRating = this.getHouseAverageRating(house.id);
+      houseOptions += `${index + 1}. ${house.emblem} ${house.displayName} (${playerCount} players, ${avgRating.toFixed(1)} avg rating)\n`;
+    });
+    
+    const choice = prompt(`Move ${player.tag} from ${currentHouse?.displayName}?\n\n${houseOptions}\nEnter house number (1-${otherHouses.length}):`);
+    
+    if (choice) {
+      const houseIndex = parseInt(choice) - 1;
+      if (houseIndex >= 0 && houseIndex < otherHouses.length) {
+        const targetHouse = otherHouses[houseIndex];
+        
+        // Remove from current house
+        this.competitionService.removePlayerFromHouse(playerId);
+        
+        // Add to new house
+        const playerRating = this.getPlayerRating(player);
+        const isHighLevel = playerRating > 30;
+        this.competitionService.assignImportedPlayerToHouse(playerId, targetHouse.id, isHighLevel);
+        
+        // Update the observable
+        this.currentSeason$ = this.competitionService.getCurrentSeason();
+        
+        alert(`✅ ${player.tag} has been moved to ${targetHouse.displayName}!`);
+      } else {
+        alert('Invalid selection');
+      }
+    }
+  }
+
+  /**
+   * Export house data as JSON
+   */
+  exportHouseData(): void {
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return;
+    
+    const exportData = {
+      seasonName: season.name,
+      exportDate: new Date().toISOString(),
+      houses: season.houses.map(house => ({
+        id: house.id,
+        name: house.displayName,
+        emblem: house.emblem,
+        description: house.description,
+        points: house.points,
+        color: house.color,
+        players: this.getHousePlayers(house.id).map(player => ({
+          id: player.id,
+          tag: player.tag,
+          rating: this.getPlayerRating(player),
+          tournaments: player.tournaments.length,
+          firstImported: player.firstImported,
+          lastSeen: player.lastSeen
+        })),
+        playerCount: this.getHousePlayerCount(house.id),
+        averageRating: this.getHouseAverageRating(house.id)
+      })),
+      summary: {
+        totalPlayers: season.importedPlayers.filter(p => p.isAssigned).length,
+        unassignedPlayers: season.importedPlayers.filter(p => !p.isAssigned).length,
+        totalEvents: season.events.length,
+        activeHouses: season.houses.length
+      }
+    };
+    
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = `${season.name.replace(/\s+/g, '_')}_house_data_${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    
+    alert('📤 House data exported successfully!');
+  }
+
+  /**
+   * Generate a detailed house report
+   */
+  generateHouseReport(): void {
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return;
+    
+    let report = `🏆 ${season.name} - House Report\n`;
+    report += `Generated: ${new Date().toLocaleDateString()}\n`;
+    report += `═══════════════════════════════════════\n\n`;
+    
+    // Overall statistics
+    report += `📊 OVERALL STATISTICS\n`;
+    report += `Active Houses: ${season.houses.length}\n`;
+    report += `Total Players: ${season.importedPlayers.filter(p => p.isAssigned).length}\n`;
+    report += `Unassigned Players: ${season.importedPlayers.filter(p => !p.isAssigned).length}\n`;
+    report += `Total Events: ${season.events.length}\n\n`;
+    
+    // House standings
+    report += `🏅 HOUSE STANDINGS\n`;
+    const sortedHouses = this.getSortedHousesByScore();
+    sortedHouses.forEach((house, index) => {
+      const playerCount = this.getHousePlayerCount(house.id);
+      const avgRating = this.getHouseAverageRating(house.id);
+      report += `${index + 1}. ${house.emblem} ${house.displayName}: ${house.points} points (${playerCount} players, ${avgRating.toFixed(1)} avg rating)\n`;
+    });
+    report += `\n`;
+    
+    // Detailed house information
+    report += `🏠 DETAILED HOUSE INFORMATION\n`;
+    season.houses.forEach(house => {
+      const players = this.getHousePlayers(house.id);
+      const avgRating = this.getHouseAverageRating(house.id);
+      const rank = sortedHouses.findIndex(h => h.id === house.id) + 1;
+      
+      report += `\n${house.emblem} ${house.displayName} (Rank #${rank})\n`;
+      report += `Points: ${house.points} | Players: ${players.length} | Avg Rating: ${avgRating.toFixed(1)}\n`;
+      report += `Description: ${house.description}\n`;
+      
+      if (players.length > 0) {
+        report += `Roster:\n`;
+        players.forEach(player => {
+          const rating = this.getPlayerRating(player);
+          report += `  • ${player.tag} (${rating.toFixed(1)} rating, ${player.tournaments.length} tournaments)\n`;
+        });
+      } else {
+        report += `No players assigned.\n`;
+      }
+    });
+    
+    // Create and download the report
+    const reportBlob = new Blob([report], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(reportBlob);
+    link.download = `${season.name.replace(/\s+/g, '_')}_house_report_${new Date().toISOString().split('T')[0]}.txt`;
+    link.click();
+    
+    alert('📊 House report generated and downloaded!');
   }
 }
