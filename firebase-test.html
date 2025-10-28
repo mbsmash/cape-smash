@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firebase Voting Test</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+</head>
+<body>
+    <h1>Firebase Voting System Test</h1>
+    <div id="status">Testing connection...</div>
+    <div id="results"></div>
+    
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAg1GWmC7DUNTRtJiIu0yOhrJOFgvQxVOQ",
+            authDomain: "cape-ssbu-hub.firebaseapp.com",
+            projectId: "cape-ssbu-hub",
+            storageBucket: "gs://cape-ssbu-hub.appspot.com",
+            messagingSenderId: "646253006930",
+            appId: "1:646253006930:web:86c020fb89a87f87634f8b",
+            measurementId: "G-KZ9D8XB7J4",
+            databaseURL: "https://cape-ssbu-hub-default-rtdb.firebaseio.com/"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        async function testDatabaseAccess() {
+            try {
+                const statusEl = document.getElementById('status');
+                const resultsEl = document.getElementById('results');
+                
+                statusEl.innerHTML = 'Testing database read access...';
+                
+                // Test reading polls
+                const pollRef = database.ref('polls/house-names-2025');
+                const snapshot = await pollRef.once('value');
+                
+                if (snapshot.exists()) {
+                    statusEl.innerHTML = '<span style="color: green;">✅ Database read access successful!</span>';
+                    resultsEl.innerHTML = `<pre>${JSON.stringify(snapshot.val(), null, 2)}</pre>`;
+                } else {
+                    statusEl.innerHTML = '<span style="color: orange;">⚠️ Database accessible but no poll data found</span>';
+                    resultsEl.innerHTML = 'No poll data exists yet. This is normal for a new setup.';
+                }
+                
+                // Test write access
+                statusEl.innerHTML += '<br>Testing database write access...';
+                const testRef = database.ref('test/connection');
+                await testRef.set({
+                    timestamp: Date.now(),
+                    message: 'Test connection successful'
+                });
+                
+                statusEl.innerHTML += '<br><span style="color: green;">✅ Database write access successful!</span>';
+                
+                // Clean up test data
+                await testRef.remove();
+                
+            } catch (error) {
+                document.getElementById('status').innerHTML = `<span style="color: red;">❌ Error: ${error.message}</span>`;
+                console.error('Firebase test error:', error);
+            }
+        }
+        
+        // Run test when page loads
+        testDatabaseAccess();
+    </script>
+</body>
+</html>

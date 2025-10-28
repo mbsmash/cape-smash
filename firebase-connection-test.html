@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firebase Test</title>
+</head>
+<body>
+    <h1>Firebase Connection Test</h1>
+    <button id="testWrite">Test Write</button>
+    <button id="testRead">Test Read</button>
+    <div id="results"></div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
+        import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAg1GWmC7DUNTRtJiIu0yOhrJOFgvQxVOQ",
+            authDomain: "cape-ssbu-hub.firebaseapp.com",
+            projectId: "cape-ssbu-hub",
+            storageBucket: "gs://cape-ssbu-hub.appspot.com",
+            messagingSenderId: "646253006930",
+            appId: "1:646253006930:web:86c020fb89a87f87634f8b",
+            measurementId: "G-KZ9D8XB7J4",
+            databaseURL: "https://cape-ssbu-hub-default-rtdb.firebaseio.com/"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const results = document.getElementById('results');
+
+        document.getElementById('testWrite').addEventListener('click', async () => {
+            try {
+                const testRef = ref(database, 'test/basic');
+                await set(testRef, {
+                    message: 'Hello Firebase!',
+                    timestamp: Date.now()
+                });
+                results.innerHTML += '<p>✅ Write test successful</p>';
+            } catch (error) {
+                results.innerHTML += `<p>❌ Write test failed: ${error.message}</p>`;
+                console.error('Write error:', error);
+            }
+        });
+
+        document.getElementById('testRead').addEventListener('click', async () => {
+            try {
+                const testRef = ref(database, 'test/basic');
+                const snapshot = await get(testRef);
+                if (snapshot.exists()) {
+                    results.innerHTML += `<p>✅ Read test successful: ${JSON.stringify(snapshot.val())}</p>`;
+                } else {
+                    results.innerHTML += '<p>⚠️ No data found</p>';
+                }
+            } catch (error) {
+                results.innerHTML += `<p>❌ Read test failed: ${error.message}</p>`;
+                console.error('Read error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

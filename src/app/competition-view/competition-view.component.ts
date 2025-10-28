@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
+import { Component, OnInit, HostListener, OnDestroy, AfterViewInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -33,7 +33,7 @@ export interface HouseNamePoll {
   templateUrl: './competition-view.component.html',
   styleUrls: ['./competition-view.component.css']
 })
-export class CompetitionViewComponent implements OnInit, OnDestroy {
+export class CompetitionViewComponent implements OnInit, OnDestroy, AfterViewInit {
   currentSeason$: Observable<CompetitionSeason | null>;
   playerStats: PlayerCompetitionStats[] = [];
   
@@ -289,10 +289,20 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
       // Load unique voter count
       this.loadUniqueVoterCount();
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading poll from Firebase:', error);
-      // Fallback to localStorage for offline functionality
+      
+      // Show user-friendly error message
+      this.snackBar.open('Unable to connect to voting system. Please try again later.', 'Close', {
+        duration: 5000,
+        panelClass: ['error-snackbar']
+      });
+      
+      // Fallback to localStorage for offline functionality, but disable voting
       this.loadPollFromLocalStorage();
+      if (this.houseNamePoll) {
+        this.houseNamePoll.isActive = false; // Disable voting when offline
+      }
     }
   }
 
@@ -530,7 +540,10 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
           description: this.houseNamePoll.description,
           isActive: this.houseNamePoll.isActive,
           maxSelections: this.houseNamePoll.maxSelections,
-          endDate: this.houseNamePoll.endDate?.toISOString(),
+          endDate: this.houseNamePoll.endDate ? 
+            (this.houseNamePoll.endDate instanceof Date ? 
+              this.houseNamePoll.endDate.toISOString() : 
+              this.houseNamePoll.endDate) : null,
           options: {}
         };
 
@@ -668,6 +681,7 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
         this.houseNamePoll.userVotes = [];
         this.hasVoted = false;
         this.showPollResults = false;
+        this.totalUniqueVoters = 0;
 
         // Save the reset poll to Firebase
         await this.savePoll();
@@ -694,5 +708,11 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
         });
       }
     }
+  }
+
+  // Make component accessible from console for admin tasks
+  ngAfterViewInit() {
+    // Make component accessible from browser console for admin tasks
+    (window as any).pollAdmin = this;
   }
 }

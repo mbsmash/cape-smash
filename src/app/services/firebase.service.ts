@@ -55,8 +55,11 @@ export class FirebaseService {
       const pollRef = dbRef(this.database, `polls/${pollId}`);
       const snapshot = await get(pollRef);
       return snapshot.exists() ? snapshot.val() : null;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error getting poll: ", error);
+      if (error.code === 'PERMISSION_DENIED') {
+        throw new Error('Permission denied accessing poll data');
+      }
       throw error;
     }
   }
@@ -95,9 +98,17 @@ export class FirebaseService {
         });
       }
       
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting vote: ", error);
-      throw error;
+      
+      // Provide more specific error messages
+      if (error.code === 'PERMISSION_DENIED') {
+        throw new Error('Permission denied. Please check your connection and try again.');
+      } else if (error.message && error.message.includes('already voted')) {
+        throw error; // Re-throw the "already voted" error as-is
+      } else {
+        throw new Error('Failed to submit vote. Please check your connection and try again.');
+      }
     }
   }
 
