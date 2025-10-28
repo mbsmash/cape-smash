@@ -183,6 +183,7 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
 
     this.startggImportForm = this.fb.group({
       tournamentSlug: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9\-_]+$/)]],
+      importType: ['current-season', Validators.required],
       importEvents: [true],
       calculateRatings: [true],
       mergeWithExisting: [true]
@@ -436,6 +437,18 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     if (stored) {
       try {
         this.recentImports = JSON.parse(stored);
+        
+        // Handle legacy imports that don't have importType
+        this.recentImports.forEach(importData => {
+          if (!importData.importType) {
+            importData.importType = 'unclassified';
+          }
+        });
+        
+        // Save back to localStorage if we updated any imports
+        if (this.recentImports.some(imp => !imp.importType)) {
+          this.saveRecentImports();
+        }
       } catch (error) {
         console.warn('Failed to load recent imports:', error);
         this.recentImports = [];
@@ -479,6 +492,10 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     this.isImporting = false;
 
     if (result.success && result.data) {
+      // Set the import type based on the form value
+      const importType = this.startggImportForm.get('importType')?.value || 'unclassified';
+      result.data.importType = importType;
+
       this.importStatus = {
         type: 'success',
         message: result.message,
@@ -500,11 +517,20 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
         this.syncRealPlayersWithCompetition(result.data.tournament.slug, result.data.players);
       }
 
+      // Auto-handle based on import type
+      if (importType === 'current-season') {
+        // Automatically add to season events if it's a current season tournament
+        this.addToSeasonEvents(result.data);
+      } else if (importType === 'historic-data') {
+        // Automatically add to rankings data if it's historic data
+        this.addToRankingsData(result.data);
+      }
+
       // Reset form
       this.startggImportForm.patchValue({ tournamentSlug: '' });
 
-      // Auto-switch to analytics tab
-      this.setActiveTab('analytics');
+      // Stay on import tournaments tab to see the results
+      // this.setActiveTab('analytics');
     } else {
       this.importStatus = {
         type: 'error',
@@ -742,8 +768,27 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
   removeImport(importData: TournamentData): void {
     const index = this.recentImports.indexOf(importData);
     if (index > -1) {
+      // Remove players from this tournament and clean up orphaned players
+      this.competitionService.removePlayersFromTournament(importData.tournament.slug);
+      
+      // Remove from recent imports
       this.recentImports.splice(index, 1);
       this.saveRecentImports();
+
+      // Also remove from rankings data if it exists there
+      if (this.isInRankingsData(importData.tournament.slug)) {
+        this.removeRankingsTournament(importData.tournament.slug);
+      }
+
+      // Remove from season events if it exists there
+      const season = this.competitionService.getCurrentSeasonValue();
+      if (season && this.isAddedToSeason(importData.tournament.slug)) {
+        const eventIndex = season.events.findIndex(event => event.tournamentSlug === importData.tournament.slug);
+        if (eventIndex > -1) {
+          season.events.splice(eventIndex, 1);
+          this.competitionService.updateSeason(season);
+        }
+      }
 
       // Recalculate analytics if this was the current data source
       if (this.recentImports.length > 0) {
@@ -755,6 +800,8 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
         this.filteredHeadToHead = [];
         this.houseBalanceRecommendation = null;
       }
+
+      alert(`✅ Tournament "${importData.tournament.name}" has been removed along with any players who no longer have tournament data.`);
     }
   }
 
@@ -2483,5 +2530,265 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     link.click();
     
     alert('📊 House report generated and downloaded!');
+  }
+
+  // ===== IMPORT CATEGORIZATION METHODS =====
+
+  /**
+   * Get tournaments imported for current season
+   */
+  getCurrentSeasonImports(): TournamentData[] {
+    return this.recentImports.filter(imp => imp.importType === 'current-season');
+  }
+
+  /**
+   * Get tournaments imported for historic/rankings data
+   */
+  getHistoricImports(): TournamentData[] {
+    return this.recentImports.filter(imp => imp.importType === 'historic-data');
+  }
+
+  /**
+   * Get unclassified tournament imports
+   */
+  getUnclassifiedImports(): TournamentData[] {
+    return this.recentImports.filter(imp => !imp.importType || imp.importType === 'unclassified');
+  }
+
+  /**
+   * Check if tournament is already added to season events
+   */
+  isAddedToSeason(tournamentSlug: string): boolean {
+    const season = this.competitionService.getCurrentSeasonValue();
+    return season ? season.events.some(event => event.tournamentSlug === tournamentSlug) : false;
+  }
+
+  /**
+   * Check if tournament is already in rankings data
+   */
+  isInRankingsData(tournamentSlug: string): boolean {
+    return this.rankingsTournaments.some(rt => rt.tournament.slug === tournamentSlug);
+  }
+
+  /**
+   * Add tournament to season events
+   */
+  addToSeasonEvents(tournamentData: TournamentData): void {
+    if (this.isAddedToSeason(tournamentData.tournament.slug)) {
+      alert('Tournament is already added to season events');
+      return;
+    }
+
+    // Determine tournament date from the earliest event start time
+    const earliestEvent = tournamentData.events.reduce((earliest, event) => 
+      event.startAt < earliest.startAt ? event : earliest
+    );
+    const tournamentDate = new Date(earliestEvent.startAt * 1000);
+
+    // Tournament is completed if it was imported (data wouldn't exist if it wasn't)
+    const isCompleted = true;
+
+    // Initialize house points to 0 for all houses (will be calculated later)
+    const season = this.competitionService.getCurrentSeasonValue();
+    const housePoints: { [houseId: number]: number } = {};
+    if (season) {
+      season.houses.forEach(house => {
+        housePoints[house.id] = 0;
+      });
+    }
+
+    this.competitionService.addCompetitionEvent({
+      name: tournamentData.tournament.name,
+      type: 'tournament',
+      date: tournamentDate,
+      description: `Imported tournament: ${tournamentData.tournament.slug}`,
+      housePoints: housePoints,
+      isCompleted: isCompleted,
+      tournamentSlug: tournamentData.tournament.slug
+    });
+
+    // Update import type to current-season
+    tournamentData.importType = 'current-season';
+    this.saveRecentImports();
+
+    alert(`✅ "${tournamentData.tournament.name}" has been added to season events!`);
+  }
+
+  /**
+   * Add tournament to rankings data
+   */
+  addToRankingsData(tournamentData: TournamentData): void {
+    if (this.isInRankingsData(tournamentData.tournament.slug)) {
+      alert('Tournament is already in rankings data');
+      return;
+    }
+
+    // Add to rankings tournaments
+    this.rankingsTournaments.push(tournamentData);
+    this.updateRankingsPlayerData(tournamentData);
+    this.recalculateRankings();
+    
+    // Save to localStorage
+    this.savePersistedTournamentData();
+
+    // Update import type to historic-data
+    tournamentData.importType = 'historic-data';
+    this.saveRecentImports();
+
+    alert(`📊 "${tournamentData.tournament.name}" has been added to rankings data!`);
+  }
+
+  /**
+   * Classify unclassified tournament as current season
+   */
+  classifyAsCurrentSeason(tournamentData: TournamentData): void {
+    tournamentData.importType = 'current-season';
+    this.saveRecentImports();
+    this.addToSeasonEvents(tournamentData);
+  }
+
+  /**
+   * Classify unclassified tournament as historic data
+   */
+  classifyAsHistoric(tournamentData: TournamentData): void {
+    tournamentData.importType = 'historic-data';
+    this.saveRecentImports();
+    this.addToRankingsData(tournamentData);
+  }
+
+  /**
+   * Get comprehensive player statistics from tournament data
+   */
+  getPlayerStatistics(player: ImportedPlayer): {
+    tournamentsEntered: number;
+    winRate: number;
+    averagePlacement: number;
+    bestPlacement: number;
+    skillRating: number;
+    recentForm: string;
+    consistency: number;
+  } {
+    const stats = {
+      tournamentsEntered: player.tournaments.length,
+      winRate: 0,
+      averagePlacement: 0,
+      bestPlacement: 999,
+      skillRating: this.getPlayerRating(player),
+      recentForm: 'N/A',
+      consistency: 0
+    };
+
+    if (player.tournaments.length === 0) {
+      return stats;
+    }
+
+    // Find player performance data from imported tournament data
+    let totalWins = 0;
+    let totalSets = 0;
+    let placements: number[] = [];
+    let totalEntrants = 0;
+
+    // Search through all recent imports for this player's data
+    for (const importData of this.recentImports) {
+      const playerPerformance = importData.players.find(p => 
+        p.tag === player.tag || p.userId === player.startggUserId
+      );
+
+      if (playerPerformance) {
+        // Aggregate set win/loss data
+        totalWins += playerPerformance.overallStats.setsWon;
+        totalSets += playerPerformance.overallStats.setsWon + playerPerformance.overallStats.setsLost;
+
+        // Collect placement data
+        for (const eventPerf of playerPerformance.events) {
+          placements.push(eventPerf.placement);
+          totalEntrants += eventPerf.totalEntrants;
+        }
+      }
+    }
+
+    // Calculate win rate
+    if (totalSets > 0) {
+      stats.winRate = (totalWins / totalSets) * 100;
+    }
+
+    // Calculate placement statistics
+    if (placements.length > 0) {
+      stats.averagePlacement = placements.reduce((sum, p) => sum + p, 0) / placements.length;
+      stats.bestPlacement = Math.min(...placements);
+      
+      // Calculate consistency (inverse of placement variance)
+      const avgPlacement = stats.averagePlacement;
+      const variance = placements.reduce((sum, p) => sum + Math.pow(p - avgPlacement, 2), 0) / placements.length;
+      stats.consistency = Math.max(0, 100 - Math.sqrt(variance));
+    }
+
+    // Determine recent form
+    if (stats.winRate >= 70) {
+      stats.recentForm = 'Hot 🔥';
+    } else if (stats.winRate >= 50) {
+      stats.recentForm = 'Good 👍';
+    } else if (stats.winRate >= 30) {
+      stats.recentForm = 'Average ➖';
+    } else if (stats.winRate > 0) {
+      stats.recentForm = 'Cold ❄️';
+    }
+
+    return stats;
+  }
+
+  /**
+   * Get player's recent tournament performance trend
+   */
+  getPlayerTrend(player: ImportedPlayer): 'improving' | 'stable' | 'declining' {
+    // Find skill rating data
+    for (const importData of this.recentImports) {
+      const skillRating = importData.skillRatings.find(sr => 
+        sr.playerTag === player.tag
+      );
+      if (skillRating) {
+        return skillRating.trend;
+      }
+    }
+    return 'stable';
+  }
+
+  /**
+   * Format placement with ordinal suffix
+   */
+  formatPlacement(placement: number): string {
+    if (placement === 0 || placement === 999) return 'N/A';
+    
+    const lastDigit = placement % 10;
+    const lastTwoDigits = placement % 100;
+    
+    let suffix = 'th';
+    if (lastTwoDigits < 11 || lastTwoDigits > 13) {
+      if (lastDigit === 1) suffix = 'st';
+      else if (lastDigit === 2) suffix = 'nd';
+      else if (lastDigit === 3) suffix = 'rd';
+    }
+    
+    return `${placement}${suffix}`;
+  }
+
+  /**
+   * Get player performance tier based on rating and activity
+   */
+  getPlayerTier(player: ImportedPlayer): { tier: string; color: string; icon: string } {
+    const rating = this.getPlayerRating(player);
+    const tournamentCount = player.tournaments.length;
+    
+    if (rating >= 80 && tournamentCount >= 5) {
+      return { tier: 'Elite', color: '#FFD700', icon: '👑' };
+    } else if (rating >= 60 && tournamentCount >= 3) {
+      return { tier: 'Veteran', color: '#C0C0C0', icon: '⭐' };
+    } else if (rating >= 40 && tournamentCount >= 2) {
+      return { tier: 'Skilled', color: '#CD7F32', icon: '🥉' };
+    } else if (tournamentCount >= 1) {
+      return { tier: 'Active', color: '#4CAF50', icon: '🎮' };
+    } else {
+      return { tier: 'New', color: '#9E9E9E', icon: '🆕' };
+    }
   }
 }

@@ -421,6 +421,214 @@
   color: #666;
 }
 
+/* Enhanced Player Cards */
+.player-card.enhanced-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  border: 2px solid #e9ecef;
+  border-radius: 16px;
+  padding: 0;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.player-card.enhanced-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+  transform: translateY(-4px);
+}
+
+.player-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 20px 15px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.player-name-section {
+  flex: 1;
+}
+
+.player-header .player-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.player-tier-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+}
+
+.selected-tournament-badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 4px;
+  display: inline-block;
+}
+
+.player-header .player-actions {
+  margin: 0;
+}
+
+.player-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  border-right: 1px solid #e9ecef;
+  transition: background-color 0.2s ease;
+}
+
+.stat-item:nth-child(3n) {
+  border-right: none;
+}
+
+.stat-item:hover {
+  background-color: #f8f9fa;
+}
+
+.stat-icon {
+  font-size: 1.2rem;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.stat-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #495057;
+  line-height: 1.2;
+  word-break: break-all;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.player-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: #f8f9fa;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.assignment-status .status {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: none;
+}
+
+.assignment-status .status.assigned {
+  background: linear-gradient(45deg, #28a745, #20c997);
+  color: white;
+}
+
+.assignment-status .status.unassigned {
+  background: linear-gradient(45deg, #ffc107, #fd7e14);
+  color: white;
+}
+
+.last-seen {
+  font-size: 0.8rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+/* Enhanced Unassigned Player Cards */
+.unassigned-player-card.enhanced-unassigned-card {
+  background: linear-gradient(145deg, #fff8e1 0%, #fffbf0 100%);
+  border: 2px dashed #ffb300;
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 2px 8px rgba(255, 179, 0, 0.1);
+}
+
+.unassigned-player-card.enhanced-unassigned-card:hover {
+  border-color: #ff8f00;
+  background: linear-gradient(145deg, #fff3c4 0%, #fff8e1 100%);
+  box-shadow: 0 6px 20px rgba(255, 179, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.enhanced-unassigned-card .player-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #495057;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.player-quick-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.quick-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #495057;
+  font-weight: 500;
+}
+
+.quick-stat .stat-icon {
+  font-size: 1rem;
+  width: 16px;
+  text-align: center;
+}
+
+.quick-stat .stat-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Status indicators */
 .status {
   padding: 4px 8px;
@@ -1484,538 +1692,31 @@
   .sorting-history-item .sorting-date {
     margin-left: 0;
   }
-}
-
-/* ===== MANAGE HOUSES TAB STYLES ===== */
-
-/* Season Overview */
-.season-overview {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-radius: 12px;
-  padding: 25px;
-  margin-bottom: 20px;
-}
-
-.overview-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-}
-
-.stat-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  background: white;
-  border-radius: 8px;
-  border-left: 4px solid #667eea;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.stat-label {
-  font-weight: 600;
-  color: #495057;
-}
-
-.stat-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #667eea;
-}
-
-/* House Standings */
-.house-standings {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.standings-table {
-  display: flex;
-  flex-direction: column;
-}
-
-.standings-header {
-  display: grid;
-  grid-template-columns: 60px 1fr 120px 100px 120px 150px;
-  gap: 15px;
-  padding: 20px;
-  background: #667eea;
-  color: white;
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.standings-row {
-  display: grid;
-  grid-template-columns: 60px 1fr 120px 100px 120px 150px;
-  gap: 15px;
-  padding: 20px;
-  border-bottom: 1px solid #e9ecef;
-  align-items: center;
-  transition: background-color 0.2s ease;
-  border-left: 4px solid transparent;
-}
-
-.standings-row:hover {
-  background-color: #f8f9fa;
-}
-
-.standings-row:last-child {
-  border-bottom: none;
-}
-
-.rank-col {
-  text-align: center;
-}
-
-.rank-number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
-.rank-number.first-place {
-  background: linear-gradient(135deg, #ffd700, #ffed4e);
-  color: #856404;
-  box-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
-}
-
-.rank-number.second-place {
-  background: linear-gradient(135deg, #c0c0c0, #e6e6e6);
-  color: #495057;
-  box-shadow: 0 2px 4px rgba(192, 192, 192, 0.3);
-}
-
-.rank-number.third-place {
-  background: linear-gradient(135deg, #cd7f32, #deb887);
-  color: #5d4e37;
-  box-shadow: 0 2px 4px rgba(205, 127, 50, 0.3);
-}
-
-.rank-number.other-place {
-  background: #e9ecef;
-  color: #6c757d;
-}
-
-.house-col {
-  display: flex;
-  align-items: center;
-}
-
-.house-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.house-emblem {
-  font-size: 2rem;
-  min-width: 50px;
-  text-align: center;
-}
-
-.house-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.house-name {
-  font-weight: 600;
-  font-size: 1.1rem;
-  margin-bottom: 2px;
-}
-
-.house-description {
-  font-size: 0.85rem;
-  color: #6c757d;
-}
-
-.score-col, .players-col, .avg-rating-col {
-  text-align: center;
-}
-
-.score-value, .player-count, .rating-value {
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: #495057;
-  display: block;
-}
-
-.score-label, .player-label, .rating-label {
-  font-size: 0.8rem;
-  color: #6c757d;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.actions-col {
-  text-align: center;
-}
-
-/* House Management Cards */
-.houses-management {
-  display: grid;
-  gap: 30px;
-}
-
-.house-card {
-  background: white;
-  border-radius: 12px;
-  border: 2px solid #e9ecef;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.house-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-}
-
-.house-card-header {
-  padding: 25px;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.house-title-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.house-main-info {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.house-emblem.large {
-  font-size: 3rem;
-  min-width: 60px;
-  text-align: center;
-}
-
-.house-name-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.house-name {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0 0 5px 0;
-  color: #495057;
-}
-
-.house-description {
-  font-size: 1rem;
-  color: #6c757d;
-  margin: 0;
-}
-
-.house-stats-summary {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.stat-badge {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px 15px;
-  background: rgba(102, 126, 234, 0.1);
-  border-radius: 8px;
-  min-width: 80px;
-}
-
-.stat-number {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #667eea;
-}
-
-.stat-text {
-  font-size: 0.8rem;
-  color: #6c757d;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* House Roster */
-.house-roster {
-  padding: 25px;
-}
-
-.roster-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.roster-header h4 {
-  margin: 0;
-  color: #495057;
-  font-size: 1.2rem;
-}
-
-/* Add Player Form */
-.add-player-form {
-  background: #f8f9fa;
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  border: 2px dashed #28a745;
-}
-
-.add-player-form .form-row {
-  display: flex;
-  gap: 15px;
-  align-items: end;
-  flex-wrap: wrap;
-}
-
-.add-player-form .form-group {
-  flex: 1;
-  min-width: 250px;
-}
-
-.add-player-form .form-actions {
-  display: flex;
-  gap: 10px;
-}
-
-/* Current Players List */
-.current-players {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.player-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border-left: 4px solid #667eea;
-  transition: all 0.2s ease;
-}
-
-.player-row:hover {
-  background: #e9ecef;
-  transform: translateX(5px);
-}
-
-.player-info {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.player-basic {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 5px;
-}
-
-.player-name {
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: #495057;
-}
-
-.player-rating {
-  background: #667eea;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.player-details {
-  display: flex;
-  gap: 15px;
-  font-size: 0.85rem;
-  color: #6c757d;
-}
-
-.player-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-/* No Players Message */
-.no-players-message {
-  text-align: center;
-  padding: 40px 20px;
-}
-
-.empty-roster {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-}
-
-.empty-icon {
-  font-size: 3rem;
-  opacity: 0.5;
-}
-
-.empty-roster p {
-  color: #6c757d;
-  font-size: 1.1rem;
-  margin: 0;
-}
-
-/* Quick Actions */
-.quick-actions {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-}
-
-.action-group {
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  border: 1px solid #e9ecef;
-}
-
-.action-group h4 {
-  margin: 0 0 15px 0;
-  color: #495057;
-  font-size: 1.2rem;
-  border-bottom: 2px solid #667eea;
-  padding-bottom: 8px;
-}
-
-.action-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.action-buttons .btn {
-  justify-content: flex-start;
-  text-align: left;
-}
-
-/* Unassigned Players Grid */
-.unassigned-players-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
-}
-
-.unassigned-player-card {
-  background: white;
-  border: 2px dashed #ffc107;
-  border-radius: 12px;
-  padding: 20px;
-  transition: all 0.2s ease;
-}
-
-.unassigned-player-card:hover {
-  border-color: #ffb300;
-  background: #fffbf0;
-}
-
-.player-summary {
-  margin-bottom: 15px;
-}
-
-.player-summary .player-name {
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: #495057;
-  margin-bottom: 8px;
-}
-
-.player-stats {
-  display: flex;
-  gap: 15px;
-  font-size: 0.9rem;
-  color: #6c757d;
-}
-
-.assignment-controls {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.house-select-compact {
-  flex: 1;
-  padding: 8px 12px;
-  border: 1px solid #ced4da;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .standings-header,
-  .standings-row {
-    grid-template-columns: 50px 1fr 80px 70px 90px 120px;
+  
+  .player-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .stat-item:nth-child(3n) {
+    border-right: 1px solid #e9ecef;
+  }
+  
+  .stat-item:nth-child(2n) {
+    border-right: none;
+  }
+  
+  .player-footer {
+    flex-direction: column;
+    align-items: flex-start;
     gap: 10px;
-    padding: 15px 10px;
-    font-size: 0.8rem;
   }
-
-  .house-title-section {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .house-stats-summary {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .player-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-
-  .player-actions {
-    width: 100%;
-    justify-content: flex-end;
-  }
-
-  .quick-actions {
-    grid-template-columns: 1fr;
-  }
-
+  
   .unassigned-players-grid {
     grid-template-columns: 1fr;
   }
-
-  .add-player-form .form-row {
-    flex-direction: column;
-  }
-
-  .add-player-form .form-group {
-    min-width: 100%;
+  
+  .player-quick-stats {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -2035,5 +1736,18 @@
 
   .stat-number {
     font-size: 1.2rem;
+  }
+  
+  .player-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stat-item {
+    border-right: none;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .stat-item:last-child {
+    border-bottom: none;
   }
 }

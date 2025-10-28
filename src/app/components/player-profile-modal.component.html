@@ -1,0 +1,245 @@
+<!-- Player Profile Modal -->
+<div class="modal-backdrop" (click)="closeModal()" *ngIf="isVisible">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="player-header">
+        <h2 class="player-name">{{ player?.tag }}</h2>
+        <div class="player-meta">
+          <span class="player-id">ID: {{ player?.id }}</span>
+          <span class="first-imported">First seen: {{ player?.firstImported | date:'MMM dd, yyyy' }}</span>
+          <span class="last-seen">Last seen: {{ player?.lastSeen | date:'MMM dd, yyyy' }}</span>
+        </div>
+      </div>
+      <button class="close-button" (click)="closeModal()" aria-label="Close modal">
+        <span>×</span>
+      </button>
+    </div>
+
+    <div class="modal-body" *ngIf="player && playerStats">
+      <!-- Overview Stats -->
+      <div class="stats-overview">
+        <div class="stat-card primary">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-content">
+            <div class="stat-value">{{ playerStats.skillRating | number:'1.0-0' }}</div>
+            <div class="stat-label">Skill Rating</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">🎮</div>
+          <div class="stat-content">
+            <div class="stat-value">{{ player.tournaments.length }}</div>
+            <div class="stat-label">Tournaments</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-content">
+            <div class="stat-value">{{ (playerStats.winRate * 100) | number:'1.0-1' }}%</div>
+            <div class="stat-label">Win Rate</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">📍</div>
+          <div class="stat-content">
+            <div class="stat-value">{{ playerStats.averagePlacement | number:'1.0-1' }}</div>
+            <div class="stat-label">Avg Placement</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assignment Status -->
+      <div class="assignment-section" *ngIf="assignmentInfo">
+        <div class="section-header">
+          <h3>House Assignment</h3>
+        </div>
+        <div class="assignment-card" [class.assigned]="player.isAssigned" [class.unassigned]="!player.isAssigned">
+          <div class="assignment-status">
+            <div class="status-indicator" [class.assigned]="player.isAssigned"></div>
+            <div class="assignment-details">
+              <div class="assignment-house" *ngIf="player.isAssigned && assignmentInfo.house">
+                <span class="house-emblem">{{ assignmentInfo.house.emblem }}</span>
+                <span class="house-name">{{ assignmentInfo.house.displayName }}</span>
+              </div>
+              <div class="assignment-unassigned" *ngIf="!player.isAssigned">
+                <span class="unassigned-label">Unassigned</span>
+              </div>
+              <div class="assignment-date" *ngIf="player.isAssigned && assignmentInfo.assignedDate">
+                Assigned: {{ assignmentInfo.assignedDate | date:'MMM dd, yyyy' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed Statistics -->
+      <div class="detailed-stats">
+        <div class="section-header">
+          <h3>Performance Statistics</h3>
+        </div>
+        
+        <div class="stats-grid">
+          <!-- Set Statistics -->
+          <div class="stat-group">
+            <h4>Set Performance</h4>
+            <div class="stat-row">
+              <span class="stat-name">Sets Won</span>
+              <span class="stat-value">{{ playerStats.setsWon }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-name">Sets Lost</span>
+              <span class="stat-value">{{ playerStats.setsLost }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-name">Total Sets</span>
+              <span class="stat-value">{{ playerStats.setsWon + playerStats.setsLost }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-name">Set Win Rate</span>
+              <span class="stat-value">{{ (playerStats.winRate * 100) | number:'1.0-1' }}%</span>
+            </div>
+          </div>
+
+          <!-- Game Statistics -->
+          <div class="stat-group">
+            <h4>Game Performance</h4>
+            <div class="stat-row">
+              <span class="stat-name">Games Won</span>
+              <span class="stat-value">{{ playerStats.gamesWon }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-name">Games Lost</span>
+              <span class="stat-value">{{ playerStats.gamesLost }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-name">Total Games</span>
+              <span class="stat-value">{{ playerStats.gamesWon + playerStats.gamesLost }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-name">Game Win Rate</span>
+              <span class="stat-value">{{ (playerStats.gameWinRate * 100) | number:'1.0-1' }}%</span>
+            </div>
+          </div>
+
+          <!-- Tournament Performance -->
+          <div class="stat-group">
+            <h4>Tournament Results</h4>
+            <div class="stat-row">
+              <span class="stat-name">Best Placement</span>
+              <span class="stat-value">{{ playerStats.bestPlacement | ordinal }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-name">Worst Placement</span>
+              <span class="stat-value">{{ playerStats.worstPlacement | ordinal }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-name">Average Placement</span>
+              <span class="stat-value">{{ playerStats.averagePlacement | number:'1.0-1' }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-name">Top 25% Rate</span>
+              <span class="stat-value">{{ (playerStats.top25Rate * 100) | number:'1.0-1' }}%</span>
+            </div>
+          </div>
+
+          <!-- Advanced Statistics -->
+          <div class="stat-group">
+            <h4>Advanced Stats</h4>
+            <div class="stat-row">
+              <span class="stat-name">Upsets</span>
+              <span class="stat-value">{{ playerStats.upsets }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-name">Bad Losses</span>
+              <span class="stat-value">{{ playerStats.badLosses }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-name">Consistency Rating</span>
+              <span class="stat-value">{{ playerStats.consistencyRating | number:'1.0-0' }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-name">Tournament Count</span>
+              <span class="stat-value">{{ playerStats.tournamentCount }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Tournament Performance -->
+      <div class="recent-tournaments" *ngIf="recentTournaments && recentTournaments.length > 0">
+        <div class="section-header">
+          <h3>Recent Tournament Results</h3>
+        </div>
+        <div class="tournament-list">
+          <div class="tournament-entry" *ngFor="let tournament of recentTournaments">
+            <div class="tournament-name">{{ tournament.name }}</div>
+            <div class="tournament-stats">
+              <span class="placement">{{ tournament.placement | ordinal }} place</span>
+              <span class="entrants">{{ tournament.entrants }} entrants</span>
+              <span class="date">{{ tournament.date | date:'MMM dd, yyyy' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skill Rating Trend -->
+      <div class="skill-trend" *ngIf="skillRatingInfo">
+        <div class="section-header">
+          <h3>Skill Rating Details</h3>
+        </div>
+        <div class="rating-details">
+          <div class="rating-row">
+            <span class="rating-label">Current Rating:</span>
+            <span class="rating-value">{{ skillRatingInfo.rating | number:'1.0-0' }}</span>
+          </div>
+          <div class="rating-row">
+            <span class="rating-label">Confidence:</span>
+            <span class="rating-value">{{ skillRatingInfo.confidence | number:'1.0-1' }}</span>
+          </div>
+          <div class="rating-row">
+            <span class="rating-label">Peak Rating:</span>
+            <span class="rating-value">{{ skillRatingInfo.peakRating | number:'1.0-0' }}</span>
+          </div>
+          <div class="rating-row">
+            <span class="rating-label">Trend:</span>
+            <span class="rating-value trend" [class]="skillRatingInfo.trend">
+              {{ skillRatingInfo.trend | titlecase }}
+              <span class="trend-icon" [ngSwitch]="skillRatingInfo.trend">
+                <span *ngSwitchCase="'improving'">📈</span>
+                <span *ngSwitchCase="'declining'">📉</span>
+                <span *ngSwitchDefault>➡️</span>
+              </span>
+            </span>
+          </div>
+          <div class="rating-row">
+            <span class="rating-label">Estimated Range:</span>
+            <span class="rating-value">{{ skillRatingInfo.estimatedSkillRange.min | number:'1.0-0' }} - {{ skillRatingInfo.estimatedSkillRange.max | number:'1.0-0' }}</span>
+          </div>
+          <div class="rating-row">
+            <span class="rating-label">Ranking Position:</span>
+            <span class="rating-value">{{ skillRatingInfo.rankingPosition | ordinal }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="modal-body loading" *ngIf="player && !playerStats">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Loading player statistics...</p>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+      <button class="btn btn-primary" (click)="exportPlayerData()" *ngIf="playerStats">
+        Export Data
+      </button>
+    </div>
+  </div>
+</div>

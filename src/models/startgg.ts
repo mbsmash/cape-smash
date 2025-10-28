@@ -57,6 +57,7 @@ export interface TournamentData {
   importedAt: Date;
   eventCount: number;
   playerCount: number;
+  importType?: 'current-season' | 'historic-data' | 'unclassified';
 }
 
 export interface TournamentEvent {

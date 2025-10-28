@@ -400,4 +400,45 @@ export class CompetitionService {
       console.warn('Failed to save competition season to localStorage:', error);
     }
   }
+
+  /**
+   * Remove players from a specific tournament and clean up any players who no longer have any tournaments
+   */
+  removePlayersFromTournament(tournamentSlug: string): void {
+    const currentSeason = this.getCurrentSeasonValue();
+    if (!currentSeason) return;
+
+    // Remove the tournament from all players' tournament lists
+    currentSeason.importedPlayers.forEach(player => {
+      const tournamentIndex = player.tournaments.indexOf(tournamentSlug);
+      if (tournamentIndex > -1) {
+        player.tournaments.splice(tournamentIndex, 1);
+      }
+    });
+
+    // Remove players who no longer have any tournaments
+    const playersToRemove = currentSeason.importedPlayers.filter(player => player.tournaments.length === 0);
+    
+    playersToRemove.forEach(player => {
+      // Remove house assignment if they have one
+      if (player.isAssigned) {
+        const assignmentIndex = currentSeason.assignments.findIndex(a => a.playerId === player.id);
+        if (assignmentIndex > -1) {
+          currentSeason.assignments.splice(assignmentIndex, 1);
+        }
+      }
+      
+      // Remove the player
+      const playerIndex = currentSeason.importedPlayers.findIndex(p => p.id === player.id);
+      if (playerIndex > -1) {
+        currentSeason.importedPlayers.splice(playerIndex, 1);
+      }
+    });
+
+    this.updateSeason(currentSeason);
+    
+    if (playersToRemove.length > 0) {
+      console.log(`Removed ${playersToRemove.length} players who no longer have any tournaments after removing ${tournamentSlug}`);
+    }
+  }
 }

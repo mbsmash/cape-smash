@@ -351,21 +351,254 @@
 
   <!-- Import Tournaments Tab -->
   <div class="tab-content" *ngIf="activeTab === 'import-tournaments'">
-    <div class="placeholder-content">
-      <div class="placeholder-header">
-        <h2>📥 Import Tournaments</h2>
-        <p>Coming soon - This will contain tournament import functionality</p>
-      </div>
-      <div class="placeholder-body">
-        <div class="placeholder-card">
-          <h3>Planned Features:</h3>
+    <div class="section">
+      <h2>📥 Import Tournament from Start.gg</h2>
+      <p class="section-description">Import tournament data from Start.gg and specify how it should be used in the competition system.</p>
+      
+      <form [formGroup]="startggImportForm" (ngSubmit)="onImportTournament()" class="form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tournamentSlug">Tournament Slug:</label>
+            <input 
+              type="text"
+              id="tournamentSlug"
+              formControlName="tournamentSlug"
+              class="form-control"
+              placeholder="e.g., raffle-rumble, evo-2024"
+              [disabled]="isImporting">
+            <small class="form-help">Enter just the tournament slug (the part after start.gg/tournament/). Examples: "super-smash-con-2024", "evo-2024", "genesis-10"</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="importType">Import Type:</label>
+            <select id="importType" formControlName="importType" class="form-control" [disabled]="isImporting">
+              <option value="current-season">Current Season Event</option>
+              <option value="historic-data">Historic/Rankings Data</option>
+            </select>
+            <small class="form-help">Choose how this tournament data will be used in the system</small>
+          </div>
+        </div>
+
+        <div class="import-options">
+          <h4>Import Options</h4>
+          <div class="options-grid">
+            <label class="checkbox-label">
+              <input 
+                type="checkbox" 
+                formControlName="importEvents"
+                [disabled]="isImporting">
+              Import event data and match results
+            </label>
+            <label class="checkbox-label">
+              <input 
+                type="checkbox" 
+                formControlName="calculateRatings"
+                [disabled]="isImporting">
+              Calculate player skill ratings
+            </label>
+            <label class="checkbox-label">
+              <input 
+                type="checkbox" 
+                formControlName="mergeWithExisting"
+                [disabled]="isImporting">
+              Merge with existing player data
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="!startggImportForm.valid || isImporting">
+            <span *ngIf="!isImporting">📥 Import Tournament</span>
+            <span *ngIf="isImporting">⏳ Importing...</span>
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-secondary"
+            (click)="loadMockData()"
+            [disabled]="isImporting">
+            🎲 Load Mock Data
+          </button>
+        </div>
+      </form>
+
+      <!-- Import Status -->
+      <div class="import-status" 
+           [class.success]="importStatus.type === 'success'"
+           [class.error]="importStatus.type === 'error'"
+           [class.warning]="importStatus.type === 'warning'"
+           *ngIf="importStatus">
+        <div class="status-message">{{ importStatus.message }}</div>
+        <div class="status-details" *ngIf="importStatus.details && importStatus.details.length > 0">
           <ul>
-            <li>Import tournaments from Start.gg</li>
-            <li>Tournament data management</li>
-            <li>Match and set processing</li>
-            <li>Player performance tracking</li>
+            <li *ngFor="let detail of importStatus.details">{{ detail }}</li>
           </ul>
         </div>
+      </div>
+    </div>
+
+    <!-- Recent Tournament Imports -->
+    <div class="section" *ngIf="recentImports.length > 0">
+      <h2>📋 Recent Tournament Imports</h2>
+      
+      <!-- Current Season Events -->
+      <div class="imports-category" *ngIf="getCurrentSeasonImports().length > 0">
+        <h3>🏆 Current Season Events</h3>
+        <div class="imports-grid">
+          <div class="import-card current-season" 
+               *ngFor="let importData of getCurrentSeasonImports()">
+            <div class="import-header">
+              <div class="tournament-info">
+                <h4>{{ importData.tournament.name }}</h4>
+                <span class="tournament-slug">{{ importData.tournament.slug }}</span>
+              </div>
+              <div class="import-type-badge current-season">
+                🏆 Current Season
+              </div>
+            </div>
+            <div class="import-stats">
+              <div class="stat">
+                <span class="stat-label">Players:</span>
+                <span class="stat-value">{{ importData.playerCount }}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Events:</span>
+                <span class="stat-value">{{ importData.eventCount }}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Imported:</span>
+                <span class="stat-value">{{ importData.importedAt | date:'MMM d, y' }}</span>
+              </div>
+            </div>
+            <div class="import-actions">
+              <button class="btn btn-small btn-secondary" 
+                      (click)="viewImportDetails(importData)">
+                📊 View Details
+              </button>
+              <button class="btn btn-small btn-info" 
+                      (click)="viewTournamentPlayers(importData.tournament.slug)">
+                👥 View Players
+              </button>
+              <button class="btn btn-small btn-success" 
+                      (click)="addToSeasonEvents(importData)"
+                      *ngIf="!isAddedToSeason(importData.tournament.slug)">
+                ➕ Add to Season
+              </button>
+              <button class="btn btn-small btn-danger" 
+                      (click)="removeImport(importData)">
+                🗑️ Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historic/Rankings Data -->
+      <div class="imports-category" *ngIf="getHistoricImports().length > 0">
+        <h3>📊 Historic/Rankings Data</h3>
+        <div class="imports-grid">
+          <div class="import-card historic-data" 
+               *ngFor="let importData of getHistoricImports()">
+            <div class="import-header">
+              <div class="tournament-info">
+                <h4>{{ importData.tournament.name }}</h4>
+                <span class="tournament-slug">{{ importData.tournament.slug }}</span>
+              </div>
+              <div class="import-type-badge historic-data">
+                📊 Rankings Data
+              </div>
+            </div>
+            <div class="import-stats">
+              <div class="stat">
+                <span class="stat-label">Players:</span>
+                <span class="stat-value">{{ importData.playerCount }}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Matches:</span>
+                <span class="stat-value">{{ getTournamentMatchCount(importData) }}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Imported:</span>
+                <span class="stat-value">{{ importData.importedAt | date:'MMM d, y' }}</span>
+              </div>
+            </div>
+            <div class="import-actions">
+              <button class="btn btn-small btn-secondary" 
+                      (click)="viewImportDetails(importData)">
+                📊 View Details
+              </button>
+              <button class="btn btn-small btn-primary" 
+                      (click)="addToRankingsData(importData)"
+                      *ngIf="!isInRankingsData(importData.tournament.slug)">
+                📈 Add to Rankings
+              </button>
+              <button class="btn btn-small btn-danger" 
+                      (click)="removeImport(importData)">
+                🗑️ Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unclassified Imports -->
+      <div class="imports-category" *ngIf="getUnclassifiedImports().length > 0">
+        <h3>❓ Unclassified Imports</h3>
+        <div class="imports-grid">
+          <div class="import-card unclassified" 
+               *ngFor="let importData of getUnclassifiedImports()">
+            <div class="import-header">
+              <div class="tournament-info">
+                <h4>{{ importData.tournament.name }}</h4>
+                <span class="tournament-slug">{{ importData.tournament.slug }}</span>
+              </div>
+              <div class="import-type-badge unclassified">
+                ❓ Unclassified
+              </div>
+            </div>
+            <div class="import-stats">
+              <div class="stat">
+                <span class="stat-label">Players:</span>
+                <span class="stat-value">{{ importData.playerCount }}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Events:</span>
+                <span class="stat-value">{{ importData.eventCount }}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Imported:</span>
+                <span class="stat-value">{{ importData.importedAt | date:'MMM d, y' }}</span>
+              </div>
+            </div>
+            <div class="import-actions">
+              <button class="btn btn-small btn-secondary" 
+                      (click)="viewImportDetails(importData)">
+                📊 View Details
+              </button>
+              <button class="btn btn-small btn-success" 
+                      (click)="classifyAsCurrentSeason(importData)">
+                🏆 Current Season
+              </button>
+              <button class="btn btn-small btn-primary" 
+                      (click)="classifyAsHistoric(importData)">
+                📊 Historic Data
+              </button>
+              <button class="btn btn-small btn-danger" 
+                      (click)="removeImport(importData)">
+                🗑️ Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="recentImports.length === 0">
+        <div class="empty-icon">📥</div>
+        <h3>No Tournaments Imported Yet</h3>
+        <p>Import your first tournament using the form above to get started.</p>
       </div>
     </div>
   </div>
@@ -412,6 +645,11 @@
                     [disabled]="getAssignedPlayersCount() === 0">
               🗑️ Clear All Assignments
             </button>
+            <button class="btn btn-danger" 
+                    (click)="clearAllImportedPlayers()"
+                    [disabled]="season.importedPlayers.length === 0">
+              🗑️ Remove All Players
+            </button>
           </div>
         </div>
         
@@ -440,13 +678,33 @@
     <div class="section" *ngIf="getUnassignedPlayers().length > 0">
       <h2>🏷️ Unassigned Players ({{ getUnassignedPlayers().length }})</h2>
       <div class="unassigned-players-grid">
-        <div class="unassigned-player-card" 
+        <div class="unassigned-player-card enhanced-unassigned-card" 
              *ngFor="let player of getUnassignedPlayers(); trackBy: trackByPlayerId">
           <div class="player-summary">
-            <div class="player-name">{{ player.tag }}</div>
-            <div class="player-stats">
-              <span class="rating">{{ getPlayerRating(player) | number:'1.0-0' }} rating</span>
-              <span class="tournaments">{{ player.tournaments.length }} tournaments</span>
+            <div class="player-name">
+              {{ player.tag }}
+              <span class="player-tier-badge" 
+                    [style.background-color]="getPlayerTier(player).color">
+                {{ getPlayerTier(player).icon }} {{ getPlayerTier(player).tier }}
+              </span>
+            </div>
+            <div class="player-quick-stats">
+              <div class="quick-stat">
+                <span class="stat-icon">⭐</span>
+                <span class="stat-text">{{ getPlayerRating(player) | number:'1.0-0' }} Rating</span>
+              </div>
+              <div class="quick-stat">
+                <span class="stat-icon">🏆</span>
+                <span class="stat-text">{{ player.tournaments.length }} Tournaments</span>
+              </div>
+              <div class="quick-stat">
+                <span class="stat-icon">📊</span>
+                <span class="stat-text">{{ getPlayerStatistics(player).winRate | number:'1.0-1' }}% WR</span>
+              </div>
+              <div class="quick-stat">
+                <span class="stat-icon">🎯</span>
+                <span class="stat-text">{{ formatPlacement(getPlayerStatistics(player).bestPlacement) }} Best</span>
+              </div>
             </div>
           </div>
           <div class="assignment-controls">
@@ -617,40 +875,98 @@
         </div>
         <div class="players-grid">
           <div 
-            class="player-card imported-player" 
+            class="player-card imported-player enhanced-card" 
             *ngFor="let player of getImportedPlayers()"
             [class.assigned]="player.isAssigned"
             [class.unassigned]="!player.isAssigned"
             [class.selected-tournament-player]="isPlayerFromSelectedTournament(player)"
           >
-            <div class="player-info">
-              <div class="player-name">
-                {{ player.tag }}
-                <span class="selected-tournament-badge" *ngIf="isPlayerFromSelectedTournament(player)">
+            <div class="player-header">
+              <div class="player-name-section">
+                <div class="player-name">
+                  {{ player.tag }}
+                  <span class="player-tier-badge" 
+                        [style.background-color]="getPlayerTier(player).color">
+                    {{ getPlayerTier(player).icon }} {{ getPlayerTier(player).tier }}
+                  </span>
+                </div>
+                <div class="selected-tournament-badge" *ngIf="isPlayerFromSelectedTournament(player)">
                   🏆 {{ getTournamentName(selectedTournamentForViewing!) }}
-                </span>
+                </div>
               </div>
-              <div class="player-details">
-                <span class="tournaments-count">{{ player.tournaments.length }} tournament(s)</span>
-                <span class="last-seen">Last seen: {{ player.lastSeen | date:'MMM d, y' }}</span>
-              </div>
-              <div class="assignment-status">
-                <span *ngIf="player.isAssigned" class="status assigned">
-                  Assigned to {{ getHouseName(player.assignedHouseId!, season.houses) }}
-                </span>
-                <span *ngIf="!player.isAssigned" class="status unassigned">
-                  Unassigned
-                </span>
+              <div class="player-actions">
+                <button 
+                  class="btn btn-danger btn-small"
+                  (click)="removeImportedPlayer(player)"
+                  title="Remove this player"
+                >
+                  🗑️
+                </button>
               </div>
             </div>
-            <div class="player-actions">
-              <button 
-                class="btn btn-danger btn-small"
-                (click)="removeImportedPlayer(player)"
-                title="Remove this player"
-              >
-                🗑️
-              </button>
+
+            <div class="player-stats-grid">
+              <div class="stat-item">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-content">
+                  <div class="stat-value">{{ getPlayerStatistics(player).tournamentsEntered }}</div>
+                  <div class="stat-label">Tournaments</div>
+                </div>
+              </div>
+
+              <div class="stat-item">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                  <div class="stat-value">{{ getPlayerStatistics(player).winRate | number:'1.0-1' }}%</div>
+                  <div class="stat-label">Win Rate</div>
+                </div>
+              </div>
+
+              <div class="stat-item">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-content">
+                  <div class="stat-value">{{ getPlayerRating(player) | number:'1.0-0' }}</div>
+                  <div class="stat-label">Skill Rating</div>
+                </div>
+              </div>
+
+              <div class="stat-item">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-content">
+                  <div class="stat-value">{{ formatPlacement(getPlayerStatistics(player).bestPlacement) }}</div>
+                  <div class="stat-label">Best Finish</div>
+                </div>
+              </div>
+
+              <div class="stat-item">
+                <div class="stat-icon">📈</div>
+                <div class="stat-content">
+                  <div class="stat-value">{{ formatPlacement(getPlayerStatistics(player).averagePlacement) }}</div>
+                  <div class="stat-label">Avg. Place</div>
+                </div>
+              </div>
+
+              <div class="stat-item">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-content">
+                  <div class="stat-value">{{ getPlayerStatistics(player).recentForm }}</div>
+                  <div class="stat-label">Form</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="player-footer">
+              <div class="assignment-status">
+                <span *ngIf="player.isAssigned" class="status assigned">
+                  🏠 {{ getHouseName(player.assignedHouseId!, season.houses) }}
+                </span>
+                <span *ngIf="!player.isAssigned" class="status unassigned">
+                  🏷️ Unassigned
+                </span>
+              </div>
+              <div class="last-seen">
+                📅 {{ player.lastSeen | date:'MMM d, y' }}
+              </div>
             </div>
           </div>
         </div>
