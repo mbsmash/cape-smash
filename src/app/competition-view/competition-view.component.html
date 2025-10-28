@@ -17,7 +17,7 @@
           <span class="poll-countdown" *ngIf="pollCountdown">
             ⏰ {{ pollCountdown }}
           </span>
-          <span class="poll-votes">{{ getTotalVotes() }} total votes</span>
+          <span class="poll-votes">{{ getTotalVotes() }} total votes • {{ totalUniqueVoters }} voters</span>
           <span class="poll-deadline" *ngIf="houseNamePoll.endDate">
             Ends: {{ houseNamePoll.endDate | date:'MMM d, y' }}
           </span>

@@ -55,6 +55,9 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
   password = '';
   isLoading = false;
 
+  // Additional properties for better analytics
+  totalUniqueVoters = 0;
+
   constructor(
     private competitionService: CompetitionService,
     private authService: AuthService,
@@ -208,12 +211,45 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
 
   // Poll Methods
   private initializeUserSession() {
-    this.userSessionId = localStorage.getItem('pollSessionId') || this.generateSessionId();
-    localStorage.setItem('pollSessionId', this.userSessionId);
+    // Try to get existing user ID from localStorage
+    let userId = localStorage.getItem('pollUserId');
+    
+    if (!userId) {
+      // Create a more persistent user ID that combines device fingerprint with timestamp
+      const deviceInfo = this.getDeviceFingerprint();
+      const timestamp = Date.now();
+      userId = `user_${deviceInfo}_${timestamp}`;
+      localStorage.setItem('pollUserId', userId);
+    }
+    
+    this.userSessionId = userId;
   }
 
-  private generateSessionId(): string {
-    return 'session_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+  private getDeviceFingerprint(): string {
+    // Create a simple device fingerprint based on available browser/device info
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx!.textBaseline = 'top';
+    ctx!.font = '14px Arial';
+    ctx!.fillText('Device fingerprint', 2, 2);
+    
+    const fingerprint = [
+      navigator.userAgent,
+      navigator.language,
+      screen.width + 'x' + screen.height,
+      new Date().getTimezoneOffset(),
+      canvas.toDataURL()
+    ].join('|');
+    
+    // Create a simple hash of the fingerprint
+    let hash = 0;
+    for (let i = 0; i < fingerprint.length; i++) {
+      const char = fingerprint.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    
+    return Math.abs(hash).toString(36);
   }
 
   private async loadHouseNamePoll() {
@@ -249,6 +285,9 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
       
       // Check if user has already voted
       await this.checkUserVoteStatus();
+      
+      // Load unique voter count
+      this.loadUniqueVoterCount();
       
     } catch (error) {
       console.error('Error loading poll from Firebase:', error);
@@ -375,15 +414,15 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
         this.hasVoted = !!userVotes;
         if (userVotes) {
           this.houseNamePoll.userVotes = userVotes;
+        } else {
+          // If no votes in Firebase, clear any local votes to prevent inconsistency
+          this.houseNamePoll.userVotes = [];
         }
       } catch (error) {
         console.error('Error checking vote status:', error);
-        // Fallback to localStorage
-        const localVotes = localStorage.getItem(`poll_votes_${this.houseNamePoll.id}_${this.userSessionId}`);
-        this.hasVoted = !!localVotes;
-        if (localVotes) {
-          this.houseNamePoll.userVotes = JSON.parse(localVotes);
-        }
+        // On error, default to not voted state to be safe
+        this.hasVoted = false;
+        this.houseNamePoll.userVotes = [];
       }
     }
   }
@@ -401,9 +440,7 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
     }
 
     this.houseNamePoll.userVotes = currentVotes;
-  }
-
-  async submitPollVotes() {
+  }  async submitPollVotes() {
     if (!this.houseNamePoll || this.hasVoted || this.houseNamePoll.userVotes.length === 0) return;
 
     try {
@@ -418,6 +455,9 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
       this.hasVoted = true;
       this.showPollResults = true;
 
+      // Refresh unique voter count
+      this.loadUniqueVoterCount();
+
       // Also save to localStorage as backup
       localStorage.setItem(
         `poll_votes_${this.houseNamePoll.id}_${this.userSessionId}`, 
@@ -430,28 +470,24 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
         panelClass: ['success-snackbar']
       });
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting votes:', error);
       
-      // Fallback to local storage for offline functionality
-      this.houseNamePoll.userVotes.forEach(optionId => {
-        const option = this.houseNamePoll!.options.find(opt => opt.id === optionId);
-        if (option) {
-          option.votes++;
-        }
-      });
-
-      localStorage.setItem(
-        `poll_votes_${this.houseNamePoll.id}_${this.userSessionId}`, 
-        JSON.stringify(this.houseNamePoll.userVotes)
-      );
-
-      this.hasVoted = true;
-      this.showPollResults = true;
+      // Check if the error is due to already voting
+      if (error.message && error.message.includes('already voted')) {
+        this.hasVoted = true;
+        this.snackBar.open('You have already voted in this poll!', 'Close', {
+          duration: 5000,
+          panelClass: ['warning-snackbar']
+        });
+        return;
+      }
       
-      this.snackBar.open('Votes saved locally. Will sync when connection is restored.', 'Close', {
+      // For other errors, show error message but don't fallback to local voting
+      // This ensures vote integrity
+      this.snackBar.open('Failed to submit votes. Please try again.', 'Close', {
         duration: 5000,
-        panelClass: ['warning-snackbar']
+        panelClass: ['error-snackbar']
       });
     }
   }
@@ -587,6 +623,9 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
                 option.votes = pollData.options[option.id].votes || 0;
               }
             });
+            
+            // Refresh unique voter count
+            this.loadUniqueVoterCount();
           }
         },
         error: (error) => {
@@ -606,6 +645,16 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
     this.checkUserVoteStatus();
   }
 
+  private async loadUniqueVoterCount() {
+    if (this.houseNamePoll) {
+      try {
+        this.totalUniqueVoters = await this.firebaseService.getTotalUniqueVoters(this.houseNamePoll.id);
+      } catch (error) {
+        console.error('Error loading unique voter count:', error);
+      }
+    }
+  }
+
   // Admin method to reset poll (can be called from console for testing)
   async resetPoll() {
     if (this.houseNamePoll) {
@@ -622,6 +671,9 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
 
         // Save the reset poll to Firebase
         await this.savePoll();
+
+        // Clear all votes from Firebase
+        await this.firebaseService.clearAllVotes(this.houseNamePoll.id);
 
         // Clear local storage
         localStorage.removeItem(`poll_votes_${this.houseNamePoll.id}_${this.userSessionId}`);
@@ -641,34 +693,6 @@ export class CompetitionViewComponent implements OnInit, OnDestroy {
           panelClass: ['error-snackbar']
         });
       }
-    }
-  }
-
-  // Method to sync local votes to Firebase (for offline-to-online scenarios)
-  async syncLocalVotesToFirebase() {
-    if (!this.houseNamePoll) return;
-
-    try {
-      const localVotes = localStorage.getItem(`poll_votes_${this.houseNamePoll.id}_${this.userSessionId}`);
-      
-      if (localVotes && !this.hasVoted) {
-        const votes = JSON.parse(localVotes);
-        
-        // Check if these votes are already recorded in Firebase
-        const firebaseVotes = await this.firebaseService.getUserVotes(this.houseNamePoll.id, this.userSessionId);
-        
-        if (!firebaseVotes) {
-          // Submit the local votes to Firebase
-          await this.firebaseService.submitVote(this.houseNamePoll.id, this.userSessionId, votes);
-          
-          this.hasVoted = true;
-          this.houseNamePoll.userVotes = votes;
-          
-          console.log('Local votes synced to Firebase successfully');
-        }
-      }
-    } catch (error) {
-      console.error('Error syncing local votes to Firebase:', error);
     }
   }
 }
