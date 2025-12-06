@@ -43,6 +43,9 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     showAssigned: true,
     showUnassigned: true
   };
+
+  // Simple search query for Manage Players tab
+  playerSearchQuery: string = '';
   
   // Import Status
   importStatus: { type: 'success' | 'error' | 'warning', message: string, details?: string[] } | null = null;
@@ -140,6 +143,16 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
   selectedPlayerForHouse: { [houseId: number]: number | undefined } = {};
   addingPlayerToHouseId: number | null = null;
 
+  // Manual Add Player Form state
+  manualAdd = {
+    tag: '',
+    isTopPlayer: false
+  };
+
+  // Sound playback for sorting jingle
+  levelUpAudio?: HTMLAudioElement | null;
+  soundEnabled: boolean = true; // toggle to enable/disable playback
+
   constructor(
     private competitionService: CompetitionService,
     private authService: AuthService,
@@ -194,6 +207,62 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     this.loadCurrentRules();
     this.loadRecentImports();
     this.loadPersistedTournamentData();
+
+    // Initialize Level Up jingle audio. Place your audio file at one of these paths:
+    //  - /src/assets/level-up.mp3 (recommended)
+    //  - /level-up.mp3 (project root served path)
+    try {
+      if (typeof Audio !== 'undefined') {
+        // Prefer assets path used by Angular CLI
+        this.levelUpAudio = new Audio('/assets/level-up.mp3');
+        this.levelUpAudio.preload = 'auto';
+        // Add minimal error handler to fallback to root path if needed
+        this.levelUpAudio.addEventListener('error', () => {
+          // Try alternate path if assets path failed
+          try {
+            console.warn('Level Up jingle not found at /assets/level-up.mp3, trying /level-up.mp3');
+            this.levelUpAudio = new Audio('/level-up.mp3');
+            this.levelUpAudio.preload = 'auto';
+          } catch (e) {
+            console.warn('Level Up audio fallback failed', e);
+            this.levelUpAudio = null;
+          }
+        });
+      }
+    } catch (e) {
+      console.warn('Audio initialization failed', e);
+      this.levelUpAudio = null;
+    }
+  }
+
+  /**
+   * Play the level-up jingle if available and enabled. Non-blocking and errors are caught.
+   */
+  private playLevelUp(): void {
+    if (!this.soundEnabled) return;
+    try {
+      if (!this.levelUpAudio) {
+        // Attempt lazy initialization of alternate path
+        try {
+          this.levelUpAudio = new Audio('/level-up.mp3');
+          this.levelUpAudio.preload = 'auto';
+        } catch (_) {
+          return;
+        }
+      }
+
+      // Reset to start and play; catch Promise rejection (autoplay restrictions)
+      this.levelUpAudio.currentTime = 0;
+      const playPromise = this.levelUpAudio.play();
+      if (playPromise && typeof playPromise.then === 'function') {
+        playPromise.catch(err => {
+          // Often blocked by browser autoplay policies when not initiated by a user gesture
+          console.warn('Level Up audio play prevented:', err);
+        });
+      }
+    } catch (err) {
+      console.warn('Failed to play Level Up audio:', err);
+    }
   }
 
   // Tournament Data Persistence
@@ -564,6 +633,38 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     return this.getFilteredImportedPlayers();
   }
 
+  // New: Toggle top player flag
+  toggleTopPlayerFlag(playerId: number, value: boolean): void {
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return;
+
+    const player = season.importedPlayers.find(p => p.id === playerId);
+    if (!player) return;
+
+    player.isTopPlayer = value;
+    this.competitionService.updateSeason(season);
+  }
+
+  isTopPlayer(player: ImportedPlayer): boolean {
+    return !!player.isTopPlayer;
+  }
+
+  // New: Toggle captain flag
+  toggleCaptainFlag(playerId: number, value: boolean): void {
+    const season = this.competitionService.getCurrentSeasonValue();
+    if (!season) return;
+
+    const player = season.importedPlayers.find(p => p.id === playerId);
+    if (!player) return;
+
+    player.isCaptain = value;
+    this.competitionService.updateSeason(season);
+  }
+
+  isCaptain(player: ImportedPlayer): boolean {
+    return !!player.isCaptain;
+  }
+
   getFilteredImportedPlayers(): ImportedPlayer[] {
     const allPlayers = this.competitionService.getImportedPlayers();
     
@@ -627,7 +728,8 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
       startggUserId: player.userId,
       trueskillRating: trueskill.createRating(), // Create proper TrueSkill rating
       ratingHistory: [],
-      points: player.skillRating || 1000
+      points: player.skillRating || 1000,
+      isTopPlayer: false // Initialize new players with default false
     }));
     
     // Add these real players to the competition system
@@ -960,6 +1062,23 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     }
   }
 
+  addManualPlayer(): void {
+    const tag = this.manualAdd.tag && this.manualAdd.tag.trim();
+    if (!tag) {
+      alert('Please enter a player tag');
+      return;
+    }
+
+    this.competitionService.addManualImportedPlayer(tag, !!this.manualAdd.isTopPlayer);
+    this.manualAdd.tag = '';
+    this.manualAdd.isTopPlayer = false;
+
+    // Refresh current season observable
+    this.currentSeason$ = this.competitionService.getCurrentSeason();
+
+    alert(`Player ${tag} added successfully`);
+  }
+
   // ===== HOUSE MANAGEMENT METHODS =====
 
   /**
@@ -1003,8 +1122,17 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
   getUnassignedPlayers(): ImportedPlayer[] {
     const season = this.competitionService.getCurrentSeasonValue();
     if (!season) return [];
-    
     return season.importedPlayers.filter(player => !player.isAssigned);
+  }
+
+  /**
+   * Get filtered unassigned players using the playerSearchQuery
+   */
+  getFilteredUnassignedPlayers(): ImportedPlayer[] {
+    const all = this.getUnassignedPlayers();
+    const q = this.playerSearchQuery && this.playerSearchQuery.trim().toLowerCase();
+    if (!q) return all;
+    return all.filter(p => (p.tag || '').toLowerCase().includes(q));
   }
 
   /**
@@ -1985,108 +2113,73 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     const season = this.competitionService.getCurrentSeasonValue();
     if (!season) return;
 
-    const recommendation = this.calculateBestHouseForPlayer(this.selectedPlayerForSorting, season);
-    this.sortingRecommendation = recommendation;
-  }
+    const player = this.selectedPlayerForSorting;
 
-  private calculateBestHouseForPlayer(player: ImportedPlayer, season: CompetitionSeason): {
-    recommendedHouse: House;
-    reason: string;
-    balancePreview: Array<{
-      id: number;
-      name: string;
-      emblem: string;
-      currentPlayers: number;
-      projectedPlayers: number;
-      currentRating: number;
-      projectedRating: number;
-      balanceScore: number;
-    }>;
-  } {
-    const playerRating = this.getPlayerRating(player);
-    const isHighLevel = this.isHighLevelPlayer(player);
-    
-    const houseAnalysis = season.houses.map(house => {
-      const currentPlayers = this.getHousePlayerCount(house.id);
-      const currentRating = this.getHouseAverageRating(house.id);
-      const highLevelCount = this.getHighLevelPlayerCount(house.id);
-      
-      // Calculate projected stats if this player joins
-      const projectedPlayers = currentPlayers + 1;
-      const projectedRating = currentPlayers === 0 
-        ? playerRating 
-        : (currentRating * currentPlayers + playerRating) / projectedPlayers;
-      
-      // Calculate balance score (lower is better)
-      const playerCountBalance = Math.abs(projectedPlayers - (season.importedPlayers.filter(p => p.isAssigned).length + 1) / 3);
-      const ratingBalance = Math.abs(projectedRating - 1200); // 1200 is assumed average
-      const highLevelBalance = isHighLevel ? highLevelCount + 1 : highLevelCount;
-      
-      const balanceScore = playerCountBalance * 0.4 + (ratingBalance / 100) * 0.4 + highLevelBalance * 0.2;
-      
+    // Helper: get counts per house
+    const houseStats = season.houses.map(house => {
+      const playersInHouse = season.importedPlayers.filter(p => p.isAssigned && p.assignedHouseId === house.id);
+      const topPlayersInHouse = playersInHouse.filter(p => !!p.isTopPlayer).length;
       return {
         house,
-        currentPlayers,
-        projectedPlayers,
-        currentRating,
-        projectedRating,
-        balanceScore,
-        highLevelCount
+        totalCount: playersInHouse.length,
+        topCount: topPlayersInHouse
       };
     });
 
-    // Find house with best balance score
-    const bestHouse = houseAnalysis.reduce((best, current) => 
-      current.balanceScore < best.balanceScore ? current : best
-    );
-
-    // Generate reason
+    let targetHouseId: number | null = null;
     let reason = '';
-    if (bestHouse.currentPlayers < houseAnalysis[0].currentPlayers && bestHouse.currentPlayers < houseAnalysis[1].currentPlayers) {
-      reason = 'Balances player count across houses';
-    } else if (isHighLevel && bestHouse.highLevelCount < 2) {
-      reason = 'Distributes high-level players evenly';
-    } else if (Math.abs(bestHouse.projectedRating - 1200) < 100) {
-      reason = 'Maintains balanced skill levels';
+
+    if (player.isTopPlayer) {
+      // Find houses with minimum number of top players
+      const minTop = Math.min(...houseStats.map(h => h.topCount));
+      const candidates = houseStats.filter(h => h.topCount === minTop);
+
+      if (candidates.length === 1) {
+        targetHouseId = candidates[0].house.id;
+        reason = 'Placed to balance top players';
+      } else {
+        // Among candidates, pick house(s) with fewest total players to help balance
+        const minTotal = Math.min(...candidates.map(c => c.totalCount));
+        const subCandidates = candidates.filter(c => c.totalCount === minTotal);
+        const chosen = subCandidates[Math.floor(Math.random() * subCandidates.length)];
+        targetHouseId = chosen.house.id;
+        reason = 'Placed to balance top players (tie broken by house size/random)';
+      }
     } else {
-      reason = 'Optimizes overall house balance';
+      // Non-top players: prefer house(s) with fewest total players, break ties randomly
+      const minTotal = Math.min(...houseStats.map(h => h.totalCount));
+      const candidates = houseStats.filter(h => h.totalCount === minTotal);
+      const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+      targetHouseId = chosen.house.id;
+      reason = 'Random placement balancing house sizes';
     }
 
-    return {
-      recommendedHouse: bestHouse.house,
-      reason,
-      balancePreview: houseAnalysis.map(analysis => ({
-        id: analysis.house.id,
-        name: analysis.house.displayName,
-        emblem: analysis.house.emblem,
-        currentPlayers: analysis.currentPlayers,
-        projectedPlayers: analysis.projectedPlayers,
-        currentRating: analysis.currentRating,
-        projectedRating: analysis.projectedRating,
-        balanceScore: analysis.balanceScore
-      }))
-    };
-  }
+    if (targetHouseId === null) return;
 
-  confirmSorting(): void {
-    if (!this.selectedPlayerForSorting || !this.sortingRecommendation) return;
+    // If player is already assigned somewhere, remove old assignment first
+    if (player.isAssigned) {
+      this.competitionService.removePlayerFromHouse(player.id);
+    }
 
-    // Assign player to recommended house
-    this.assignPlayerToHouse(this.selectedPlayerForSorting.id, this.sortingRecommendation.recommendedHouse.id);
+    // Assign the player to the chosen house (mark high-level flag based on isTopPlayer)
+    this.competitionService.assignImportedPlayerToHouse(player.id, targetHouseId, !!player.isTopPlayer);
 
-    // Add to recent sortings
+    // Play Level Up jingle (best effort). Note: browsers may block autoplay unless user has interacted with page.
+    this.playLevelUp();
+
+    // Record sorting action
+    const targetHouse = season.houses.find(h => h.id === targetHouseId)!;
     this.recentSortings.unshift({
-      playerName: this.selectedPlayerForSorting.tag,
-      houseName: this.sortingRecommendation.recommendedHouse.displayName,
-      houseEmblem: this.sortingRecommendation.recommendedHouse.emblem,
+      playerName: player.tag,
+      houseName: targetHouse.displayName,
+      houseEmblem: targetHouse.emblem,
       sortedAt: new Date(),
-      reason: this.sortingRecommendation.reason
+      reason
     });
 
-    // Keep only last 20 sortings
-    this.recentSortings = this.recentSortings.slice(0, 20);
-
-    // Clear sorting state
+    // Refresh view and clear selection
+    this.currentSeason$ = this.competitionService.getCurrentSeason();
+    alert(`✅ ${player.tag} has been assigned to ${targetHouse.displayName} (${reason})`);
     this.clearSelectedPlayer();
     this.sortingSearchQuery = '';
     this.sortingSearchResults = [];
@@ -2790,5 +2883,59 @@ export class CompetitionAdminComponent implements OnInit, OnDestroy {
     } else {
       return { tier: 'New', color: '#9E9E9E', icon: '🆕' };
     }
+  }
+
+  // ===== UTILITY METHODS =====
+
+  /**
+   * Clear cached season data to force reload with new house names
+   */
+  clearCacheAndReload(): void {
+    if (confirm('This will clear all cached data and reload the page to show the new house names. Continue?')) {
+      localStorage.removeItem('cape-competition-season');
+      window.location.reload();
+    }
+  }
+
+  /**
+   * Calculate the best house for a single player using simple balancing rules.
+   * Used by bulk sorting (sortAllUnassigned) to pick a recommended house and reason.
+   */
+  private calculateBestHouseForPlayer(player: ImportedPlayer, season: any): { recommendedHouse: any; reason: string } {
+    if (!season || !season.houses || season.houses.length === 0) {
+      return { recommendedHouse: null, reason: 'No houses available' };
+    }
+
+    type HouseStat = { house: House; totalCount: number; topCount: number };
+
+    // Compute stats for each house
+    const houseStats: HouseStat[] = season.houses.map((house: House) => {
+      const playersInHouse = season.importedPlayers.filter((p: ImportedPlayer) => p.isAssigned && p.assignedHouseId === house.id);
+      const topPlayersInHouse = playersInHouse.filter((p: ImportedPlayer) => !!p.isTopPlayer).length;
+      return {
+        house,
+        totalCount: playersInHouse.length,
+        topCount: topPlayersInHouse
+      };
+    });
+
+    // Prefer houses with fewest total players; if the player is a top player, prefer fewer top players first
+    let candidates: HouseStat[] = houseStats.slice();
+
+    if (player.isTopPlayer) {
+      const minTop = Math.min(...candidates.map((h: HouseStat) => h.topCount));
+      candidates = candidates.filter((h: HouseStat) => h.topCount === minTop);
+      // further narrow by totalCount
+      const minTotal = Math.min(...candidates.map((h: HouseStat) => h.totalCount));
+      candidates = candidates.filter((h: HouseStat) => h.totalCount === minTotal);
+      const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+      return { recommendedHouse: chosen.house, reason: 'Balance top players (fewest top players, then smallest house)' };
+    }
+
+    // Non-top player: prefer fewest total players
+    const minTotal = Math.min(...candidates.map((h: HouseStat) => h.totalCount));
+    candidates = candidates.filter((h: HouseStat) => h.totalCount === minTotal);
+    const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+    return { recommendedHouse: chosen.house, reason: 'Balance house sizes (fewest total players)' };
   }
 }

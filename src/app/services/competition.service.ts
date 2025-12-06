@@ -136,6 +136,8 @@ export class CompetitionService {
         // Update assignment status
         existingPlayer.isAssigned = currentSeason.assignments.some(a => a.playerId === existingPlayer!.id);
         existingPlayer.assignedHouseId = currentSeason.assignments.find(a => a.playerId === existingPlayer!.id)?.houseId;
+        // Preserve isTopPlayer if present, otherwise default to false
+        if (existingPlayer.isTopPlayer === undefined) existingPlayer.isTopPlayer = false;
       } else {
         // Create new imported player
         const newImportedPlayer: ImportedPlayer = {
@@ -146,12 +148,39 @@ export class CompetitionService {
           firstImported: now,
           lastSeen: now,
           isAssigned: false,
-          assignedHouseId: undefined
+          assignedHouseId: undefined,
+          isTopPlayer: false
         };
         currentSeason.importedPlayers.push(newImportedPlayer);
       }
     });
 
+    this.updateSeason(currentSeason);
+  }
+
+  /**
+   * Manually add a single imported player (entered by staff)
+   */
+  addManualImportedPlayer(tag: string, isTopPlayer: boolean = false): void {
+    const currentSeason = this.getCurrentSeasonValue();
+    if (!currentSeason) return;
+
+    const now = new Date();
+    const nextId = Math.max(0, ...currentSeason.importedPlayers.map(p => p.id)) + 1;
+
+    const newImportedPlayer: ImportedPlayer = {
+      id: nextId,
+      tag: tag,
+      startggUserId: undefined,
+      tournaments: [],
+      firstImported: now,
+      lastSeen: now,
+      isAssigned: false,
+      assignedHouseId: undefined,
+      isTopPlayer: !!isTopPlayer
+    };
+
+    currentSeason.importedPlayers.push(newImportedPlayer);
     this.updateSeason(currentSeason);
   }
 
@@ -277,39 +306,36 @@ export class CompetitionService {
   private initializeMockData(): void {
     const mockSeason: CompetitionSeason = {
       id: 1,
-      name: 'Season 6 - Three Houses',
+      name: 'Season 6 - Fuchsia Frogs, Orange Chickens, Crimson Kitties',
       startDate: new Date('2025-09-01'),
       endDate: new Date('2025-12-31'),
       isActive: true,
       houses: [
         {
           id: 1,
-          name: 'black_eagles',
-          displayName: 'Black Eagles',
-          color: '#DC143C',
-          emblem: '🦅',
-          leader: 'Edelgard',
-          description: 'The noble house led by future Emperor Edelgard',
+          name: 'fuchsia_frogs',
+          displayName: 'Fuchsia Frogs',
+          color: '#e91e63',
+          emblem: '🐸',
+          description: 'The vibrant and energetic house of the Fuchsia Frogs',
           points: 150
         },
         {
           id: 2,
-          name: 'blue_lions',
-          displayName: 'Blue Lions',
-          color: '#4169E1',
-          emblem: '🦁',
-          leader: 'Dimitri',
-          description: 'The chivalrous house led by the future King Dimitri',
+          name: 'orange_chickens',
+          displayName: 'Orange Chickens',
+          color: '#f39c12',
+          emblem: '🐔',
+          description: 'The bold and spirited house of the Orange Chickens',
           points: 125
         },
         {
           id: 3,
-          name: 'golden_deer',
-          displayName: 'Golden Deer',
-          color: '#FFD700',
-          emblem: '🦌',
-          leader: 'Claude',
-          description: 'The strategic house led by the cunning Claude',
+          name: 'crimson_kitties',
+          displayName: 'Crimson Kitties',
+          color: '#e74c3c',
+          emblem: '🐱',
+          description: 'The fierce and cunning house of the Crimson Kitties',
           points: 175
         }
       ],

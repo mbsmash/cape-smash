@@ -19,6 +19,8 @@ export interface ImportedPlayer {
     isAssigned: boolean; // Whether this player is assigned to a house
     assignedHouseId?: number; // House ID if assigned
     tempHouseId?: number; // Temporary house selection for UI
+    isTopPlayer?: boolean; // Mark this player as a top/high-level player for sorting
+    isCaptain?: boolean; // Mark this player as a house captain
 }
 
 export interface HouseAssignment {

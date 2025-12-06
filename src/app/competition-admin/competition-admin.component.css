@@ -1,12 +1,14 @@
 .admin-container {
-  max-width: 1200px;
+  max-width: 1600px;
+  width: 96%;
   margin: 0 auto;
-  padding: 20px;
+  padding: 14px;
+  box-sizing: border-box;
 }
 
 .admin-header {
-  margin-bottom: 30px;
-  padding: 20px;
+  margin-bottom: 18px;
+  padding: 10px 16px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border-radius: 8px;
@@ -17,21 +19,21 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 12px;
 }
 
 .title-section h1 {
   margin: 0 0 5px 0;
-  font-size: 2.2rem;
+  font-size: 1.6rem;
   font-weight: 900;
   font-family: var(--font-heading);
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
 }
 
 .title-section p {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   opacity: 0.9;
 }
 
@@ -71,16 +73,16 @@
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
-  margin-bottom: 30px;
+  margin-bottom: 12px;
   border-bottom: 2px solid #e1e5e9;
-  padding-bottom: 10px;
+  padding-bottom: 6px;
 }
 
 .tab-button {
   background: none;
   border: none;
-  padding: 12px 18px;
-  font-size: 0.95rem;
+  padding: 8px 12px;
+  font-size: 0.85rem;
   font-weight: 500;
   color: #666;
   cursor: pointer;
@@ -106,6 +108,8 @@
   background: #f8fff9;
   color: #28a745;
   font-weight: 600;
+  padding: 7px 12px;
+  font-size: 0.85rem;
 }
 
 .tab-button.new-tab:hover {
@@ -385,7 +389,7 @@
 .players-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 15px;
+  gap: 16px;
 }
 
 .player-card {
@@ -394,6 +398,9 @@
   border-radius: 8px;
   padding: 15px;
   transition: all 0.2s ease;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden; /* ensure nothing visually spills out */
 }
 
 .player-card:hover {
@@ -575,19 +582,17 @@
 
 /* Enhanced Unassigned Player Cards */
 .unassigned-player-card.enhanced-unassigned-card {
-  background: linear-gradient(145deg, #fff8e1 0%, #fffbf0 100%);
-  border: 2px dashed #ffb300;
-  border-radius: 16px;
-  padding: 20px;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 0 2px 8px rgba(255, 179, 0, 0.1);
+  background: white; /* show as white cards like legacy */
+  border: 1px solid #ffe8b8;
+  padding: 14px;
+  border-radius: 10px;
+  transition: all 0.18s ease;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.04);
 }
 
 .unassigned-player-card.enhanced-unassigned-card:hover {
-  border-color: #ff8f00;
-  background: linear-gradient(145deg, #fff3c4 0%, #fff8e1 100%);
-  box-shadow: 0 6px 20px rgba(255, 179, 0, 0.2);
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
 }
 
 .enhanced-unassigned-card .player-name {
@@ -603,9 +608,9 @@
 
 .player-quick-stats {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
-  margin-bottom: 15px;
+  margin-top: 8px;
 }
 
 .quick-stat {
@@ -1277,8 +1282,9 @@
 
 .assignment-controls {
   display: flex;
-  gap: 10px;
   align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .house-select {
@@ -1286,6 +1292,30 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 0.9rem;
+}
+
+.house-select-compact {
+  min-width: 120px;
+  max-width: 55%;
+  padding: 8px 10px;
+  border: 1px solid #e1e5e9;
+  border-radius: 6px;
+  background: white;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+
+/* Ensure small buttons don't shrink and remain clickable inside the flex row */
+.player-card .assignment-controls .btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* Make the 'View' / action buttons visually contained and aligned */
+.player-card .assignment-controls .btn.btn-secondary,
+.player-card .assignment-controls .btn.btn-small {
+  padding: 6px 10px;
+  font-size: 0.85rem;
 }
 
 /* Success and info messages */
@@ -1597,6 +1627,33 @@
   font-size: 0.9rem;
 }
 
+/* Utility classes used in updated template */
+.form-group-flex {
+  flex: 1 1 320px;
+  min-width: 160px;
+}
+
+.form-group-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Compact house action buttons used on Manage Houses summary */
+.house-actions-compact {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+/* Compact select used in Manage Players unassigned list */
+.house-select-compact {
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
 /* Responsive adjustments for filters */
 @media (max-width: 768px) {
   .admin-container {
@@ -1718,6 +1775,79 @@
   .player-quick-stats {
     grid-template-columns: 1fr;
   }
+
+  .admin-header {
+    padding: 8px 10px;
+  }
+  .title-section h1 {
+    font-size: 1.25rem;
+  }
+  .tab-button {
+    padding: 10px 12px;
+    font-size: 0.95rem;
+  }
+  .form-group-flex {
+    min-width: 0;
+    width: 100%;
+  }
+  .form-group-action {
+    width: auto;
+  }
+}
+
+/* Scrollable area for Unassigned Players to avoid very long pages */
+.unassigned-players-grid {
+  max-height: 50vh; /* allow roughly half the viewport for quick browsing */
+  overflow-y: auto;
+  padding-right: 6px; /* room for scrollbar */
+}
+
+/* Scrollable rankings table container with sticky header */
+.rankings-table-container {
+  max-height: 55vh;
+  overflow: auto;
+  border-radius: 8px;
+  background: white;
+  padding: 8px 0; /* small vertical padding so sticky header has space */
+}
+
+/* Make the table header stick at the top of the scroll container */
+.rankings-table thead th {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(180deg, #ffffff, #f8f9fa);
+  z-index: 3;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+/* Ensure the table fills width and rows don't collapse */
+.rankings-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rankings-table tbody tr:hover {
+  background: #fff8e6;
+}
+
+/* Improve scrollbar visibility on desktop */
+.unassigned-players-grid::-webkit-scrollbar,
+.rankings-table-container::-webkit-scrollbar {
+  width: 10px;
+}
+.unassigned-players-grid::-webkit-scrollbar-thumb,
+.rankings-table-container::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.12);
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .unassigned-players-grid {
+    max-height: 45vh;
+  }
+  .rankings-table-container {
+    max-height: 40vh;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1750,4 +1880,244 @@
   .stat-item:last-child {
     border-bottom: none;
   }
+}
+
+/* Manage Players — horizontal top stats (like legacy) */
+.stats-overview {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.stats-overview .stat-card {
+  background: linear-gradient(135deg, #7b61ff 0%, #6f8eff 100%);
+  color: white;
+  padding: 18px 22px;
+  border-radius: 10px;
+  min-width: 160px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.08);
+}
+
+.stats-overview .stat-value {
+  font-size: 1.6rem;
+  font-weight: 900;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.stats-overview .stat-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  opacity: 0.95;
+  letter-spacing: 0.6px;
+}
+
+/* Unassigned players grid to match legacy card grid */
+.unassigned-players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.player-summary {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.player-summary .player-name {
+  font-weight: 700;
+  color: #333;
+  font-size: 1.05rem;
+}
+
+.player-quick-stats .quick-stat {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: #555;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .stats-overview .stat-card {
+    min-width: 120px;
+    padding: 12px 14px;
+  }
+  .unassigned-players-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.compact-note {
+  margin-top: 12px;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* Combined Manage Players header layout */
+.manage-players-header {
+  padding: 18px 20px;
+}
+.manage-players-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.manage-players-header .left {
+  flex: 1 1 60%;
+}
+.manage-players-header .right {
+  flex: 0 0 36%;
+  min-width: 260px;
+}
+.player-search-compact .form-row {
+  display: flex;
+  gap: 10px;
+}
+.player-search-compact .form-group-flex {
+  flex: 1 1 auto;
+}
+.player-search-compact .form-group-action {
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .manage-players-header-inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .manage-players-header .right {
+    min-width: 0;
+    order: 2;
+  }
+  .manage-players-header .left {
+    order: 1;
+  }
+}
+
+/* Top Player Badge and Checkbox */
+.top-player-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  background: linear-gradient(90deg, #ffd700, #ffb703);
+  color: #222;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.top-player-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+.top-player-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
+
+/* Add Player Form */
+.add-player-form {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.add-player-form .form-control {
+  min-width: 200px;
+  max-width: 320px;
+}
+
+.add-player-top-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 6px;
+  font-weight: 600;
+}
+
+.add-player-actions {
+  margin-left: auto;
+}
+
+/* House Sorting Form */
+.sorting-section .sorting-form {
+  margin-top: 12px;
+}
+
+.sorting-search-group {
+  flex: 1;
+  min-width: 220px;
+}
+
+.search-results {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  background: white;
+}
+
+.selected-player {
+  margin-top: 12px;
+}
+
+.selected-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.selected-actions button {
+  margin-left: 8px;
+}
+
+/* Captain Badge and Checkbox */
+.top-player-badge {
+  background: #fff8e1;
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin-left: 8px;
+  font-size: 0.9rem;
+}
+
+.captain-badge {
+  background: #e8f5e9;
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin-left: 6px;
+  font-size: 0.9rem;
+}
+
+.top-player-checkbox, .captain-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 8px;
 }

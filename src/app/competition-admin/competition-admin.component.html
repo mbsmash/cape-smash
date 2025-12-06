@@ -61,268 +61,61 @@
     >
       House Sorting
     </button>
-    
-    <!-- Existing Tabs (to be gradually removed) -->
-    <button 
-      class="tab-button legacy-tab" 
-      [class.active]="activeTab === 'assignments'"
-      (click)="setActiveTab('assignments')"
-    >
-      Player Assignments
-    </button>
-    <button 
-      class="tab-button legacy-tab" 
-      [class.active]="activeTab === 'events'"
-      (click)="setActiveTab('events')"
-    >
-      Manage Events
-    </button>
-    <button 
-      class="tab-button legacy-tab" 
-      [class.active]="activeTab === 'startgg'"
-      (click)="setActiveTab('startgg')"
-    >
-      Import Tournaments
-    </button>
-    <button 
-      class="tab-button legacy-tab" 
-      [class.active]="activeTab === 'analytics'"
-      (click)="setActiveTab('analytics')"
-    >
-      Tournament Analytics
-    </button>
-    <button 
-      class="tab-button legacy-tab" 
-      [class.active]="activeTab === 'houses'"
-      (click)="setActiveTab('houses')"
-    >
-      Manage Houses
-    </button>
-    <button 
-      class="tab-button legacy-tab" 
-      [class.active]="activeTab === 'sorting'"
-      (click)="setActiveTab('sorting')"
-    >
-      House Sorting
-    </button>
-    <button 
-      class="tab-button legacy-tab" 
-      [class.active]="activeTab === 'rankings'"
-      (click)="setActiveTab('rankings')"
-    >
-      Rankings Data
-    </button>
-    <button 
-      class="tab-button legacy-tab" 
-      [class.active]="activeTab === 'rules'"
-      (click)="setActiveTab('rules')"
-    >
-      Rules & Formulas
-    </button>
   </div>
 
   <!-- New Restructured Tab Contents -->
   
   <!-- Manage Houses Tab -->
   <div class="tab-content" *ngIf="activeTab === 'manage-houses'">
-    <!-- Season Overview -->
+    <!-- Legacy house management UI reused here -->
     <div class="section">
-      <h2>🏆 {{ season.name }} - House Overview</h2>
-      <div class="season-overview">
-        <div class="overview-stats">
-          <div class="stat-item">
-            <span class="stat-label">Total Players:</span>
-            <span class="stat-value">{{ getAssignedPlayersCount() }}</span>
+      <h2>🏠 House Management</h2>
+      <p class="section-description">Manage player assignments by house, view unassigned players, and monitor house balance.</p>
+      
+      <!-- Condensed House Summary Grid (replaces separate balance + assignments summaries) -->
+      <div class="house-summary-grid">
+        <div class="house-summary-card" *ngFor="let house of season.houses" [style.border-color]="house.color">
+          <div class="house-summary-header">
+            <span class="house-emblem">{{ house.emblem }}</span>
+            <div class="house-summary-title">
+              <div class="house-name">{{ house.displayName }}</div>
+              <div class="house-sub">{{ getHousePlayerCount(house.id) }} players • Avg: {{ getHouseAverageRating(house.id) | number:'1.0-0' }}</div>
+            </div>
+            <div class="house-points">{{ house.points }} pts</div>
           </div>
-          <div class="stat-item">
-            <span class="stat-label">Unassigned Players:</span>
-            <span class="stat-value">{{ getUnassignedPlayersCount() }}</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Total Events:</span>
-            <span class="stat-value">{{ season.events.length }}</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Active Houses:</span>
-            <span class="stat-value">{{ season.houses.length }}</span>
+
+          <div class="house-summary-actions">
+            <button class="btn btn-small btn-primary" (click)="setActiveTab('manage-players'); viewHouseDetails(house.id)">View Roster</button>
+            <button class="btn btn-small btn-secondary" (click)="viewHouseDetails(house.id)">View Details</button>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- House Competition Standings -->
-    <div class="section">
-      <h2>🏅 Current House Standings</h2>
-      <div class="house-standings">
-        <div class="standings-table">
-          <div class="standings-header">
-            <div class="rank-col">Rank</div>
-            <div class="house-col">House</div>
-            <div class="score-col">Score</div>
-            <div class="players-col">Players</div>
-            <div class="avg-rating-col">Avg Rating</div>
-            <div class="actions-col">Actions</div>
-          </div>
-          <div class="standings-row" 
-               *ngFor="let house of getSortedHousesByScore(); let i = index"
-               [style.border-left-color]="house.color">
-            <div class="rank-col">
-              <span class="rank-number" [class]="getRankClass(i)">{{ i + 1 }}</span>
-            </div>
-            <div class="house-col">
-              <div class="house-info">
-                <span class="house-emblem">{{ house.emblem }}</span>
-                <div class="house-details">
-                  <span class="house-name">{{ house.displayName }}</span>
-                  <span class="house-description">{{ house.description }}</span>
-                </div>
-              </div>
-            </div>
-            <div class="score-col">
-              <span class="score-value">{{ house.points }}</span>
-              <span class="score-label">points</span>
-            </div>
-            <div class="players-col">
-              <span class="player-count">{{ getHousePlayerCount(house.id) }}</span>
-              <span class="player-label">players</span>
-            </div>
-            <div class="avg-rating-col">
-              <span class="rating-value">{{ getHouseAverageRating(house.id) | number:'1.0-0' }}</span>
-              <span class="rating-label">avg</span>
-            </div>
-            <div class="actions-col">
-              <button class="btn btn-small btn-secondary" 
-                      (click)="viewHouseDetails(house.id)">
-                View Details
-              </button>
-            </div>
-          </div>
-        </div>
+      <!-- Quick link to Unassigned Players in Manage Players tab -->
+      <div class="section">
+        <h3>Unassigned Players</h3>
+        <p>Player assignment UI now lives in the <strong>Manage Players</strong> tab. Click below to view and assign unassigned players.</p>
+        <button class="btn btn-primary" (click)="setActiveTab('manage-players')">Go to Manage Players</button>
       </div>
-    </div>
 
-    <!-- House Management -->
-    <div class="section">
-      <h2>🏠 House Rosters & Management</h2>
-      <div class="houses-management">
-        <div class="house-card" 
-             *ngFor="let house of season.houses"
-             [style.border-color]="house.color">
-          
-          <!-- House Header -->
-          <div class="house-card-header" [style.background-color]="house.color + '20'">
-            <div class="house-title-section">
-              <div class="house-main-info">
-                <span class="house-emblem large">{{ house.emblem }}</span>
-                <div class="house-name-group">
-                  <h3 class="house-name">{{ house.displayName }}</h3>
-                  <p class="house-description">{{ house.description }}</p>
-                </div>
-              </div>
-              <div class="house-stats-summary">
-                <div class="stat-badge">
-                  <span class="stat-number">{{ house.points }}</span>
-                  <span class="stat-text">Points</span>
-                </div>
-                <div class="stat-badge">
-                  <span class="stat-number">{{ getHousePlayerCount(house.id) }}</span>
-                  <span class="stat-text">Players</span>
-                </div>
-                <div class="stat-badge">
-                  <span class="stat-number">{{ getHouseAverageRating(house.id) | number:'1.0-0' }}</span>
-                  <span class="stat-text">Avg Rating</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- House Roster -->
-          <div class="house-roster">
-            <div class="roster-header">
-              <h4>House Roster</h4>
-              <div class="roster-actions">
-                <button class="btn btn-small btn-secondary" 
-                        (click)="toggleAddPlayerMode(house.id)">
-                  <span *ngIf="!isAddingPlayerToHouse(house.id)">+ Add Player</span>
-                  <span *ngIf="isAddingPlayerToHouse(house.id)">Cancel</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Add Player Form -->
-            <div class="add-player-form" *ngIf="isAddingPlayerToHouse(house.id)">
-              <div class="form-row">
-                <div class="form-group">
-                  <select [(ngModel)]="selectedPlayerForHouse[house.id]" 
-                          class="form-control"
-                          [attr.aria-label]="'Select player to add to ' + house.displayName"
-                          title="Select a player to add to this house">
-                    <option [value]="undefined">Select a player to add...</option>
-                    <option *ngFor="let player of getUnassignedPlayers()" 
-                            [value]="player.id">
-                      {{ player.tag }} ({{ getPlayerRating(player) | number:'1.0-0' }} rating, {{ player.tournaments.length }} tournaments)
-                    </option>
-                  </select>
-                </div>
-                <div class="form-actions">
-                  <button class="btn btn-small btn-primary" 
-                          [disabled]="!selectedPlayerForHouse[house.id]"
-                          (click)="selectedPlayerForHouse[house.id] && addPlayerToHouse(house.id, selectedPlayerForHouse[house.id]!)">
-                    Add Player
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Current Players -->
-            <div class="current-players" *ngIf="getHousePlayers(house.id).length > 0; else noPlayersMessage">
-              <div class="player-row" 
-                   *ngFor="let player of getHousePlayers(house.id); trackBy: trackByPlayerId">
-                <div class="player-info">
-                  <div class="player-basic">
-                    <span class="player-name">{{ player.tag }}</span>
-                    <span class="player-rating">{{ getPlayerRating(player) | number:'1.0-0' }}</span>
-                  </div>
-                  <div class="player-details">
-                    <span class="tournament-count">{{ player.tournaments.length }} tournaments</span>
-                    <span class="join-date">Added: {{ player.firstImported | date:'MMM d, y' }}</span>
-                    <span class="last-seen">Last seen: {{ player.lastSeen | date:'MMM d, y' }}</span>
-                  </div>
-                </div>
-                <div class="player-actions">
-                  <button class="btn btn-small btn-info" 
-                          (click)="viewPlayerStats(player)"
-                          title="View player statistics">
-                    📊 Stats
-                  </button>
-                  <button class="btn btn-small btn-warning" 
-                          (click)="movePlayerToHouse(player.id)"
-                          title="Move to different house">
-                    🔄 Move
-                  </button>
-                  <button class="btn btn-small btn-danger" 
-                          (click)="removePlayerFromHouse(player.id)"
-                          title="Remove from house">
-                    ❌ Remove
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <ng-template #noPlayersMessage>
-              <div class="no-players-message">
-                <div class="empty-roster">
-                  <span class="empty-icon">👥</span>
-                  <p>No players assigned to this house yet.</p>
-                  <button class="btn btn-primary" 
-                          (click)="toggleAddPlayerMode(house.id)"
-                          *ngIf="getUnassignedPlayers().length > 0">
-                    Add First Player
-                  </button>
-                </div>
-              </div>
-            </ng-template>
-          </div>
+      <!-- House Balance Actions -->
+      <div class="house-actions" *ngIf="season.importedPlayers.length > 0">
+        <h3>House Management Actions</h3>
+        <div class="action-buttons">
+          <button class="btn btn-secondary" (click)="autoBalanceHouses()">
+            🎯 Auto-Balance Houses
+          </button>
+          <button class="btn btn-secondary" (click)="shuffleUnassigned()">
+            🔀 Shuffle Unassigned
+          </button>
+          <button class="btn btn-danger" (click)="clearAllAssignments()">
+            🗑️ Clear All Assignments
+          </button>
+        </div>
+        <div class="action-description">
+          <p><strong>Auto-Balance:</strong> Automatically distribute unassigned players to balance skill levels across houses.</p>
+          <p><strong>Shuffle:</strong> Randomly reorder unassigned players to help with manual assignment.</p>
+          <p><strong>Clear All:</strong> Remove all player assignments and start fresh.</p>
         </div>
       </div>
     </div>
@@ -605,84 +398,69 @@
 
   <!-- Manage Players Tab -->
   <div class="tab-content" *ngIf="activeTab === 'manage-players'">
-    <div class="section">
-      <h2>👥 Manage Players</h2>
-      <div class="stats-overview">
-        <div class="stat-card">
-          <div class="stat-value">{{ season.importedPlayers.length }}</div>
-          <div class="stat-label">Total Players</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">{{ getAssignedPlayersCount() }}</div>
-          <div class="stat-label">Assigned</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">{{ getUnassignedPlayersCount() }}</div>
-          <div class="stat-label">Unassigned</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="section">
-      <h2>⚡ Quick Actions</h2>
-      <div class="quick-actions">
-        <div class="action-group">
-          <h4>Player Management</h4>
-          <div class="action-buttons">
-            <button class="btn btn-secondary" 
-                    (click)="autoBalanceHouses()"
-                    [disabled]="getUnassignedPlayers().length === 0">
-              🎯 Auto-Balance Houses
-            </button>
-            <button class="btn btn-secondary" 
-                    (click)="shuffleUnassigned()"
-                    [disabled]="getUnassignedPlayers().length === 0">
-              🔀 Shuffle Unassigned
-            </button>
-            <button class="btn btn-warning" 
-                    (click)="clearAllAssignments()"
-                    [disabled]="getAssignedPlayersCount() === 0">
-              🗑️ Clear All Assignments
-            </button>
-            <button class="btn btn-danger" 
-                    (click)="clearAllImportedPlayers()"
-                    [disabled]="season.importedPlayers.length === 0">
-              🗑️ Remove All Players
-            </button>
+    <div class="section manage-players-header">
+      <div class="manage-players-header-inner">
+        <div class="left">
+          <h2>👥 Manage Players</h2>
+          <div class="stats-overview">
+            <div class="stat-card">
+              <div class="stat-value">{{ season.importedPlayers.length }}</div>
+              <div class="stat-label">Total Players</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">{{ getAssignedPlayersCount() }}</div>
+              <div class="stat-label">Assigned</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">{{ getUnassignedPlayersCount() }}</div>
+              <div class="stat-label">Unassigned</div>
+            </div>
           </div>
         </div>
-        
-        <div class="action-group">
-          <h4>Data Management</h4>
-          <div class="action-buttons">
-            <button class="btn btn-info" 
-                    (click)="exportHouseData()">
-              📤 Export House Data
-            </button>
-            <button class="btn btn-success" 
-                    (click)="generateHouseReport()">
-              📊 Generate Report
-            </button>
-            <button class="btn btn-primary" 
-                    (click)="setActiveTab('import-tournaments')"
-                    *ngIf="season.importedPlayers.length === 0">
-              📥 Import Players
-            </button>
+
+        <div class="right player-search-compact" aria-label="Player search">
+          <div class="player-search">
+            <div class="form-row">
+              <div class="form-group form-group-flex">
+                <label for="playerSearchInput" class="sr-only">Search players</label>
+                <input id="playerSearchInput" name="playerSearchInput" type="text" class="form-control" [(ngModel)]="playerSearchQuery" placeholder="Search by player tag..." />
+              </div>
+              <div class="form-group form-group-action">
+                <button class="btn btn-secondary" type="button" (click)="playerSearchQuery = ''">Clear</button>
+              </div>
+            </div>
+
+            <div class="search-meta" *ngIf="playerSearchQuery && playerSearchQuery.trim()">
+              <small>Showing {{ getFilteredImportedPlayers().length }} of {{ season.importedPlayers.length }} players ({{ getAssignedPlayersCount() }} assigned, {{ getUnassignedPlayersCount() }} unassigned)</small>
+            </div>
+
+            <!-- Add player form -->
+            <div class="add-player-form">
+              <input type="text" class="form-control" placeholder="Enter player tag" [(ngModel)]="manualAdd.tag" />
+              <label class="add-player-top-label">
+                <input type="checkbox" [(ngModel)]="manualAdd.isTopPlayer" /> Top Player
+              </label>
+              <div class="add-player-actions">
+                <button class="btn btn-primary" (click)="addManualPlayer()">Add Player</button>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Unassigned Players (if any) -->
-    <div class="section" *ngIf="getUnassignedPlayers().length > 0">
-      <h2>🏷️ Unassigned Players ({{ getUnassignedPlayers().length }})</h2>
-      <div class="unassigned-players-grid">
-        <div class="unassigned-player-card enhanced-unassigned-card" 
-             *ngFor="let player of getUnassignedPlayers(); trackBy: trackByPlayerId">
+    <!-- Players (all players shown by default) -->
+    <div class="section" *ngIf="getImportedPlayers().length > 0">
+      <h2>🏷️ Players ({{ season.importedPlayers.length }})</h2>
+      <div class="players-grid">
+        <div class="player-card enhanced-player-card" 
+             *ngFor="let player of getFilteredImportedPlayers(); trackBy: trackByPlayerId">
           <div class="player-summary">
             <div class="player-name">
               {{ player.tag }}
+              <span *ngIf="isTopPlayer(player)" class="top-player-badge" title="Top player">🌟 Top</span>
+              <span *ngIf="isCaptain(player)" class="captain-badge" title="House Captain">🎖️ Captain</span>
               <span class="player-tier-badge" 
                     [style.background-color]="getPlayerTier(player).color">
                 {{ getPlayerTier(player).icon }} {{ getPlayerTier(player).tier }}
@@ -707,579 +485,34 @@
               </div>
             </div>
           </div>
+
           <div class="assignment-controls">
-            <select [(ngModel)]="player.tempHouseId" 
-                    class="house-select-compact"
-                    [attr.aria-label]="'Select house for ' + player.tag"
-                    title="Select house for this player">
-              <option [value]="undefined">Choose house...</option>
-              <option *ngFor="let house of season.houses" [value]="house.id">
-                {{ house.emblem }} {{ house.displayName }}
-              </option>
-            </select>
-            <button class="btn btn-small btn-primary" 
-                    [disabled]="!player.tempHouseId"
-                    (click)="assignPlayerToHouse(player.id, player.tempHouseId!)">
-              Assign
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- House Sorting Tab -->
-  <div class="tab-content" *ngIf="activeTab === 'house-sorting'">
-    <div class="placeholder-content">
-      <div class="placeholder-header">
-        <h2>⚖️ House Sorting</h2>
-        <p>Coming soon - This will contain house sorting functionality</p>
-      </div>
-      <div class="placeholder-body">
-        <div class="placeholder-card">
-          <h3>Planned Features:</h3>
-          <ul>
-            <li>Smart player-to-house assignments</li>
-            <li>Balance recommendations</li>
-            <li>Auto-balancing algorithms</li>
-            <li>Sorting history and tracking</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Legacy Tab Contents -->
-  
-  <!-- Player Assignments Tab -->
-  <div class="tab-content" *ngIf="activeTab === 'assignments'">
-    <!-- Tournament viewing notification -->
-    <div class="tournament-viewing-banner" *ngIf="selectedTournamentForViewing">
-      <div class="banner-content">
-        <span class="banner-icon">🏆</span>
-        <div class="banner-text">
-          <strong>Viewing players from: {{ getTournamentName(selectedTournamentForViewing) }}</strong>
-          <p>Players from this tournament are highlighted below</p>
-        </div>
-        <button class="btn btn-secondary btn-small" (click)="selectedTournamentForViewing = null">
-          Clear Filter
-        </button>
-      </div>
-    </div>
-
-    <div class="section">
-      <h2>Imported Players</h2>
-      <div class="imported-players-summary">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <span class="stat-value">{{ getAllImportedPlayers().length }}</span>
-            <span class="stat-label">Total Imported</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-value">{{ getUnassignedImportedPlayers().length }}</span>
-            <span class="stat-label">Unassigned</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-value">{{ getImportedPlayers().length - getUnassignedImportedPlayers().length }}</span>
-            <span class="stat-label">Assigned</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-value">{{ getImportedPlayers().length }}</span>
-            <span class="stat-label">Showing</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Player Filters -->
-      <div class="player-filters">
-        <div class="filter-header">
-          <h3>Filter Players</h3>
-          <div class="filter-status" *ngIf="hasActiveFilters()">
-            <span class="active-filter-badge">🔍 Filters Active</span>
-          </div>
-        </div>
-        <div class="filter-row">
-          <div class="filter-group">
-            <label>Events Attended:</label>
-            <div class="filter-range">
-              <div class="range-input">
-                <label for="minEvents">Min:</label>
-                <input 
-                  id="minEvents"
-                  type="number" 
-                  [(ngModel)]="playerFilters.minEvents"
-                  min="0" 
-                  [max]="getMaxEventCount()"
-                  class="form-control small"
-                  placeholder="0"
-                >
-              </div>
-              <div class="range-input">
-                <label for="maxEvents">Max:</label>
-                <input 
-                  id="maxEvents"
-                  type="number" 
-                  [(ngModel)]="playerFilters.maxEvents"
-                  [min]="playerFilters.minEvents" 
-                  [max]="getMaxEventCount()"
-                  class="form-control small"
-                  placeholder="No limit"
-                >
-              </div>
-            </div>
-          </div>
-          
-          <div class="filter-group">
-            <label>Assignment Status:</label>
-            <div class="checkbox-group">
-              <label class="checkbox-label">
-                <input 
-                  type="checkbox" 
-                  [(ngModel)]="playerFilters.showAssigned"
-                >
-                Show Assigned
-              </label>
-              <label class="checkbox-label">
-                <input 
-                  type="checkbox" 
-                  [(ngModel)]="playerFilters.showUnassigned"
-                >
-                Show Unassigned
-              </label>
-            </div>
-          </div>
-          
-          <div class="filter-actions">
-            <button 
-              class="btn btn-secondary btn-small"
-              (click)="resetPlayerFilters()"
-              title="Reset all filters"
-            >
-              🔄 Reset Filters
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="imported-players-list">
-        <div class="list-header">
-          <h3>All Imported Players</h3>
-          <button 
-            class="btn btn-danger btn-small"
-            (click)="clearAllImportedPlayers()"
-            *ngIf="getImportedPlayers().length > 0"
-            title="Clear all imported players"
-          >
-            🗑️ Clear All
-          </button>
-        </div>
-        <div class="players-grid">
-          <div 
-            class="player-card imported-player enhanced-card" 
-            *ngFor="let player of getImportedPlayers()"
-            [class.assigned]="player.isAssigned"
-            [class.unassigned]="!player.isAssigned"
-            [class.selected-tournament-player]="isPlayerFromSelectedTournament(player)"
-          >
-            <div class="player-header">
-              <div class="player-name-section">
-                <div class="player-name">
-                  {{ player.tag }}
-                  <span class="player-tier-badge" 
-                        [style.background-color]="getPlayerTier(player).color">
-                    {{ getPlayerTier(player).icon }} {{ getPlayerTier(player).tier }}
-                  </span>
-                </div>
-                <div class="selected-tournament-badge" *ngIf="isPlayerFromSelectedTournament(player)">
-                  🏆 {{ getTournamentName(selectedTournamentForViewing!) }}
-                </div>
-              </div>
-              <div class="player-actions">
-                <button 
-                  class="btn btn-danger btn-small"
-                  (click)="removeImportedPlayer(player)"
-                  title="Remove this player"
-                >
-                  🗑️
-                </button>
-              </div>
-            </div>
-
-            <div class="player-stats-grid">
-              <div class="stat-item">
-                <div class="stat-icon">🏆</div>
-                <div class="stat-content">
-                  <div class="stat-value">{{ getPlayerStatistics(player).tournamentsEntered }}</div>
-                  <div class="stat-label">Tournaments</div>
-                </div>
-              </div>
-
-              <div class="stat-item">
-                <div class="stat-icon">📊</div>
-                <div class="stat-content">
-                  <div class="stat-value">{{ getPlayerStatistics(player).winRate | number:'1.0-1' }}%</div>
-                  <div class="stat-label">Win Rate</div>
-                </div>
-              </div>
-
-              <div class="stat-item">
-                <div class="stat-icon">⭐</div>
-                <div class="stat-content">
-                  <div class="stat-value">{{ getPlayerRating(player) | number:'1.0-0' }}</div>
-                  <div class="stat-label">Skill Rating</div>
-                </div>
-              </div>
-
-              <div class="stat-item">
-                <div class="stat-icon">🎯</div>
-                <div class="stat-content">
-                  <div class="stat-value">{{ formatPlacement(getPlayerStatistics(player).bestPlacement) }}</div>
-                  <div class="stat-label">Best Finish</div>
-                </div>
-              </div>
-
-              <div class="stat-item">
-                <div class="stat-icon">📈</div>
-                <div class="stat-content">
-                  <div class="stat-value">{{ formatPlacement(getPlayerStatistics(player).averagePlacement) }}</div>
-                  <div class="stat-label">Avg. Place</div>
-                </div>
-              </div>
-
-              <div class="stat-item">
-                <div class="stat-icon">🔥</div>
-                <div class="stat-content">
-                  <div class="stat-value">{{ getPlayerStatistics(player).recentForm }}</div>
-                  <div class="stat-label">Form</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="player-footer">
-              <div class="assignment-status">
-                <span *ngIf="player.isAssigned" class="status assigned">
-                  🏠 {{ getHouseName(player.assignedHouseId!, season.houses) }}
-                </span>
-                <span *ngIf="!player.isAssigned" class="status unassigned">
-                  🏷️ Unassigned
-                </span>
-              </div>
-              <div class="last-seen">
-                📅 {{ player.lastSeen | date:'MMM d, y' }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <h2>Assign Player to House</h2>
-      <form [formGroup]="playerAssignmentForm" (ngSubmit)="onAssignPlayer()" class="form">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="importedPlayerId">Select Player:</label>
-            <select id="importedPlayerId" formControlName="importedPlayerId" class="form-control">
-              <option value="">Choose a player</option>
-              <option 
-                *ngFor="let player of getUnassignedImportedPlayers()" 
-                [value]="player.id"
-              >
-                {{ player.tag }} ({{ player.tournaments.length }} tournaments)
-              </option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="houseId">House:</label>
-            <select id="houseId" formControlName="houseId" class="form-control">
-              <option value="">Select a house</option>
-              <option *ngFor="let house of season.houses" [value]="house.id">
-                {{ house.emblem }} {{ house.displayName }}
-              </option>
-            </select>
-          </div>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label class="checkbox-label">
-              <input 
-                type="checkbox" 
-                formControlName="isHighLevel"
-              >
-              High-level player
+            <label class="top-player-checkbox" title="Mark as top player for sorting">
+              <input type="checkbox" [checked]="isTopPlayer(player)" (change)="toggleTopPlayerFlag(player.id, $any($event.target).checked)" />
+              Top Player
             </label>
-          </div>
-        </div>
-        
-        <button 
-          type="submit" 
-          class="btn btn-primary"
-          [disabled]="!playerAssignmentForm.valid"
-        >
-          Assign Player
-        </button>
-      </form>
-    </div>
-
-    <div class="section">
-      <h2>Current Assignments</h2>
-      <div class="assignments-list">
-        <div 
-          class="assignment-card" 
-          *ngFor="let assignment of season.assignments"
-        >
-          <div class="assignment-info">
-            <div class="player-name">{{ assignment.playerName }}</div>
-            <div class="house-info">
-              {{ getHouseName(assignment.houseId, season.houses) }}
-              <span class="high-level-badge" *ngIf="assignment.isHighLevel">High Level</span>
-            </div>
-            <div class="assignment-date">
-              Assigned: {{ assignment.assignedDate | date:'MMM d, y' }}
-            </div>
-          </div>
-          <button 
-            class="btn btn-danger btn-small" 
-            (click)="removeAssignment(assignment)"
-          >
-            Remove
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Events Tab -->
-  <div class="tab-content" *ngIf="activeTab === 'events'">
-    <div class="section">
-      <h2>Add Event to Current Season</h2>
-      <form [formGroup]="tournamentEventForm" (ngSubmit)="onAddTournamentEvent()" class="form">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="tournamentSelect">Select Tournament:</label>
-            <select id="tournamentSelect" formControlName="tournamentSlug" class="form-control">
-              <option value="">Choose from imported tournaments</option>
-              <option 
-                *ngFor="let tournament of recentImports" 
-                [value]="tournament.tournament.slug"
-              >
-                {{ tournament.tournament.name }} ({{ tournament.playerCount }} players, {{ tournament.importedAt | date:'MMM d, y' }})
-              </option>
-            </select>
-            <small class="form-help" *ngIf="recentImports.length === 0">
-              No tournaments have been imported yet. Go to the Import Tournaments tab to import tournament data.
-            </small>
-          </div>
-        </div>
-
-        <div class="form-group" *ngIf="tournamentEventForm.get('tournamentSlug')?.value">
-          <label for="eventDescription">Description (optional):</label>
-          <textarea 
-            id="eventDescription" 
-            formControlName="description"
-            class="form-control"
-            rows="3"
-            placeholder="Optional description for this tournament event"
-          ></textarea>
-        </div>
-
-        <div class="tournament-info-notice" *ngIf="tournamentEventForm.get('tournamentSlug')?.value">
-          <p><strong>Note:</strong> Date, completion status, and house points will be determined automatically from the tournament data.</p>
-        </div>
-
-        <button 
-          type="submit" 
-          class="btn btn-primary"
-          [disabled]="!tournamentEventForm.valid"
-        >
-          Add Tournament Event
-        </button>
-      </form>
-    </div>
-
-    <div class="section">
-      <h2>Events Included in Current Season</h2>
-      <div class="season-events-summary">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <span class="stat-value">{{ season.events.length }}</span>
-            <span class="stat-label">Total Events</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-value">{{ getCompletedEventsCount() }}</span>
-            <span class="stat-label">Completed</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-value">{{ getUpcomingEventsCount() }}</span>
-            <span class="stat-label">Upcoming</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="events-list" *ngIf="season.events.length > 0; else noEventsMessage">
-        <div 
-          class="event-card tournament-event" 
-          *ngFor="let event of season.events"
-          [class.completed]="event.isCompleted"
-          [class.upcoming]="!event.isCompleted"
-        >
-          <div class="event-info">
-            <div class="event-header">
-              <div class="event-name" 
-                   [class.clickable-tournament]="event.tournamentSlug"
-                   (click)="event.tournamentSlug && viewTournamentPlayers(event.tournamentSlug)"
-                   [title]="event.tournamentSlug ? 'Click to view imported players from this tournament' : ''">
-                {{ event.name }}
-                <span class="tournament-indicator" *ngIf="event.tournamentSlug">🏆</span>
+            <label class="captain-checkbox" title="Mark as house captain">
+              <input type="checkbox" [checked]="isCaptain(player)" (change)="toggleCaptainFlag(player.id, $any($event.target).checked)" />
+              Captain
+            </label>
+            <!-- If player is already assigned, show current house and option to remove -->
+            <div *ngIf="player.isAssigned; else unassignedControls" class="assigned-info">
+              <div class="assigned-text">
+                <strong>Assigned:</strong>
+                <span>{{ getPlayerHouseAssignment(player.tag) || 'Unknown House' }}</span>
               </div>
-              <div class="event-status-badge" [class.completed]="event.isCompleted">
-                {{ event.isCompleted ? 'Completed' : 'Upcoming' }}
+              <div class="assigned-actions">
+                <button class="btn btn-small btn-warning" (click)="removePlayerFromHouse(player.id)">Remove Assignment</button>
+                <button class="btn btn-small btn-secondary" (click)="viewImportedPlayerDetails(player)">View</button>
               </div>
             </div>
-            <div class="event-details">
-              <span class="event-type">{{ event.type | titlecase }}</span>
-              <span class="event-date">{{ event.date | date:'MMM d, y' }}</span>
-            </div>
-            <div class="event-description" *ngIf="event.description">
-              {{ event.description }}
-            </div>
-            <div class="house-points-display">
-              <h4>House Points:</h4>
-              <div class="points-breakdown">
-                <div *ngFor="let house of season.houses" class="house-points">
-                  <span class="house-name">{{ house.emblem }} {{ house.displayName }}:</span>
-                  <span class="points-value">{{ event.housePoints[house.id] || 0 }} pts</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="event-actions">
-            <button 
-              class="btn btn-secondary btn-small" 
-              (click)="editEvent(event)"
-              title="Edit event"
-            >
-              Edit
-            </button>
-            <button 
-              class="btn btn-danger btn-small" 
-              (click)="removeEvent(event)"
-              title="Remove event"
-            >
-              Remove
-            </button>
-          </div>
-        </div>
-      </div>
 
-      <ng-template #noEventsMessage>
-        <div class="empty-state">
-          <div class="empty-icon">📅</div>
-          <h3>No Events Added Yet</h3>
-          <p>Add tournament events to the current season using the form above.</p>
-        </div>
-      </ng-template>
-    </div>
-  </div>
-
-  <!-- Manage Houses Tab -->
-  <div class="tab-content" *ngIf="activeTab === 'houses'">
-    <div class="section">
-      <h2>🏠 House Management</h2>
-      <p class="section-description">Manage player assignments by house, view unassigned players, and monitor house balance.</p>
-      
-      <!-- House Balance Overview -->
-      <div class="house-balance-overview">
-        <h3>House Balance Summary</h3>
-        <div class="balance-cards">
-          <div class="balance-card" *ngFor="let house of season.houses" 
-               [style.border-color]="house.color">
-            <div class="house-header">
-              <span class="house-emblem">{{ house.emblem }}</span>
-              <span class="house-name">{{ house.displayName }}</span>
-            </div>
-            <div class="house-stats">
-              <div class="stat">
-                <span class="stat-label">Players:</span>
-                <span class="stat-value">{{ getHousePlayerCount(house.id) }}</span>
-              </div>
-              <div class="stat">
-                <span class="stat-label">Avg Rating:</span>
-                <span class="stat-value">{{ getHouseAverageRating(house.id) | number:'1.0-0' }}</span>
-              </div>
-              <div class="stat">
-                <span class="stat-label">Total Points:</span>
-                <span class="stat-value">{{ house.points }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Houses with Players -->
-      <div class="houses-section">
-        <h3>House Assignments</h3>
-        <div class="houses-container">
-          <div class="house-group" *ngFor="let house of season.houses"
-               [style.border-color]="house.color">
-            <div class="house-header-detailed">
-              <div class="house-title">
-                <span class="house-emblem">{{ house.emblem }}</span>
-                <h4>{{ house.displayName }}</h4>
-                <span class="player-count">({{ getHousePlayerCount(house.id) }} players)</span>
-              </div>
-              <div class="house-metrics">
-                <span class="avg-rating">Avg: {{ getHouseAverageRating(house.id) | number:'1.0-0' }}</span>
-                <span class="house-points">{{ house.points }} pts</span>
-              </div>
-            </div>
-            
-            <div class="house-players" *ngIf="getHousePlayers(house.id).length > 0; else noPlayers">
-              <div class="player-row" *ngFor="let player of getHousePlayers(house.id)">
-                <div class="player-info">
-                  <span class="player-name">{{ player.tag }}</span>
-                  <span class="player-rating">{{ getPlayerRating(player) | number:'1.0-0' }}</span>
-                  <span class="player-tournaments">{{ player.tournaments.length }} tournaments</span>
-                </div>
-                <div class="player-actions">
-                  <button class="btn btn-small btn-secondary" 
-                          (click)="viewImportedPlayerDetails(player)">
-                    View
-                  </button>
-                  <button class="btn btn-small btn-danger" 
-                          (click)="removePlayerFromHouse(player.id)">
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </div>
-            
-            <ng-template #noPlayers>
-              <div class="no-players">
-                <p>No players assigned to this house yet.</p>
-              </div>
-            </ng-template>
-          </div>
-        </div>
-      </div>
-
-      <!-- Unassigned Players -->
-      <div class="unassigned-section" *ngIf="getUnassignedPlayers().length > 0">
-        <h3>Unassigned Players ({{ getUnassignedPlayers().length }})</h3>
-        <div class="unassigned-players">
-          <div class="unassigned-player" *ngFor="let player of getUnassignedPlayers()">
-            <div class="player-info">
-              <span class="player-name">{{ player.tag }}</span>
-              <span class="player-rating">{{ getPlayerRating(player) | number:'1.0-0' }}</span>
-              <span class="player-tournaments">{{ player.tournaments.length }} tournaments</span>
-            </div>
-            <div class="assignment-controls">
+            <ng-template #unassignedControls>
               <select [(ngModel)]="player.tempHouseId" 
-                      class="house-select"
+                      class="house-select-compact"
                       [attr.aria-label]="'Select house for ' + player.tag"
                       title="Select house for this player">
-                <option [value]="undefined">Select House...</option>
+                <option [value]="undefined">Choose house...</option>
                 <option *ngFor="let house of season.houses" [value]="house.id">
                   {{ house.emblem }} {{ house.displayName }}
                 </option>
@@ -1289,819 +522,96 @@
                       (click)="assignPlayerToHouse(player.id, player.tempHouseId!)">
                 Assign
               </button>
-            </div>
+              <button class="btn btn-small btn-secondary" (click)="viewImportedPlayerDetails(player)">View</button>
+            </ng-template>
           </div>
         </div>
       </div>
-
-      <!-- No Unassigned Players -->
-      <div class="no-unassigned" *ngIf="getUnassignedPlayers().length === 0 && season.importedPlayers.length > 0">
-        <div class="success-message">
-          <span class="success-icon">✅</span>
-          <h3>All players have been assigned to houses!</h3>
-          <p>Great job organizing the competition. All {{ season.importedPlayers.length }} players are now assigned to houses.</p>
-        </div>
-      </div>
-
-      <!-- No Players Yet -->
-      <div class="no-players-yet" *ngIf="season.importedPlayers.length === 0">
-        <div class="info-message">
-          <span class="info-icon">ℹ️</span>
-          <h3>No players imported yet</h3>
-          <p>Import tournaments from the "Import Tournaments" tab to get started with house assignments.</p>
-          <button class="btn btn-primary" (click)="setActiveTab('startgg')">
-            Import Tournaments
-          </button>
-        </div>
-      </div>
-
-      <!-- House Balance Actions -->
-      <div class="house-actions" *ngIf="season.importedPlayers.length > 0">
-        <h3>House Management Actions</h3>
-        <div class="action-buttons">
-          <button class="btn btn-secondary" (click)="autoBalanceHouses()">
-            🎯 Auto-Balance Houses
-          </button>
-          <button class="btn btn-secondary" (click)="shuffleUnassigned()">
-            🔀 Shuffle Unassigned
-          </button>
-          <button class="btn btn-danger" (click)="clearAllAssignments()">
-            🗑️ Clear All Assignments
-          </button>
-        </div>
-        <div class="action-description">
-          <p><strong>Auto-Balance:</strong> Automatically distribute unassigned players to balance skill levels across houses.</p>
-          <p><strong>Shuffle:</strong> Randomly reorder unassigned players to help with manual assignment.</p>
-          <p><strong>Clear All:</strong> Remove all player assignments and start fresh.</p>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <!-- House Sorting Tab -->
-  <div class="tab-content" *ngIf="activeTab === 'sorting'">
+    <!-- Player Rankings (from legacy Rankings Data tab) -->
     <div class="section">
-      <h2>🎯 House Sorting</h2>
-      <p class="section-description">
-        Sort new competitors into houses while maintaining balance. The system considers skill levels and existing house compositions.
-      </p>
+      <h2>📊 Player Rankings & Performance</h2>
+      <p class="section-description">Overview of player performance across imported tournaments. Use this to help with house balancing and assignments.</p>
 
-      <!-- Player Search -->
-      <div class="sorting-search-section">
-        <h3>Find Player to Sort</h3>
-        <div class="search-form">
-          <div class="form-group">
-            <label for="playerSearch">Search by Player Tag:</label>
-            <div class="search-input-group">
-              <input 
-                type="text"
-                id="playerSearch"
-                [(ngModel)]="sortingSearchQuery"
-                class="form-control"
-                placeholder="Enter player tag..."
-                (input)="onPlayerSearchInput()"
-                (keyup.enter)="searchForPlayer()">
-              <button 
-                type="button" 
-                class="btn btn-primary search-btn" 
-                (click)="searchForPlayer()"
-                [disabled]="!sortingSearchQuery.trim()"
-                title="Search for player">
-                🔍 Search
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Search Results -->
-        <div class="search-results" *ngIf="sortingSearchResults.length > 0">
-          <h4>Search Results</h4>
-          <div class="search-results-list">
-            <div class="search-result-item" *ngFor="let player of sortingSearchResults">
-              <div class="player-info">
-                <span class="player-name">{{ player.tag }}</span>
-                <span class="player-rating" *ngIf="getPlayerRating(player) > 0">
-                  Rating: {{ getPlayerRating(player) | number:'1.0-0' }}
-                </span>
-                <span class="player-tournaments">{{ player.tournaments.length }} tournaments</span>
-                <span class="player-status" 
-                      [class.assigned]="player.isAssigned"
-                      [class.unassigned]="!player.isAssigned">
-                  {{ player.isAssigned ? 'Already Assigned' : 'Unassigned' }}
-                </span>
-              </div>
-              <div class="player-actions" *ngIf="!player.isAssigned">
-                <button class="btn btn-small btn-primary" 
-                        (click)="selectPlayerForSorting(player)">
-                  Select for Sorting
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- No Results -->
-        <div class="no-search-results" *ngIf="sortingSearchPerformed && sortingSearchResults.length === 0">
-          <div class="info-message">
-            <span class="info-icon">ℹ️</span>
-            <p>No players found matching "{{ sortingSearchQuery }}". Make sure the player has been imported from tournaments.</p>
-            <button class="btn btn-secondary" (click)="setActiveTab('startgg')">
-              Import Tournaments
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Selected Player for Sorting -->
-      <div class="selected-player-section" *ngIf="selectedPlayerForSorting">
-        <h3>Player Selected for Sorting</h3>
-        <div class="selected-player-card">
-          <div class="player-details">
-            <h4>{{ selectedPlayerForSorting.tag }}</h4>
-            <div class="player-stats">
-              <div class="stat">
-                <span class="stat-label">Skill Rating:</span>
-                <span class="stat-value">{{ getPlayerRating(selectedPlayerForSorting) | number:'1.0-0' }}</span>
-              </div>
-              <div class="stat">
-                <span class="stat-label">Tournaments:</span>
-                <span class="stat-value">{{ selectedPlayerForSorting.tournaments.length }}</span>
-              </div>
-              <div class="stat">
-                <span class="stat-label">High Level Player:</span>
-                <span class="stat-value" [class.high-level]="isHighLevelPlayer(selectedPlayerForSorting)">
-                  {{ isHighLevelPlayer(selectedPlayerForSorting) ? 'Yes' : 'No' }}
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="sorting-actions">
-            <button class="btn btn-secondary" (click)="clearSelectedPlayer()">
-              Cancel
-            </button>
-            <button class="btn btn-primary" (click)="performSmartSorting()">
-              🎯 Smart Sort
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- House Balance Preview -->
-      <div class="balance-preview-section" *ngIf="selectedPlayerForSorting && sortingRecommendation">
-        <h3>Sorting Recommendation</h3>
-        <div class="recommendation-card">
-          <div class="recommended-house">
-            <h4>Recommended: {{ sortingRecommendation.recommendedHouse.emblem }} {{ sortingRecommendation.recommendedHouse.displayName }}</h4>
-            <p class="recommendation-reason">{{ sortingRecommendation.reason }}</p>
-          </div>
-          
-          <div class="balance-impact">
-            <h5>Impact on House Balance:</h5>
-            <div class="house-balance-grid">
-              <div class="house-balance-item" *ngFor="let house of sortingRecommendation.balancePreview">
-                <div class="house-info">
-                  <span class="house-emblem">{{ house.emblem }}</span>
-                  <span class="house-name">{{ house.name }}</span>
-                </div>
-                <div class="balance-metrics">
-                  <div class="metric">
-                    <span class="metric-label">Players:</span>
-                    <span class="metric-value" 
-                          [class.recommended]="house.id === sortingRecommendation.recommendedHouse.id">
-                      {{ house.currentPlayers }} → {{ house.projectedPlayers }}
-                    </span>
-                  </div>
-                  <div class="metric">
-                    <span class="metric-label">Avg Rating:</span>
-                    <span class="metric-value"
-                          [class.recommended]="house.id === sortingRecommendation.recommendedHouse.id">
-                      {{ house.currentRating | number:'1.0-0' }} → {{ house.projectedRating | number:'1.0-0' }}
-                    </span>
-                  </div>
-                  <div class="metric">
-                    <span class="metric-label">Balance Score:</span>
-                    <span class="metric-value"
-                          [class.recommended]="house.id === sortingRecommendation.recommendedHouse.id">
-                      {{ house.balanceScore | number:'1.1-1' }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="confirmation-actions">
-            <button class="btn btn-danger" (click)="clearSortingRecommendation()">
-              Cancel Sorting
-            </button>
-            <button class="btn btn-success" (click)="confirmSorting()">
-              ✅ Confirm Sorting
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Current House Status -->
-      <div class="current-status-section">
-        <h3>Current House Status</h3>
-        <div class="status-cards">
-          <div class="status-card" *ngFor="let house of season.houses" 
-               [style.border-color]="house.color">
-            <div class="house-header">
-              <span class="house-emblem">{{ house.emblem }}</span>
-              <span class="house-name">{{ house.displayName }}</span>
-            </div>
-            <div class="house-metrics">
-              <div class="metric-row">
-                <span class="metric-label">Players:</span>
-                <span class="metric-value">{{ getHousePlayerCount(house.id) }}</span>
-              </div>
-              <div class="metric-row">
-                <span class="metric-label">Avg Rating:</span>
-                <span class="metric-value">{{ getHouseAverageRating(house.id) | number:'1.0-0' }}</span>
-              </div>
-              <div class="metric-row">
-                <span class="metric-label">High Level Players:</span>
-                <span class="metric-value">{{ getHighLevelPlayerCount(house.id) }}</span>
-              </div>
-              <div class="metric-row">
-                <span class="metric-label">Balance Score:</span>
-                <span class="metric-value">{{ getHouseBalanceScore(house.id) | number:'1.1-1' }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sorting History -->
-      <div class="sorting-history-section" *ngIf="recentSortings.length > 0">
-        <h3>Recent Sortings</h3>
-        <div class="sorting-history-list">
-          <div class="sorting-history-item" *ngFor="let sorting of recentSortings | slice:0:10">
-            <div class="sorting-info">
-              <span class="player-name">{{ sorting.playerName }}</span>
-              <span class="sorted-to">→ {{ sorting.houseEmblem }} {{ sorting.houseName }}</span>
-              <span class="sorting-date">{{ sorting.sortedAt | date:'short' }}</span>
-            </div>
-            <div class="sorting-reason">
-              <small>{{ sorting.reason }}</small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bulk Sorting Options -->
-      <div class="bulk-sorting-section" *ngIf="getUnassignedPlayers().length > 0">
-        <h3>Bulk Sorting Options</h3>
-        <div class="bulk-actions">
-          <button class="btn btn-secondary" (click)="sortAllUnassigned()">
-            🎯 Sort All Unassigned Players
-          </button>
-          <button class="btn btn-secondary" (click)="sortBySkillLevel()">
-            📊 Sort by Skill Level
-          </button>
-          <button class="btn btn-secondary" (click)="randomSort()">
-            🎲 Random Sort
-          </button>
-        </div>
-        <div class="bulk-description">
-          <p><strong>Sort All:</strong> Automatically sort all unassigned players using smart balancing algorithm.</p>
-          <p><strong>By Skill:</strong> Sort players prioritizing skill balance across houses.</p>
-          <p><strong>Random:</strong> Randomly distribute players while maintaining basic balance.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Rankings Data Tab -->
-  <div class="tab-content" *ngIf="activeTab === 'rankings'">
-    <div class="section">
-      <h2>Rankings Data Management</h2>
-      <p class="section-description">
-        Import tournament results to build training data for player performance analysis. 
-        Player placements are tracked to calculate Top 25% rates and consistency ratings.
-      </p>
-
-      <!-- Tournament Import Form -->
-      <div class="rankings-import-section">
-        <h3>Import Tournament Data</h3>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="rankingsTournamentSelect">Select Imported Tournament:</label>
-            <select 
-              id="rankingsTournamentSelect"
-              [(ngModel)]="selectedRankingsTournament"
-              class="form-control"
-              (change)="onRankingsTournamentSelect()">
-              <option value="">Choose from imported tournaments...</option>
-              <option *ngFor="let tournament of getAvailableTournaments()" [value]="tournament.tournament.slug">
-                {{ tournament.tournament.name }} ({{ tournament.importedAt | date:'shortDate' }})
-              </option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="manualSlug">Or Enter Start.gg Slug:</label>
-            <input 
-              type="text"
-              id="manualSlug"
-              [(ngModel)]="manualTournamentSlug"
-              class="form-control"
-              placeholder="e.g., raffle-rumble"
-              (keyup.enter)="importRankingsData()">
-            <small class="form-help">Enter just the slug part (e.g., "raffle-rumble" from start.gg/raffle-rumble)</small>
-          </div>
-        </div>
-        <div class="form-actions">
-          <button 
-            type="button" 
-            class="btn btn-primary" 
-            (click)="importRankingsData()"
-            [disabled]="!selectedRankingsTournament && !manualTournamentSlug">
-            <span>📊</span> Import Tournament Data
-          </button>
-          <button 
-            type="button" 
-            class="btn btn-danger" 
-            (click)="clearAllRankingsData()"
-            *ngIf="getRankingsTournaments().length > 0">
-            <span>🗑️</span> Clear All Data
-          </button>
-        </div>
-      </div>
-
-      <!-- Import Status -->
-      <div class="import-status" 
-           [class.success]="rankingsImportStatus === 'success'"
-           [class.error]="rankingsImportStatus === 'error'"
-           [class.warning]="rankingsImportStatus === 'warning'"
-           *ngIf="rankingsImportMessage">
-        <div class="status-message">{{ rankingsImportMessage }}</div>
-        <div class="status-details" *ngIf="rankingsImportDetails">
-          <ul>
-            <li *ngFor="let detail of rankingsImportDetails">{{ detail }}</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Rankings Data Summary -->
-      <div class="rankings-summary" *ngIf="getRankingsTournaments().length > 0">
-        <h3>Rankings Training Data</h3>
-        <div class="summary-cards">
-          <div class="summary-card">
-            <div class="card-value">{{ getRankingsTournaments().length }}</div>
-            <div class="card-label">Tournaments</div>
-          </div>
-          <div class="summary-card">
-            <div class="card-value">{{ getTotalRankingsPlayers() }}</div>
-            <div class="card-label">Players</div>
-          </div>
-          <div class="summary-card">
-            <div class="card-value">{{ getTotalMatches() }}</div>
-            <div class="card-label">Total Matches</div>
-          </div>
-          <div class="summary-card">
-            <div class="card-value">{{ getAverageEntrants() | number:'1.0-0' }}</div>
-            <div class="card-label">Avg. Entrants</div>
-          </div>
-        </div>
-
-        <!-- Tournament List -->
-        <div class="rankings-tournaments-list">
-          <div class="list-header">
-            <h4>Imported Tournaments</h4>
-            <button class="btn btn-small btn-primary" (click)="recalculateRankings()">
-              <span>🔄</span> Recalculate Rankings
-            </button>
-          </div>
-          <div class="tournaments-grid">
-            <div class="tournament-card" *ngFor="let tournament of getRankingsTournaments()">
-              <div class="tournament-header">
-                <div class="tournament-info">
-                  <h5 class="tournament-name">{{ tournament.name }}</h5>
-                  <div class="tournament-details">
-                    <span class="tournament-date">{{ tournament.startAt | date:'shortDate' }}</span>
-                    <span class="tournament-entrants">{{ tournament.numEntrants }} entrants</span>
-                    <span class="tournament-matches">{{ getTournamentMatchCount(tournament) }} matches</span>
-                  </div>
-                </div>
-                <div class="tournament-actions">
-                  <button class="btn btn-small btn-danger" (click)="removeRankingsTournament(tournament.slug)">
-                    Remove
-                  </button>
-                </div>
-              </div>
-              <div class="tournament-stats" *ngIf="tournament.topPlacements">
-                <strong>Top 3:</strong>
-                <span *ngFor="let placement of tournament.topPlacements; let i = index">
-                  {{ i + 1 }}. {{ placement.playerName }}{{ i < tournament.topPlacements.length - 1 ? ', ' : '' }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Player Rankings -->
-        <div class="current-rankings" *ngIf="getRankingsPlayers().length > 0">
-          <h4>Current Player Performance Rankings</h4>
-          <div class="rankings-table-container">
-            <table class="rankings-table">
-              <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Player</th>
-                  <th>Top 25% Rate</th>
-                  <th>Consistency Rating</th>
-                  <th>Tournaments</th>
-                  <th>Avg. Placement</th>
-                  <th>Best Placement</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let player of getRankedPlayers(); let i = index" 
-                    [class.high-skill]="player.top25Rate > 0.5">
-                  <td><strong>{{ getTournamentRank(getRankedPlayers(), i) }}</strong></td>
-                  <td class="player-name">{{ player.playerName }}</td>
-                  <td class="rating-value">{{ (player.top25Rate * 100) | number:'1.0-0' }}%</td>
-                  <td>
-                    <div class="confidence-bar">
-                      <div class="confidence-fill" [style.width.%]="player.consistencyRating"></div>
-                      <span>{{ player.consistencyRating | number:'1.0-0' }}/100</span>
-                    </div>
-                  </td>
-                  <td>{{ player.tournaments }}</td>
-                  <td>{{ player.avgPlacement | number:'1.1-1' }}</td>
-                  <td><strong>{{ player.bestPlacement }}</strong></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Empty State -->
-      <div class="empty-state" *ngIf="getRankingsTournaments().length === 0">
-        <div class="empty-icon">📊</div>
-        <h3>No Rankings Data Yet</h3>
-        <p>Import your first tournament to start building training data for the rankings algorithm.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Rules Tab -->
-  <div class="tab-content" *ngIf="activeTab === 'rules'">
-    <div class="section">
-      <h2>Season Rules & Formulas</h2>
-      <form [formGroup]="rulesForm" (ngSubmit)="onUpdateRules()" class="form">
-        <div class="form-group">
-          <label for="upsetFormula">Upset Points Formula:</label>
-          <input 
-            type="text" 
-            id="upsetFormula" 
-            formControlName="upsetPointsFormula"
-            class="form-control"
-            placeholder="e.g., base_points * (1 + opponent_rank_diff / 10)"
-          >
-          <small class="form-help">Formula for calculating points from upsets</small>
-        </div>
-
-        <div class="form-group">
-          <label for="winFormula">Win Points Formula:</label>
-          <input 
-            type="text" 
-            id="winFormula" 
-            formControlName="winPointsFormula"
-            class="form-control"
-            placeholder="e.g., base_points * placement_multiplier"
-          >
-          <small class="form-help">Formula for calculating points from wins</small>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="grudgeMultiplier">Grudge Match Multiplier:</label>
-            <input 
-              type="number" 
-              id="grudgeMultiplier" 
-              formControlName="grudgeMatchMultiplier"
-              class="form-control"
-              step="0.1"
-              min="0"
-            >
-          </div>
-          <div class="form-group">
-            <label for="specialMultiplier">Special Event Multiplier:</label>
-            <input 
-              type="number" 
-              id="specialMultiplier" 
-              formControlName="specialEventMultiplier"
-              class="form-control"
-              step="0.1"
-              min="0"
-            >
-          </div>
-        </div>
-
-        <button 
-          type="submit" 
-          class="btn btn-primary"
-          [disabled]="!rulesForm.valid"
-        >
-          Update Rules
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Start.gg Import Tab -->
-  <div class="tab-content" *ngIf="activeTab === 'startgg'">
-    <div class="section">
-      <h2>Import Tournament from start.gg</h2>
-      <p class="section-description">Import tournament data from start.gg to populate events and analyze player performance for house assignments.</p>
-      
-      <form [formGroup]="startggImportForm" (ngSubmit)="onImportTournament()" class="form">
-        <div class="form-group">
-          <label for="tournamentSlug">Tournament Slug:</label>
-          <input 
-            type="text" 
-            id="tournamentSlug" 
-            formControlName="tournamentSlug"
-            class="form-control"
-            placeholder="e.g. super-smash-con-2024, evo-2024, big-house-11"
-            [disabled]="isImporting"
-          >
-          <small class="form-help">Enter just the tournament slug (the part after start.gg/tournament/). Examples: "super-smash-con-2024", "evo-2024", "genesis-10"</small>
-          <div *ngIf="startggImportForm.get('tournamentSlug')?.invalid && startggImportForm.get('tournamentSlug')?.touched" class="form-error">
-            <small *ngIf="startggImportForm.get('tournamentSlug')?.errors?.['required']">Tournament slug is required</small>
-            <small *ngIf="startggImportForm.get('tournamentSlug')?.errors?.['pattern']">Please enter a valid slug (letters, numbers, hyphens, and underscores only)</small>
-          </div>
-        </div>
-
-        <div class="import-options">
-          <h3>Import Options</h3>
-          <div class="checkbox-group">
-            <label class="checkbox-label">
-              <input 
-                type="checkbox" 
-                formControlName="importEvents"
-                [disabled]="isImporting"
-              >
-              Import as competition events
-            </label>
-            <label class="checkbox-label">
-              <input 
-                type="checkbox" 
-                formControlName="calculateRatings"
-                [disabled]="isImporting"
-              >
-              Calculate skill ratings
-            </label>
-            <label class="checkbox-label">
-              <input 
-                type="checkbox" 
-                formControlName="mergeWithExisting"
-                [disabled]="isImporting"
-              >
-              Merge with existing player data
-            </label>
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button 
-            type="submit" 
-            class="btn btn-primary"
-            [disabled]="!startggImportForm.valid || isImporting"
-          >
-            <span *ngIf="isImporting">🔄 Importing...</span>
-            <span *ngIf="!isImporting">📥 Import Tournament</span>
-          </button>
-          
-          <button 
-            type="button" 
-            class="btn btn-secondary"
-            (click)="loadMockData()"
-            [disabled]="isImporting"
-          >
-            🧪 Load Test Data
-          </button>
-        </div>
-      </form>
-
-      <!-- Import Status -->
-      <div class="import-status" *ngIf="importStatus">
-        <div class="status-message" [class]="importStatus.type">
-          <strong>{{ importStatus.type | titlecase }}:</strong> {{ importStatus.message }}
-        </div>
-        <div class="status-details" *ngIf="importStatus.details">
-          <ul>
-            <li *ngFor="let detail of importStatus.details">{{ detail }}</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- Recent Imports -->
-    <div class="section" *ngIf="recentImports.length > 0">
-      <h2>Recent Tournament Imports</h2>
-      <div class="imports-list">
-        <div 
-          class="import-card" 
-          *ngFor="let importData of recentImports"
-        >
-          <div class="import-info">
-            <div class="tournament-name">{{ importData.tournament.name }}</div>
-            <div class="import-details">
-              <span class="import-date">{{ importData.importedAt | date:'MMM d, y' }}</span>
-              <span class="player-count">{{ importData.playerCount }} players</span>
-              <span class="event-count">{{ importData.eventCount }} events</span>
-            </div>
-          </div>
-          <div class="import-actions">
-            <button 
-              class="btn btn-small btn-secondary" 
-              (click)="viewImportDetails(importData)"
-            >
-              View Details
-            </button>
-            <button 
-              class="btn btn-small btn-danger" 
-              (click)="removeImport(importData)"
-            >
-              Remove
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Tournament Analytics Tab -->
-  <div class="tab-content" *ngIf="activeTab === 'analytics'">
-    <div class="section">
-      <h2>Tournament Analytics Dashboard</h2>
-      <p class="section-description">View detailed analytics from imported tournaments to help with house balancing and player assignments.</p>
-      
-      <!-- Analytics Summary -->
-      <div class="analytics-summary" *ngIf="analyticsData">
-        <div class="summary-cards">
-          <div class="summary-card">
-            <div class="card-value">{{ analyticsData.totalPlayers }}</div>
-            <div class="card-label">Total Players</div>
-          </div>
-          <div class="summary-card">
-            <div class="card-value">{{ analyticsData.totalTournaments }}</div>
-            <div class="card-label">Tournaments</div>
-          </div>
-          <div class="summary-card">
-            <div class="card-value">{{ analyticsData.totalSets }}</div>
-            <div class="card-label">Sets Analyzed</div>
-          </div>
-          <div class="summary-card">
-            <div class="card-value">{{ analyticsData.averageRating | number:'1.0-0' }}</div>
-            <div class="card-label">Avg Rating</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Skill Ratings -->
-      <div class="analytics-subsection" *ngIf="skillRatings.length > 0">
-        <h3>Player Skill Ratings</h3>
-        <div class="ratings-table-container">
-          <table class="ratings-table">
+      <!-- Player Rankings -->
+      <div class="current-rankings" *ngIf="getRankingsPlayers().length > 0">
+        <h4>Current Player Performance Rankings</h4>
+        <div class="rankings-table-container">
+          <table class="rankings-table">
             <thead>
               <tr>
                 <th>Rank</th>
                 <th>Player</th>
-                <th>Rating</th>
-                <th>Confidence</th>
-                <th>Recent Form</th>
-                <th>Trend</th>
-                <th>House Assignment</th>
-                <th>Actions</th>
+                <th>Top 25% Rate</th>
+                <th>Consistency Rating</th>
+                <th>Tournaments</th>
+                <th>Avg. Placement</th>
+                <th>Best Placement</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let rating of skillRatings; let i = index" [class.high-skill]="rating.rating > 1200">
-                <td>{{ rating.rankingPosition }}</td>
-                <td class="player-name">{{ rating.playerTag }}</td>
-                <td class="rating-value">{{ rating.rating }}</td>
-                <td class="confidence-bar">
-                  <div class="confidence-fill" [style.width.%]="rating.confidence * 100"></div>
-                  <span>{{ (rating.confidence * 100) | number:'1.0-0' }}%</span>
+              <tr *ngFor="let player of getRankedPlayers(); let i = index" 
+                  [class.high-skill]="player.top25Rate > 0.5">
+                <td><strong>{{ getTournamentRank(getRankedPlayers(), i) }}</strong></td>
+                <td class="player-name">{{ player.playerName }}</td>
+                <td class="rating-value">{{ (player.top25Rate * 100) | number:'1.0-0' }}%</td>
+                <td>
+                  <div class="confidence-bar">
+                    <div class="confidence-fill" [style.width.%]="player.consistencyRating"></div>
+                    <span>{{ player.consistencyRating | number:'1.0-0' }}/100</span>
+                  </div>
                 </td>
-                <td class="recent-form">{{ rating.recentForm }}</td>
-                <td class="trend" [class]="rating.trend">
-                  <span class="trend-icon">{{ getTrendIcon(rating.trend) }}</span>
-                  {{ rating.trend | titlecase }}
-                </td>
-                <td class="house-assignment">
-                  {{ getPlayerHouseAssignment(rating.playerTag) || 'Unassigned' }}
-                </td>
-                <td class="actions">
-                  <button 
-                    class="btn btn-small btn-primary"
-                    (click)="assignPlayerFromRating(rating)"
-                    *ngIf="!getPlayerHouseAssignment(rating.playerTag)"
-                  >
-                    Assign
-                  </button>
-                  <button 
-                    class="btn btn-small btn-secondary"
-                    (click)="viewPlayerDetails(rating)"
-                  >
-                    Details
-                  </button>
-                </td>
+                <td>{{ player.tournaments }}</td>
+                <td>{{ player.avgPlacement | number:'1.1-1' }}</td>
+                <td><strong>{{ player.bestPlacement }}</strong></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- Head-to-Head Matrix -->
-      <div class="analytics-subsection" *ngIf="headToHeadMatrix.length > 0">
-        <h3>Head-to-Head Analysis</h3>
-        <div class="h2h-controls">
-          <label>
-            Show only records with at least 
-            <select [(ngModel)]="minH2HSets" (change)="filterHeadToHead()">
-              <option value="2">2 sets</option>
-              <option value="3">3 sets</option>
-              <option value="5">5 sets</option>
-            </select>
-          </label>
-        </div>
-        <div class="h2h-table-container">
-          <table class="h2h-table">
-            <thead>
-              <tr>
-                <th>Player 1</th>
-                <th>Player 2</th>
-                <th>Sets</th>
-                <th>Record</th>
-                <th>Win Rate</th>
-                <th>Last Meeting</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let h2h of filteredHeadToHead">
-                <td class="player-name">{{ h2h.player1Tag }}</td>
-                <td class="player-name">{{ h2h.player2Tag }}</td>
-                <td>{{ h2h.totalSets }}</td>
-                <td class="record">{{ h2h.player1Wins }}-{{ h2h.player2Wins }}</td>
-                <td class="win-rate">
-                  {{ getH2HWinRate(h2h) | number:'1.1-1' }}%
-                </td>
-                <td class="last-meeting">
-                  <span *ngIf="h2h.lastSetDate; else unknownDate">{{ h2h.lastSetDate | date:'MMM d' }}</span>
-                  <ng-template #unknownDate>Unknown</ng-template>
-                </td>
-                <td class="actions">
-                  <button 
-                    class="btn btn-small btn-secondary"
-                    (click)="viewH2HDetails(h2h)"
-                  >
-                    Details
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="empty-state" *ngIf="getRankingsPlayers().length === 0">
+        <div class="empty-icon">📊</div>
+        <h3>No Rankings Data Yet</h3>
+        <p>Import tournaments to build performance data used by these rankings.</p>
       </div>
+    </div>
 
-      <!-- House Balance Recommendation -->
-      <div class="analytics-subsection" *ngIf="houseBalanceRecommendation">
-        <h3>🏠 House Balance Recommendations</h3>
-        <div class="balance-recommendation">
-          <div class="recommendation-card" *ngFor="let house of houseBalanceRecommendation.houses">
-            <div class="house-header">
-              <span class="house-emblem">{{ house.emblem }}</span>
-              <span class="house-name">{{ house.name }}</span>
-              <span class="balance-score" [class]="house.balanceScore > 0.8 ? 'good' : house.balanceScore > 0.6 ? 'medium' : 'poor'">
-                {{ (house.balanceScore * 100) | number:'1.0-0' }}%
-              </span>
-            </div>
-            <div class="house-stats">
-              <div class="stat">
-                <span class="stat-label">Avg Rating:</span>
-                <span class="stat-value">{{ house.averageRating | number:'1.0-0' }}</span>
-              </div>
-              <div class="stat">
-                <span class="stat-label">Players:</span>
-                <span class="stat-value">{{ house.playerCount }}</span>
-              </div>
-              <div class="stat">
-                <span class="stat-label">High-Level:</span>
-                <span class="stat-value">{{ house.highLevelCount }}</span>
-              </div>
-            </div>
-            <div class="recommendations" *ngIf="house.recommendations.length > 0">
-              <h4>Suggestions:</h4>
-              <ul>
-                <li *ngFor="let rec of house.recommendations">{{ rec }}</li>
-              </ul>
+  </div>
+
+  <!-- House Sorting Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'house-sorting'">
+    <div class="section sorting-section">
+      <h2>⚖️ House Sorting</h2>
+      <p class="section-description">Quickly search for a player and run the sorting helper for that individual.</p>
+
+      <div class="sorting-form">
+        <div class="form-row">
+          <div class="form-group sorting-search-group">
+            <label for="sortingSearchInput" class="sr-only">Search player</label>
+            <input id="sortingSearchInput" type="text" class="form-control" placeholder="Search player tag..." [(ngModel)]="sortingSearchQuery" (input)="onPlayerSearchInput()" (keyup.enter)="searchForPlayer()" />
+          </div>
+          <div class="form-group">
+            <button class="btn btn-primary" type="button" (click)="searchForPlayer()">Search</button>
+          </div>
+        </div>
+
+        <div class="search-results" *ngIf="sortingSearchPerformed">
+          <div *ngIf="sortingSearchResults.length === 0">No players found.</div>
+          <div class="result-item" *ngFor="let p of sortingSearchResults">
+            <span class="result-name">{{ p.tag }}</span>
+            <button class="btn btn-small btn-secondary" (click)="selectPlayerForSorting(p)">Select</button>
+          </div>
+        </div>
+
+        <div class="selected-player" *ngIf="selectedPlayerForSorting">
+          <h4>Selected Player</h4>
+          <div class="selected-info">
+            <div>{{ selectedPlayerForSorting.tag }} <span *ngIf="isTopPlayer(selectedPlayerForSorting)" class="top-player-badge">🌟 Top</span></div>
+            <div class="selected-actions">
+              <button class="btn btn-primary" (click)="performSmartSorting()">Sort</button>
+              <button class="btn btn-secondary" (click)="clearSelectedPlayer()">Clear</button>
             </div>
           </div>
         </div>

@@ -4,125 +4,41 @@
     <img src="assets/images/SemoSVI_blk_transparent_stroke.png" alt="SemoSVI Logo" class="competition-logo">
   </div>
   
-  <!-- House Name Poll -->
-  <div class="section poll-section" *ngIf="houseNamePoll">
+  <!-- Official Houses (replaces poll) -->
+  <div class="section poll-section" *ngIf="season">
     <div class="poll-container">
       <div class="poll-header">
-        <h2>{{ houseNamePoll.title }}</h2>
-        <p class="poll-description">{{ houseNamePoll.description }}</p>
-        <div class="poll-meta">
-          <span class="poll-status" [class.active]="isPollActive()" [class.ended]="!isPollActive()">
-            {{ isPollActive() ? '🗳️ Poll Active' : '📊 Voting Ended' }}
-          </span>
-          <span class="poll-countdown" *ngIf="pollCountdown">
-            ⏰ {{ pollCountdown }}
-          </span>
-          <span class="poll-votes">{{ getTotalVotes() }} total votes • {{ totalUniqueVoters }} voters</span>
-          <span class="poll-deadline" *ngIf="houseNamePoll.endDate">
-            Ends: {{ houseNamePoll.endDate | date:'MMM d, y' }}
-          </span>
-        </div>
+        <h2>Official Houses for {{ season.name }}</h2>
+        <p class="poll-description">The three official houses for this season and their currently assigned players.</p>
       </div>
 
-      <!-- Voting Interface -->
-      <div class="poll-voting" *ngIf="isPollActive() && !hasVoted">
-        <p class="voting-instructions">
-          Select up to {{ houseNamePoll.maxSelections }} house names:
-        </p>
-        <div class="poll-options">
-          <div 
-            class="poll-option"
-            *ngFor="let option of houseNamePoll.options"
-            [class.selected]="houseNamePoll.userVotes.includes(option.id)"
-            (click)="onPollOptionToggle(option.id)"
-          >
-            <div class="option-content">
-              <div class="option-header">
-                <span class="option-emblem">{{ option.emblem }}</span>
-                <span class="option-name">{{ option.name }}</span>
-                <div class="option-checkbox">
-                  <input 
-                    type="checkbox" 
-                    [checked]="houseNamePoll.userVotes.includes(option.id)"
-                    readonly
-                    [attr.aria-label]="'Select ' + option.name"
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="poll-actions">
-          <div class="vote-counter">
-            Selected: {{ houseNamePoll.userVotes.length }} / {{ houseNamePoll.maxSelections }}
-          </div>
-          <button 
-            class="btn btn-primary vote-btn"
-            [disabled]="houseNamePoll.userVotes.length === 0"
-            (click)="submitPollVotes()"
-          >
-            Submit Votes ({{ houseNamePoll.userVotes.length }})
-          </button>
-        </div>
-      </div>
-
-      <!-- Already Voted Message -->
-      <div class="poll-voted" *ngIf="hasVoted">
-        <div class="voted-message">
-          <h3>✅ Thank you for voting!</h3>
-          <p>You voted for:</p>
-          <div class="user-votes">
-            <span 
-              class="voted-option"
-              *ngFor="let voteId of houseNamePoll.userVotes"
-            >
-              {{ getOptionEmblem(voteId) }}
-              {{ getOptionName(voteId) }}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Poll Results Toggle -->
-      <div class="poll-results-toggle">
-        <button 
-          class="btn btn-secondary"
-          (click)="togglePollResults()"
+      <div class="poll-options houses-grid">
+        <div 
+          class="poll-option"
+          *ngFor="let house of getHousesForDisplay(season); let i = index"
         >
-          {{ showPollResults ? 'Hide' : 'Show' }} Results
-        </button>
-      </div>
+          <div class="option-content">
+            <div class="option-header">
+              <span class="option-name colored-name" 
+                    [style.background-color]="house.color" 
+                    [style.color]="getContrastColor(house.color)">
+                {{ house.displayName || house.name }}
+              </span>
+            </div>
 
-      <!-- Poll Results -->
-      <div class="poll-results" *ngIf="showPollResults">
-        <h3>Current Results</h3>
-        <div class="results-list">
-          <div 
-            class="result-item"
-            *ngFor="let option of getPollResults(); let i = index"
-            [class.top-three]="i < 3"
-          >
-            <div class="result-rank">
-              <span class="rank-number">{{ i + 1 }}</span>
-              <span class="rank-badge" *ngIf="i < 3">🏆</span>
+            <!-- house description removed for a cleaner public view -->
+
+            <div class="player-list">
+              <div *ngIf="getPlayersForHouse(season, house.id).length === 0">No players assigned yet.</div>
+              <ul class="player-list-ul">
+                <li *ngFor="let player of getPlayersForHouse(season, house.id)" class="player-item">
+                  <span class="player-emblem" aria-hidden="true">{{ house.emblem }}</span>
+                  <span class="player-name-text">{{ player.tag }}</span>
+                  <span *ngIf="player.isCaptain" class="captain-emblem" title="House Captain">🎖️</span>
+                </li>
+              </ul>
             </div>
-            <div class="result-content">
-              <div class="result-header">
-                <span class="result-emblem">{{ option.emblem }}</span>
-                <span class="result-name">{{ option.name }}</span>
-              </div>
-              <div class="result-stats">
-                <div class="vote-bar">
-                  <div 
-                    class="vote-fill"
-                    [style.width.%]="getVotePercentage(option)"
-                    [style.background-color]="option.color"
-                  ></div>
-                </div>
-                <span class="vote-count">{{ option.votes }} votes ({{ getVotePercentage(option) | number:'1.1-1' }}%)</span>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>
