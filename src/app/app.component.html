@@ -1,71 +1,32 @@
 <div class="app-container">
-  <!-- Top nav bar for mobile -->
-  <div class="mobile-topnav">
-    <button class="hamburger" (click)="toggleSidebar()" aria-label="Open menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-    <span class="mobile-title">SEMO Smash</span>
-  </div>
-
-  <!-- Sidebar -->
   <div class="sidebar-container" [class.sidebar-hidden]="sidebarHiddenOnMobile">
-    <!-- Main navigation group -->
     <div class="sidebar-group sidebar-main">
-      <app-menu-card 
+      <app-menu-card
         [headerText]="'Home'"
         [infoText]="''"
         [url]="'/'"
         [sidebarStyle]="true"
         (menuCardClicked)="closeSidebarOnMobile()">
       </app-menu-card>
-      
-      <app-menu-card 
+
+      <app-menu-card
         [headerText]="'Stage List and Bans Tool'"
         [infoText]="'All SEMO Smash events use the same stage list.'"
         [url]="'stage-list-bans-full'"
         [sidebarStyle]="true"
         (menuCardClicked)="closeSidebarOnMobile()">
       </app-menu-card>
-      
-      <app-menu-card 
-        [headerText]="'Tournaments'" 
+
+      <app-menu-card
+        [headerText]="'Tournaments'"
         [infoText]="'View a list of our regular events with quick links!'"
         [url]="'tournaments'"
         [sidebarStyle]="true"
         (menuCardClicked)="closeSidebarOnMobile()">
       </app-menu-card>
-      
-      <app-menu-card 
-        [headerText]="'Season 6: Three Houses'" 
-        [infoText]="'Follow the Three Houses competition and view standings!'"
-        [url]="'season-6'"
-        [sidebarStyle]="true"
-        (menuCardClicked)="closeSidebarOnMobile()">
-      </app-menu-card>
-      
-      <app-menu-card 
-        [headerText]="'Power Rankings'" 
-        [infoText]="'See the top SEMO Smash players ranked by skill!'"
-        [url]="'power-rankings'"
-        [isDisabled]="true"
-        [disabledStatusText]="'Coming soon!'"
-        [disabledMessage]="'Power rankings feature is currently being developed.'"
-        [sidebarStyle]="true"
-        (menuCardClicked)="closeSidebarOnMobile()">
-      </app-menu-card>
-      
-      <app-menu-card 
-        [headerText]="'Socials'" 
-        [infoText]="'Connect with the SEMO Smash community online!'"
-        [url]="'community'"
-        [sidebarStyle]="true"
-        (menuCardClicked)="closeSidebarOnMobile()">
-      </app-menu-card>
-      
-      <app-menu-card 
-        [headerText]="'Streams, VODs & Content'" 
+
+      <app-menu-card
+        [headerText]="'Streams, VODs & Content'"
         [infoText]="'Watch tournaments, streams, and community content'"
         [url]="'streaming'"
         [sidebarStyle]="true"
@@ -73,18 +34,17 @@
       </app-menu-card>
     </div>
 
-    <!-- Bottom group for contact and source code -->
     <div class="sidebar-group sidebar-bottom">
-      <app-menu-card 
-        [headerText]="'Contact'" 
+      <app-menu-card
+        [headerText]="'Contact'"
         [infoText]="''"
         [url]="'mailto:mbsmashacct@gmail.com'"
         [sidebarStyle]="true"
         (menuCardClicked)="closeSidebarOnMobile()">
       </app-menu-card>
-      
-      <app-menu-card 
-        [headerText]="'Source Code'" 
+
+      <app-menu-card
+        [headerText]="'Source Code'"
         [infoText]="''"
         [url]="'https://github.com/mbsmash/cape-smash'"
         [sidebarStyle]="true"
@@ -93,8 +53,7 @@
     </div>
   </div>
 
-  <!-- Main content area -->
-  <div class="main-content" (click)="closeSidebarOnMobile()">
+  <div class="main-content">
     <router-outlet></router-outlet>
   </div>
 </div>
