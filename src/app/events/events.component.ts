@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PowerRankingService } from '../services/power-ranking.service';
+import { FirebaseService } from '../services/firebase.service';
 
 interface TournamentResult {
   tournamentName: string;
@@ -26,22 +27,81 @@ interface TournamentResult {
   }>;
 }
 
+interface Tournament {
+  name: string;
+  url: string;
+  frequency: string;
+  venue: string;
+  address: string;
+  location: string;
+  imageUrl?: string;
+}
+
 @Component({
-  selector: 'app-tournaments',
-  templateUrl: './tournaments.component.html',
-  styleUrls: ['./tournaments.component.css']
+  selector: 'app-events',
+  templateUrl: './events.component.html',
+  styleUrls: ['./events.component.css']
 })
-export class TournamentsComponent implements OnInit {
+export class EventsComponent implements OnInit {
   tournamentResults: TournamentResult[] = [];
   loading: boolean = true;
   isMobile: boolean = false;
+  
+  tournaments: Tournament[] = [
+    {
+      name: 'Raffle Rumble',
+      url: 'https://www.start.gg/raffle-rumble',
+      frequency: 'Every Month',
+      venue: 'STG Cards & Collectables',
+      address: 'TBD',
+      location: 'Cape Girardeau, MO'
+    },
+    {
+      name: 'Kachow Kup',
+      url: 'https://start.gg/kachow-kup',
+      frequency: 'Every Month',
+      venue: '10 3rd Street (Above Common Grounds)',
+      address: '10 3rd Street',
+      location: 'Ste. Genevieve, MO'
+    },
+    {
+      name: 'Pubstomp',
+      url: '#',
+      frequency: 'Every Other Month',
+      venue: 'TBD',
+      address: '36 N Spanish Street',
+      location: 'Cape Girardeau, MO'
+    }
+  ];
 
-  constructor(private powerRankingService: PowerRankingService) { }
+  constructor(
+    private powerRankingService: PowerRankingService,
+    private firebaseService: FirebaseService
+  ) { }
 
   ngOnInit(): void {
     this.loadTournamentResults();
+    this.loadTournamentImages();
     this.checkMobile();
     window.addEventListener('resize', this.checkMobile.bind(this));
+  }
+  
+  async loadTournamentImages(): Promise<void> {
+    try {
+      const imageUrls = await Promise.all([
+        this.firebaseService.getImageUrl('/events/raffle-rumble-square.jpg'),
+        this.firebaseService.getImageUrl('/events/kachow-kup-square.jpg'),
+        this.firebaseService.getImageUrl('/events/pubstomp-square.jpg')
+      ]);
+      
+      this.tournaments[0].imageUrl = imageUrls[0];
+      this.tournaments[1].imageUrl = imageUrls[1];
+      this.tournaments[2].imageUrl = imageUrls[2];
+      
+      console.log('Tournament images loaded:', imageUrls);
+    } catch (error) {
+      console.warn('Failed to load tournament images', error);
+    }
   }
 
   ngOnDestroy(): void {

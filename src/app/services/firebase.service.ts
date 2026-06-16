@@ -38,9 +38,12 @@ export class FirebaseService {
 
   getImageUrl(path: string): Promise<string> {
     console.log("Firebase: retrieving from ", path);
-    const imageRef = ref(this.storageRef, path);
+    const storage = getStorage();
+    // Create reference directly from storage root, not from this.storageRef
+    const imageRef = ref(storage, 'assets' + path);
     return getDownloadURL(imageRef)
       .then((url) => {
+        console.log("Firebase: got download URL", url);
         return url;
       })
       .catch((error) => {

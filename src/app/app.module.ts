@@ -20,7 +20,7 @@ import { PowerRankingsFormComponent } from './power-rankings-form/power-rankings
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CopyrightComponent } from './copyright/copyright.component';
 import { BannerComponent } from './banner/banner.component';
-import { TournamentsComponent } from './tournaments/tournaments.component'; // Import MatFormFieldModule
+import { EventsComponent } from './events/events.component'; // Import MatFormFieldModule
 import { MatDividerModule } from '@angular/material/divider'; // Import MatDividerModule
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -51,7 +51,7 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
     PowerRankingsFormComponent,
     CopyrightComponent,
     BannerComponent,
-    TournamentsComponent,
+    EventsComponent,
     StageListBansFullComponent,
     PlayerProfileComponent,
     StreamingComponent,
