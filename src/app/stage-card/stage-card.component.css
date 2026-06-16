@@ -36,9 +36,16 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    /* Fallback gradient when no image is loaded */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     -webkit-mask: linear-gradient(to left, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 75%, rgba(0,0,0,0) 100%);
     mask: linear-gradient(to left, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 75%, rgba(0,0,0,0) 100%);
     z-index: 0;
+  }
+  
+  /* When image is loaded, override the gradient */
+  .mat-card[style*="--stage-bg-image"]::before {
+    background-image: var(--stage-bg-image);
   }
   
   .mat-card::after {
@@ -136,7 +143,8 @@
 /* Large format display styles */
 @media screen and (min-width: 1101px) {
   .mat-card {
-    background-color: #f2f2f2;
+    /* Fallback gradient background */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 12px;
     border-radius: 12px;
     width: 20vw;
@@ -150,6 +158,11 @@
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     position: relative;
     overflow: hidden;
+  }
+  
+  /* When image is available via CSS variable, use it */
+  .mat-card[style*="--stage-bg-image"] {
+    background-image: var(--stage-bg-image);
   }
 
   .mat-card::before {

@@ -1,34 +1,33 @@
 <div class="home-container">
-  <div class="welcome-card">
-    <div class="welcome-header">
-      <h1>SEMO Smash Hub v2</h1>
-    </div>
-    <div class="welcome-content">
-      <div *ngIf="liveVideoId; else showHomeContent" class="stream-embed-container">
-        <iframe
-          width="100%"
-          height="500"
-          [src]="('https://www.youtube.com/embed/' + liveVideoId + '?autoplay=1&mute=1') | safeUrl"
-          frameborder="0"
-          allow="autoplay; encrypted-media"
-          allowfullscreen
-          title="SEMO Smash Live Stream">
-        </iframe>
-      </div>
-      <ng-template #showHomeContent>
-        <div class="greeting-section">
-          <h2>Welcome to our new online portal!</h2>
-          <p>Explore the sidebar to dive into our community features!</p>
-          <p>Please note that this portal is under construction. Some features may not be fully implemented or work as intended. Thank you for your patience! </p>
-          <p>Any feedback or issues can be reported by using the Contact link in the sidebar or by contacting MB on Discord.</p>
-        </div>
-        <div class="stream-embed-container">
-          <p>No live stream is currently active.</p>
-        </div>
-      </ng-template>
-    </div>
-    <div class="welcome-footer">
-      <p>What's new: site redesign!</p>
-    </div>
+  <!-- Navigation Cards Grid -->
+  <div class="nav-cards-grid">
+    <!-- Row 1 -->
+    <a routerLink="/tournaments" class="nav-card">
+      <div class="nav-card-icon">🏆</div>
+      <h3 class="nav-card-title">Tournaments</h3>
+      <p class="nav-card-description">Find upcoming events and register.</p>
+      <span class="nav-card-arrow">→</span>
+    </a>
+
+    <a routerLink="/stage-list-bans-full" class="nav-card">
+      <div class="nav-card-icon">⚙️</div>
+      <h3 class="nav-card-title">Stage List</h3>
+      <p class="nav-card-description">View, create, and share stage lists.</p>
+      <span class="nav-card-arrow">→</span>
+    </a>
+
+    <!-- Row 2 -->
+    <a routerLink="/community" class="nav-card">
+      <div class="nav-card-icon">👥</div>
+      <h3 class="nav-card-title">Community</h3>
+      <p class="nav-card-description">Connect with our socials and watch our content.</p>
+      <span class="nav-card-arrow">→</span>
+    </a>
+  </div>
+
+  <!-- Footer Notice -->
+  <div class="home-footer">
+    <p class="footer-notice">⚠️ This portal is under construction. Some features may not be fully implemented.</p>
+    <p class="footer-contact">For issues or feedback, contact us on Discord.</p>
   </div>
 </div>

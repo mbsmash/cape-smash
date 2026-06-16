@@ -1,5 +1,15 @@
 <div class="app-container">
-  <!-- Top nav bar for mobile -->
+  <!-- Desktop Header - spans full width -->
+  <div class="desktop-header">
+    <div class="header-logo">
+      <div class="logo-text">
+        <span class="logo-title">SEMO</span>
+        <span class="logo-subtitle">SMASH HUB</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile top nav bar -->
   <div class="mobile-topnav">
     <button class="hamburger" (click)="toggleSidebar()" aria-label="Open menu">
       <span></span>
@@ -7,14 +17,23 @@
       <span></span>
     </button>
     <span class="mobile-title">SEMO Smash</span>
-  </div>
-
-  <!-- Sidebar -->
+  </div>  <!-- Sidebar -->
   <div class="sidebar-container" [class.sidebar-hidden]="sidebarHiddenOnMobile">
+    <!-- Mobile Logo Section (only visible on mobile) -->
+    <div class="sidebar-logo-mobile">
+      <div class="logo-content">
+        <div class="logo-icon">🎮</div>
+        <div class="logo-text">
+          <span class="logo-title">SEMO</span>
+          <span class="logo-subtitle">SMASH HUB</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Main navigation group -->
     <div class="sidebar-group sidebar-main">
       <app-menu-card 
-        [headerText]="'Home'"
+        [headerText]="'🏠 Home'"
         [infoText]="''"
         [url]="'/'"
         [sidebarStyle]="true"
@@ -22,7 +41,7 @@
       </app-menu-card>
       
       <app-menu-card 
-        [headerText]="'Stage List and Bans Tool'"
+        [headerText]="'⚙️ Stage List and Bans Tool'"
         [infoText]="'All SEMO Smash events use the same stage list.'"
         [url]="'stage-list-bans-full'"
         [sidebarStyle]="true"
@@ -30,7 +49,7 @@
       </app-menu-card>
       
       <app-menu-card 
-        [headerText]="'Tournaments'" 
+        [headerText]="'🏆 Tournaments'" 
         [infoText]="'View a list of our regular events with quick links!'"
         [url]="'tournaments'"
         [sidebarStyle]="true"
@@ -38,15 +57,7 @@
       </app-menu-card>
       
       <app-menu-card 
-        [headerText]="'Season 6: Three Houses'" 
-        [infoText]="'Follow the Three Houses competition and view standings!'"
-        [url]="'season-6'"
-        [sidebarStyle]="true"
-        (menuCardClicked)="closeSidebarOnMobile()">
-      </app-menu-card>
-      
-      <app-menu-card 
-        [headerText]="'Power Rankings'" 
+        [headerText]="'📊 Power Rankings'" 
         [infoText]="'See the top SEMO Smash players ranked by skill!'"
         [url]="'power-rankings'"
         [isDisabled]="true"
@@ -57,17 +68,9 @@
       </app-menu-card>
       
       <app-menu-card 
-        [headerText]="'Socials'" 
+        [headerText]="'👥 Community'" 
         [infoText]="'Connect with the SEMO Smash community online!'"
         [url]="'community'"
-        [sidebarStyle]="true"
-        (menuCardClicked)="closeSidebarOnMobile()">
-      </app-menu-card>
-      
-      <app-menu-card 
-        [headerText]="'Streams, VODs & Content'" 
-        [infoText]="'Watch tournaments, streams, and community content'"
-        [url]="'streaming'"
         [sidebarStyle]="true"
         (menuCardClicked)="closeSidebarOnMobile()">
       </app-menu-card>
@@ -76,7 +79,7 @@
     <!-- Bottom group for contact and source code -->
     <div class="sidebar-group sidebar-bottom">
       <app-menu-card 
-        [headerText]="'Contact'" 
+        [headerText]="'📧 Contact'" 
         [infoText]="''"
         [url]="'mailto:mbsmashacct@gmail.com'"
         [sidebarStyle]="true"
@@ -84,7 +87,7 @@
       </app-menu-card>
       
       <app-menu-card 
-        [headerText]="'Source Code'" 
+        [headerText]="'💻 Source Code'" 
         [infoText]="''"
         [url]="'https://github.com/mbsmash/cape-smash'"
         [sidebarStyle]="true"

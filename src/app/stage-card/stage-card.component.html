@@ -1,5 +1,5 @@
 <div class="stage-card" (click)="onClick()">
-  <mat-card [class.banned-image]="isBanned" [class.picked]="isPicked" [style.--stage-bg-image]="'url(' + stageImageUrl + ')'">
+  <mat-card [class.banned-image]="isBanned" [class.picked]="isPicked" [style.--stage-bg-image]="stageImageUrl ? 'url(' + stageImageUrl + ')' : null">
     <mat-card-title>
       {{stage.name}}
     </mat-card-title>

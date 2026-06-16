@@ -1,93 +1,156 @@
 
 .home-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 80vh;
-  padding: 20px;
+  flex-direction: column;
+  min-height: calc(100vh - 70px);
+  padding: 0;
   background-color: #1a1a1a;
   color: white;
 }
 
-.welcome-card {
-  background-color: #2a2a2a;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
-  max-width: 800px;
+@media screen and (max-width: 768px) {
+  .home-container {
+    min-height: calc(100vh - 56px);
+  }
+}
+
+/* Navigation Cards Grid */
+.nav-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
   width: 100%;
-  border: 1px solid #333;
 }
 
-.welcome-header {
-  background-color: #333;
+/* Center the last 2 cards on second row */
+.nav-cards-grid > a:nth-child(4) {
+  grid-column: 1 / 2;
+}
+
+.nav-cards-grid > a:nth-child(5) {
+  grid-column: 2 / 3;
+}
+
+.nav-card {
+  background: linear-gradient(145deg, #2a2a2a 0%, #222 100%);
+  border: 1px solid #3a3a3a;
+  border-radius: 12px;
+  padding: 24px 20px;
+  text-decoration: none;
   color: white;
-  text-align: center;
-  padding: 20px;
-  margin: 0;
-  border-bottom: 2px solid #555;
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 140px;
 }
 
-.welcome-header h1 {
-  margin: 0;
+.nav-card:hover {
+  background: linear-gradient(145deg, #333 0%, #2a2a2a 100%);
+  border-color: #ff8c00;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(255, 140, 0, 0.2);
+}
+
+.nav-card-icon {
   font-size: 2.5em;
+  margin-bottom: 12px;
+  filter: grayscale(20%);
+}
+
+.nav-card-icon.discord-icon {
+  filter: none;
+}
+
+.nav-card-title {
+  font-size: 1.3em;
   font-weight: bold;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  margin: 0 0 8px 0;
   color: #fff;
 }
 
-.welcome-content {
-  padding: 30px;
+.nav-card-description {
+  font-size: 0.9em;
+  color: #aaa;
+  margin: 0 0 12px 0;
+  flex-grow: 1;
+  line-height: 1.4;
+}
+
+.nav-card-arrow {
+  font-size: 1.3em;
+  color: #ff8c00;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  transition: transform 0.3s ease;
+}
+
+.nav-card:hover .nav-card-arrow {
+  transform: translateX(8px);
+}
+
+/* Footer Notice */
+.home-footer {
+  background-color: #1a1a1a;
+  padding: 20px 20px;
   text-align: center;
-  background-color: #2a2a2a;
+  border-top: 2px solid #333;
+  margin-top: auto;
 }
 
-.greeting-section h2 {
-  color: #ffa500;
-  margin-bottom: 15px;
-  font-size: 2em;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+.footer-notice {
+  color: #ff8c00;
+  font-size: 0.9em;
+  margin: 0 0 6px 0;
 }
 
-.greeting-section p {
-  color: #ccc;
-  font-size: 1.2em;
-  margin-bottom: 30px;
-  line-height: 1.5;
-}
-
-.welcome-footer {
-  background-color: #2a2a2a;
-  text-align: center;
-  padding: 15px;
+.footer-contact {
   color: #999;
-  font-style: italic;
-  border-top: 1px solid #333;
+  font-size: 0.85em;
+  margin: 0;
+}
+
+/* Tablet Styles */
+@media screen and (max-width: 1024px) {
+  .nav-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    padding: 30px 20px;
+  }
 }
 
 /* Mobile Styles */
 @media screen and (max-width: 768px) {
-  .home-container {
-    padding: 10px;
-    min-height: 70vh;
-    background-color: #1a1a1a;
+  .nav-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 20px 16px;
   }
   
-  .welcome-card {
-    max-width: 100%;
+  .nav-card {
+    padding: 20px 18px;
+    min-height: 135px;
   }
   
-  .welcome-header h1 {
-    font-size: 2em;
+  .nav-card-icon {
+    font-size: 2.2em;
   }
   
-  .greeting-section h2 {
-    font-size: 1.5em;
-    color: #ffa500;
+  .nav-card-title {
+    font-size: 1.2em;
   }
   
-  .greeting-section p {
-    font-size: 1em;
-    color: #ccc;
+  .nav-card-description {
+    font-size: 0.9em;
+  }
+  
+  .home-footer {
+    padding: 18px 16px;
   }
 }

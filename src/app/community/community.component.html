@@ -1,132 +1,61 @@
-<div class="community-layout">
-  <!-- Secondary sidebar for socials -->
-  <ng-container *ngIf="isMobile; else desktopLayout">
-  <div class="community-sidebar">
-    <div class="community-sidebar-header">
-      <h2>SEMO Smash Community Groups</h2>
-    </div>
-    <div class="community-cards-container">
-      <app-menu-card [headerText]="'Join our Discord Server'"
-          [timingText]="'News, chat, games and more'"
-          [locationText]="'Our community is most active on Discord'"
-          [iconPath]="'images/Discord-Symbol-White.png'"
-          [url]="'https://discord.gg/ye9zJAxda9'"
-          [sidebarStyle]="true"
-          [secondarySidebar]="true"></app-menu-card>
-      <app-menu-card [headerText]="'Join our Facebook Group'" 
-          [timingText]="'Community discussion group'"
-          [locationText]="'Event updates and local tournament talk'"
-          [iconPath]="'images/Facebook_Logo_Secondary.png'"
-          [url]="'https://www.facebook.com/groups/1038435794713688'"
-          [sidebarStyle]="true"
-          [secondarySidebar]="true"></app-menu-card>
-      <app-menu-card [headerText]="'Follow SEMO Smash  on Twitter'" 
-          [timingText]="'Quick updates and announcements'"
-          [locationText]="'Latest news and tournament bracket updates'"
-          [iconPath]="'images/twitter.png'"
-          [url]="'https://twitter.com/SemoSmash'"
-          [sidebarStyle]="true"
-          [secondarySidebar]="true"></app-menu-card>
-      <app-menu-card [headerText]="'Follow MB on BlueSky'"
-          [timingText]="'Or don\'t. He doesn\'t really care as long as it\'s not Twitter.'"
-          [locationText]="'Fuck Elon Musk'"
-          [iconPath]="'images/Bluesky_Logo.png'"
-          [url]="'https://bsky.app/profile/mbsmash.bsky.social'"
-          [sidebarStyle]="true"
-          [secondarySidebar]="true">
-        <p>Stay updated with our latest news and events.</p>
-      </app-menu-card>
+<div class="community-container">
+  <!-- Page Header -->
+  <div class="community-header">
+    <h1>Community</h1>
+    <p class="community-subtitle">Connect with us and watch our content</p>
+  </div>
+
+  <!-- Socials Section -->
+  <div class="community-section">
+    <h2 class="section-title">Social Media</h2>
+    <div class="community-cards-grid">
+      <a href="https://discord.gg/ye9zJAxda9" class="community-card" target="_blank" rel="noopener noreferrer">
+        <div class="community-card-icon">💬</div>
+        <h3 class="community-card-title">Discord Server</h3>
+        <p class="community-card-description">Join our most active community hub for news, chat, and events</p>
+        <span class="community-card-arrow">→</span>
+      </a>
+
+      <a href="https://twitter.com/SemoSmash" class="community-card" target="_blank" rel="noopener noreferrer">
+        <div class="community-card-icon">🐦</div>
+        <h3 class="community-card-title">SEMO Smash Twitter</h3>
+        <p class="community-card-description">Quick updates and tournament bracket results</p>
+        <span class="community-card-arrow">→</span>
+      </a>
     </div>
   </div>
 
-  
-    <div class="community-main-mobile">
-      <div class="community-sidebar-header">
-        <h2>SEMO Smash Community Groups</h2>
-      </div>
-      <div class="community-cards-container">
-        <app-menu-card [headerText]="'Join our Discord Server'"
-        [timingText]="'News, chat, games and more'"
-        [locationText]="'Our community is most active on Discord'"
-        [iconPath]="'images/Discord-Symbol-White.png'"
-        [url]="'https://discord.gg/ye9zJAxda9'"
-            [sidebarStyle]="true"
-            [secondarySidebar]="true"></app-menu-card>
-        <app-menu-card [headerText]="'Join our Facebook Group'" 
-            [timingText]="'Community discussion group'"
-            [locationText]="'Event updates and local tournament talk'"
-            [iconPath]="'images/Facebook_Logo_Secondary.png'"
-            [url]="'https://www.facebook.com/groups/1038435794713688'"
-            [sidebarStyle]="true"
-            [secondarySidebar]="true"></app-menu-card>
-        <app-menu-card [headerText]="'Follow SEMO Smash  on Twitter'" 
-            [timingText]="'Quick updates and announcements'"
-            [locationText]="'Latest news and tournament bracket updates'"
-            [iconPath]="'images/twitter.png'"
-            [url]="'https://twitter.com/SemoSmash'"
-            [sidebarStyle]="true"
-            [secondarySidebar]="true"></app-menu-card>
-        <app-menu-card [headerText]="'Follow MB on BlueSky'"
-            [timingText]="'Or don\'t. He doesn\'t really care as long as it\'s not Twitter.'"
-            [locationText]="'Fuck Elon Musk'"
-            [iconPath]="'images/Bluesky_Logo.png'"
-            [url]="'https://bsky.app/profile/mbsmash.bsky.social'"
-            [sidebarStyle]="true"
-            [secondarySidebar]="true">
-          <p>Stay updated with our latest news and events.</p>
-        </app-menu-card>
-      </div>
-    </div>
-  </ng-container>
-  <ng-template #desktopLayout>
-    <div class="community-layout">
-      <div class="community-sidebar">
-        <div class="community-sidebar-header">
-          <h2>SEMO Smash Community Groups</h2>
-        </div>
-        <div class="community-cards-container">
-          <app-menu-card [headerText]="'Join our Discord Server'"
-              [timingText]="'News, chat, games and more'"
-              [locationText]="'Our community is most active on Discord'"
-              [iconPath]="'images/Discord-Symbol-White.png'"
-              [url]="'https://discord.gg/ye9zJAxda9'"
-              [sidebarStyle]="true"
-              [secondarySidebar]="true"></app-menu-card>
-          <app-menu-card [headerText]="'Join our Facebook Group'" 
-              [timingText]="'Community discussion group'"
-              [locationText]="'Event updates and local tournament talk'"
-              [iconPath]="'images/Facebook_Logo_Secondary.png'"
-              [url]="'https://www.facebook.com/groups/1038435794713688'"
-              [sidebarStyle]="true"
-              [secondarySidebar]="true"></app-menu-card>
-          <app-menu-card [headerText]="'Follow SEMO Smash  on Twitter'" 
-              [timingText]="'Quick updates and announcements'"
-              [locationText]="'Latest news and tournament bracket updates'"
-              [iconPath]="'images/twitter.png'"
-              [url]="'https://twitter.com/SemoSmash'"
-              [sidebarStyle]="true"
-              [secondarySidebar]="true"></app-menu-card>
-          <app-menu-card [headerText]="'Follow MB on BlueSky'"
-              [timingText]="'Or don\'t. He doesn\'t really care as long as it\'s not Twitter.'"
-              [locationText]="'Fuck Elon Musk'"
-              [iconPath]="'images/Bluesky_Logo.png'"
-              [url]="'https://bsky.app/profile/mbsmash.bsky.social'"
-              [sidebarStyle]="true"
-              [secondarySidebar]="true">
-            <p>Stay updated with our latest news and events.</p>
-          </app-menu-card>
-        </div>
-      </div>
+  <!-- Streaming & Content Section -->
+  <div class="community-section">
+    <h2 class="section-title">Streams & VODs</h2>
+    <div class="community-cards-grid">
+      <a href="https://www.youtube.com/@VodsPog/videos" class="community-card" target="_blank" rel="noopener noreferrer">
+        <div class="community-card-icon">📺</div>
+        <h3 class="community-card-title">SEMO VODs (YouTube)</h3>
+        <p class="community-card-description">Official tournament coverage and highlight reels</p>
+        <span class="community-card-arrow">→</span>
+      </a>
 
-      <!-- Main content area -->
-      <div class="community-main-content">
-        <div class="community-section">
-          <h2>Community Hub</h2>
-          <div class="community-info-card">
-            <p>Welcome to the community hub! Check back here later for content from SEMO Smash community members. This feature is currently under construction.</p>
-          </div>
-        </div>
-      </div>
+      <a href="https://www.youtube.com/@MBsmash/videos" class="community-card" target="_blank" rel="noopener noreferrer">
+        <div class="community-card-icon">🎬</div>
+        <h3 class="community-card-title">MBSmash (YouTube)</h3>
+        <p class="community-card-description">Tournament streams and community content</p>
+        <span class="community-card-arrow">→</span>
+      </a>
+
+      <a href="https://www.twitch.tv/mbsmash_ttv" class="community-card" target="_blank" rel="noopener noreferrer">
+        <div class="community-card-icon">🎮</div>
+        <h3 class="community-card-title">mbsmash_ttv (Twitch)</h3>
+        <p class="community-card-description">Live tournament broadcasts and reruns</p>
+        <span class="community-card-arrow">→</span>
+      </a>
+
+      <a href="https://www.youtube.com/@KachowGamers/videos" class="community-card" target="_blank" rel="noopener noreferrer">
+        <div class="community-card-icon">⚡</div>
+        <h3 class="community-card-title">Kachow Gaming (YouTube)</h3>
+        <p class="community-card-description">Gaming content and Minecraft Steve guides</p>
+        <span class="community-card-arrow">→</span>
+      </a>
     </div>
-  </ng-template>
+  </div>
 </div>

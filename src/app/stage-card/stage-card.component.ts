@@ -43,10 +43,15 @@ export class StageCardComponent implements OnInit {
       return cachedImageUrl;
     }
 
-    const imageUrl = await this.firebaseStorageService.getImageUrl(`/stages/` + stage +  `.png`);
-
-    localStorage.setItem(localStorageKey, imageUrl);
-    return imageUrl;
+    try {
+      const imageUrl = await this.firebaseStorageService.getImageUrl(`/stages/` + stage +  `.png`);
+      localStorage.setItem(localStorageKey, imageUrl);
+      return imageUrl;
+    } catch (error) {
+      console.warn(`Failed to load image for ${stage}, using fallback`);
+      // Return empty string to use CSS fallback
+      return '';
+    }
   }
 
 
